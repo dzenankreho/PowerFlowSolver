@@ -6,8 +6,13 @@
 
 
 
-#define pi 4 * std::atan(1.0)
+#define PI 4 * std::atan(1.0)
 
+
+/// <summary>
+/// Sets the value at which the voltage amplitude for the given bus should be maintained.
+/// </summary>
+/// <param name="voltageMagnitude">Value of voltage magnitude of the bus</param>
 void SystemModel::Bus::setVoltageMagnitude(double voltageMagnitude) {
 	if (typeOfBus == TypeOfBus::PQ) {
 		throw std::logic_error("Cannot set voltage magnitude for PQ bus.");
@@ -18,6 +23,10 @@ void SystemModel::Bus::setVoltageMagnitude(double voltageMagnitude) {
 
 
 
+/// <summary>
+/// Sets the value at which the voltage phase for the given bus should be maintained.
+/// </summary>
+/// <param name="voltagePhase">Value of voltage phase of the bus</param>
 void SystemModel::Bus::setVoltagePhase(double voltagePhase) {
 	if (typeOfBus != TypeOfBus::Slack) {
 		throw std::logic_error("Cannot set voltage phase for PQ and PV buses.");
@@ -28,6 +37,10 @@ void SystemModel::Bus::setVoltagePhase(double voltagePhase) {
 
 
 
+/// <summary>
+/// Sets the value at which the active power for the given bus should be maintained.
+/// </summary>
+/// <param name="activePower">Value of active power for the bus</param>
 void SystemModel::Bus::setActivePower(double activePower) {
 	if (typeOfBus == TypeOfBus::Slack) {
 		throw std::logic_error("Cannot set active power for slack bus.");
@@ -38,6 +51,10 @@ void SystemModel::Bus::setActivePower(double activePower) {
 
 
 
+/// <summary>
+/// Sets the value at which the rective power for the given bus should be maintained.
+/// </summary>
+/// <param name="reactivePower">Value of reactive power for the bus</param>
 void SystemModel::Bus::setReactivePower(double reactivePower) {
 	if (typeOfBus != TypeOfBus::PQ) {
 		throw std::logic_error("Cannot set reactive power for PQ and PV buses.");
@@ -48,6 +65,10 @@ void SystemModel::Bus::setReactivePower(double reactivePower) {
 
 
 
+/// <summary>
+/// Gets the value at which the voltage magnitude for the given bus should be maintained.
+/// </summary>
+/// <returns>Value of voltage magnitude of the bus</returns>
 std::optional<double> SystemModel::Bus::getVoltageMagnitude() const {
 	if (typeOfBus == TypeOfBus::PQ) {
 		throw std::logic_error("Cannot get voltage magnitude for PQ bus.");
@@ -58,6 +79,10 @@ std::optional<double> SystemModel::Bus::getVoltageMagnitude() const {
 
 
 
+/// <summary>
+/// Gets the value at which the voltage phase for the given bus should be maintained.
+/// </summary>
+/// <returns>Value of voltage phase of the bus</returns>
 std::optional<double> SystemModel::Bus::getVoltagePhase() const {
 	if (typeOfBus != TypeOfBus::Slack) {
 		throw std::logic_error("Cannot get voltage phase for PQ and PV buses.");
@@ -68,6 +93,10 @@ std::optional<double> SystemModel::Bus::getVoltagePhase() const {
 
 
 
+/// <summary>
+/// Gets the value at which the active power for the given bus should be maintained.
+/// </summary>
+/// <returns>Value of active power for the bus</returns>
 std::optional<double> SystemModel::Bus::getActivePower() const {
 	if (typeOfBus == TypeOfBus::Slack) {
 		throw std::logic_error("Cannot get active power for slack bus.");
@@ -78,6 +107,10 @@ std::optional<double> SystemModel::Bus::getActivePower() const {
 
 
 
+/// <summary>
+/// Gets the value at which the rective power for the given bus should be maintained.
+/// </summary>
+/// <returns>Value of reactive power for the bus</returns>
 std::optional<double> SystemModel::Bus::getReactivePower() const {
 	if (typeOfBus != TypeOfBus::PQ) {
 		throw std::logic_error("Cannot get reactive power for PQ and PV buses.");
@@ -88,6 +121,10 @@ std::optional<double> SystemModel::Bus::getReactivePower() const {
 
 
 
+/// <summary>
+/// Adds a bus to the system
+/// </summary>
+/// <param name="typeOfBus">Type of the bus (Slack, PV, PQ) to be added to the system</param>
 void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
 	if (numberOfBuses == maxNumberOfBuses) {
 		throw std::length_error("Maximum number of buses reached.");
@@ -96,7 +133,7 @@ void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
 	if (numberOfBuses + 1 == maxNumberOfBuses) {
 		if (typeOfBus != TypeOfBus::Slack) {
 			bool slackFound{ false };
-			for (Bus bus : buses) {
+			for (const Bus &bus : buses) {
 				if (bus.getTypeOfBus() == TypeOfBus::Slack) {
 					slackFound = true;
 				}
@@ -120,6 +157,12 @@ void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
 
 
 
+/// <summary>
+/// Adds a load to a bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <param name="activePower">Active power drawn by the load</param>
+/// <param name="reactivePower">Reactive power drawn by the load</param>
 void SystemModel::SystemModel::addLoad(uint8_t busNumber, double activePower, double reactivePower) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
@@ -139,6 +182,11 @@ void SystemModel::SystemModel::addLoad(uint8_t busNumber, double activePower, do
 
 
 
+/// <summary>
+/// Gets the bus with the given bus number
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <returns>Bus with the given bus number</returns>
 SystemModel::Bus& SystemModel::SystemModel::getBus(uint8_t busNumber) {
 	if (busNumber == 0) {
 		throw std::logic_error("Invalid bus number.");
@@ -153,6 +201,14 @@ SystemModel::Bus& SystemModel::SystemModel::getBus(uint8_t busNumber) {
 
 
 
+/// <summary>
+/// Adds a line between buses
+/// </summary>
+/// <param name="busNumber1">Ordinal number of the first bus</param>
+/// <param name="busNumber2">Ordinal number of the second bus</param>
+/// <param name="r">Series resistance of the transmission line PI equivalent</param>
+/// <param name="x">Series reactance of the transmission line PI equivalent</param>
+/// <param name="b">Shunt susceptance of the transmission line PI equivalent</param>
 void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b) {
 	if (busNumber1 > buses.size() || busNumber1 == 0) {
 		throw std::out_of_range("Invalid bus number 1.");
@@ -205,6 +261,12 @@ void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, d
 
 
 
+/// <summary>
+/// Adds a generator to a bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <param name="voltageMagnitude">Voltage magnitude on which the given bus should be maintained</param>
+/// <param name="activePower"Active power on which the given bus should be maintained></param>
 void SystemModel::SystemModel::addGenerator(uint8_t busNumber, double voltageMagnitude, double activePower) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
@@ -224,6 +286,12 @@ void SystemModel::SystemModel::addGenerator(uint8_t busNumber, double voltageMag
 
 
 
+/// <summary>
+/// Adds a generator to the slack bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <param name="voltageMagnitude">Voltage magnitude on which the given bus should be maintained</param>
+/// <param name="voltagePhase">Voltage phase on which the given bus should be maintained</param>
 void SystemModel::SystemModel::addSlackGenerator(uint8_t busNumber, double voltageMagnitude, double voltagePhase) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
@@ -243,8 +311,12 @@ void SystemModel::SystemModel::addSlackGenerator(uint8_t busNumber, double volta
 
 
 
+/// <summary>
+/// Check whether the slack bus has been assigned
+/// </summary>
+/// <returns>True if the slack bus has been assigned and false otherwise</returns>
 bool SystemModel::SystemModel::hasSlackBeenAssigned() const  {
-	for (Bus bus : buses) {
+	for (const Bus &bus : buses) {
 		if (bus.getTypeOfBus() == TypeOfBus::Slack) {
 			return true;
 		}
@@ -255,6 +327,16 @@ bool SystemModel::SystemModel::hasSlackBeenAssigned() const  {
 
 
 
+/// <summary>
+/// Adds a transformer between buses
+/// </summary>
+/// <param name="busNumber1">0rdinal number of the first bus</param>
+/// <param name="busNumber2">0rdinal number of the second bus</param>
+/// <param name="r">Series resistance of the transformer PI equivalent</param>
+/// <param name="x">Series reactance of the transformer PI equivalent</param>
+/// <param name="g">Shunt conductance of the transformer PI equivalent</param>
+/// <param name="b">Shunt susceptance of the transformer PI equivalent</param>
+/// <param name="n">Transformer turns ratio</param>
 void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b, double n) {
 	if (busNumber1 > buses.size() || busNumber1 == 0) {
 		throw std::out_of_range("Invalid bus number 1.");
@@ -308,6 +390,12 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 
 
 
+/// <summary>
+/// Check whether there is a connection between two buses
+/// </summary>
+/// <param name="busNumber1">0rdinal number of the first bus</param>
+/// <param name="busNumber2">0rdinal number of the second bus</param>
+/// <returns>True if there is a connection between buses and false otherwise</returns>
 bool SystemModel::SystemModel::checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const {
 	for (uint8_t i{}; i < admittanceMatrix.columnIndex.size(); i++) {
 		if ((admittanceMatrix.columnIndex.at(i) == busNumber1 && admittanceMatrix.rowIndex.at(i) == busNumber2) ||
@@ -321,6 +409,12 @@ bool SystemModel::SystemModel::checkForConnectionBetweenToBuses(uint8_t busNumbe
 
 
 
+/// <summary>
+/// Output stream operator overload
+/// </summary>
+/// <param name="stream">Output stream object</param>
+/// <param name="systemModel">SystemModel object to be printed to the stream</param>
+/// <returns></returns>
 std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& systemModel) {
 	try {
 		const char* busTypeStrings[]{ "Slack", "PV", "PQ" };
@@ -373,6 +467,12 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 
 
 
+/// <summary>
+/// Adds a capacitor bank to a bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <param name="c">One phase capacitance of the bank</param>
+/// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
 void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
@@ -386,13 +486,13 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 
 	switch (configurationType) {
 		case ThreePhaseLoadConfigurationsType::Delta:
-			admittance = {0, 3 * 2 * pi * 50 * c};
+			admittance = {0, 3 * 2 * PI * 50 * c};
 			break;
 		case ThreePhaseLoadConfigurationsType::Star:
-			admittance = { 0, 2 * pi * 50 * c };
+			admittance = { 0, 2 * PI * 50 * c };
 			break;
 		case ThreePhaseLoadConfigurationsType::GroundedStar:
-			admittance = { 0, 2 * pi * 50 * c };
+			admittance = { 0, 2 * PI * 50 * c };
 			break;
 	}
 
@@ -405,6 +505,14 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 
 
 
+/// <summary>
+/// Gets the bus functions (fi_P and fi_Q) for the desired bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <returns>
+/// Bus functions for the given bus in the form of std::pair of functions, where both 
+/// functions have a std::vector of doubles as parameters and return a double  
+/// </returns>
 SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) const {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
@@ -482,6 +590,15 @@ SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) con
 
 
 
+/// <summary>
+/// Gets the derivates of the bus functions (dfi_P/dx and dfi_Q/dx) for the desired bus
+/// (two rows of the Jacobian associated with the given bus functions)
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <returns>
+/// Derivatives of the bus functions for the given bus in the form of std::pair of std::vector-s 
+/// of functions, where both functions have a std::vector of doubles as parameters and return a double  
+/// </returns>
 SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_t busNumber) const {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");

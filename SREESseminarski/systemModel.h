@@ -10,13 +10,17 @@ namespace SystemModel {
 	using fi = std::pair<std::function<double(std::vector<double>)>, std::function<double(std::vector<double>)>>;
 
 
+
 	using dfidx = std::pair<std::vector<std::function<double(std::vector<double>)>>, std::vector<std::function<double(std::vector<double>)>>>;
+
 
 
 	enum class TypeOfBus { Slack, PV, PQ };
 
 
+
 	enum class ThreePhaseLoadConfigurationsType { Star, GroundedStar, Delta };
+
 
 
 	struct AdmittanceMatrix {
@@ -24,6 +28,7 @@ namespace SystemModel {
 		std::vector<uint8_t> rowIndex;
 		std::vector<std::complex<double>> values;
 	};
+
 
 
 	class Bus {
@@ -55,6 +60,7 @@ namespace SystemModel {
 
 		std::optional<double> getReactivePower() const;
 	};
+
 
 
 	class SystemModel {
@@ -99,6 +105,7 @@ namespace SystemModel {
 			dfidx getDerivativesOfBusFunctions(uint8_t busNumber) const;
 	};
 
+	
 
 	std::ostream& operator <<(std::ostream& stream, const SystemModel& systemModel);
 }
