@@ -224,38 +224,32 @@ void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, d
 
 	std::complex<double> z_s{ r, x }, y_sh{0, b};
 
-	admittanceMatrix.rowIndex.push_back(busNumber1);
-	admittanceMatrix.columnIndex.push_back(busNumber2);
-	admittanceMatrix.values.push_back(- 1.0 / z_s);
+	admittanceMatrix.push_back({ busNumber1, busNumber2, -1.0 / z_s });
 
-	admittanceMatrix.rowIndex.push_back(busNumber2);
-	admittanceMatrix.columnIndex.push_back(busNumber1);
-	admittanceMatrix.values.push_back(-1.0 / z_s);
+	admittanceMatrix.push_back({ busNumber2, busNumber1, -1.0 / z_s });
 
 	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
-		admittanceMatrix.rowIndex.push_back(busNumber1);
-		admittanceMatrix.columnIndex.push_back(busNumber1);
-		admittanceMatrix.values.push_back(y_sh / 2.0 + 1.0 / z_s);
+		admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
 	} else {
 		int64_t index{};
-		while (!(admittanceMatrix.rowIndex.at(index) == admittanceMatrix.columnIndex.at(index) &&
-			admittanceMatrix.rowIndex.at(index) == busNumber1)) {
+		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
+			std::get<0>(admittanceMatrix.at(index)) == busNumber1)) {
 			index++;
 		}
-		admittanceMatrix.values.at(index) = admittanceMatrix.values.at(index) + y_sh / 2.0 + 1.0 / z_s;
+
+		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
 	}
 
 	if (!checkForConnectionBetweenToBuses(busNumber2, busNumber2)) {
-		admittanceMatrix.rowIndex.push_back(busNumber2);
-		admittanceMatrix.columnIndex.push_back(busNumber2);
-		admittanceMatrix.values.push_back(y_sh / 2.0 + 1.0 / z_s);
+		admittanceMatrix.push_back({ busNumber2, busNumber2, y_sh / 2.0 + 1.0 / z_s });
 	} else {
 		int64_t index{};
-		while (!(admittanceMatrix.rowIndex.at(index) == admittanceMatrix.columnIndex.at(index) &&
-			admittanceMatrix.rowIndex.at(index) == busNumber2)) {
+		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
+			std::get<0>(admittanceMatrix.at(index)) == busNumber2)) {
 			index++;
 		}
-		admittanceMatrix.values.at(index) = admittanceMatrix.values.at(index) + y_sh / 2.0 + 1.0 / z_s;
+
+		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
 	}
 }
 
@@ -352,39 +346,32 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 
 	std::complex<double> z_s{ r, x }, y_sh{ g, -b };
 
-	admittanceMatrix.rowIndex.push_back(busNumber1);
-	admittanceMatrix.columnIndex.push_back(busNumber2);
-	admittanceMatrix.values.push_back(- n / z_s);
+	admittanceMatrix.push_back({ busNumber1, busNumber2, - n / z_s });
 
-	admittanceMatrix.rowIndex.push_back(busNumber2);
-	admittanceMatrix.columnIndex.push_back(busNumber1);
-	admittanceMatrix.values.push_back(- n / z_s);
-
+	admittanceMatrix.push_back({ busNumber2, busNumber1, - n / z_s });
 
 	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
-		admittanceMatrix.rowIndex.push_back(busNumber1);
-		admittanceMatrix.columnIndex.push_back(busNumber1);
-		admittanceMatrix.values.push_back(y_sh / 2.0 + 1.0 / z_s);
+		admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
 	} else {
 		int64_t index{};
-		while (!(admittanceMatrix.rowIndex.at(index) == admittanceMatrix.columnIndex.at(index) &&
-			admittanceMatrix.rowIndex.at(index) == busNumber1)) {
+		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
+			std::get<0>(admittanceMatrix.at(index)) == busNumber1)) {
 			index++;
 		}
-		admittanceMatrix.values.at(index) = admittanceMatrix.values.at(index) + y_sh / 2.0 + 1.0 / z_s;
+
+		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
 	}
 
 	if (!checkForConnectionBetweenToBuses(busNumber2, busNumber2)) {
-		admittanceMatrix.rowIndex.push_back(busNumber2);
-		admittanceMatrix.columnIndex.push_back(busNumber2);
-		admittanceMatrix.values.push_back((y_sh / 2.0 + 1.0 / z_s) * n * n);
+		admittanceMatrix.push_back({ busNumber2, busNumber2, (y_sh / 2.0 + 1.0 / z_s) * n * n });
 	} else {
 		int64_t index{};
-		while (!(admittanceMatrix.rowIndex.at(index) == admittanceMatrix.columnIndex.at(index) &&
-			admittanceMatrix.rowIndex.at(index) == busNumber2)) {
+		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
+			std::get<0>(admittanceMatrix.at(index)) == busNumber2)) {
 			index++;
 		}
-		admittanceMatrix.values.at(index) = admittanceMatrix.values.at(index) + (y_sh / 2.0 + 1.0 / z_s) * n * n;
+
+		std::get<2>(admittanceMatrix.at(index)) += (y_sh / 2.0 + 1.0 / z_s) * n * n;
 	}
 }
 
@@ -397,9 +384,9 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 /// <param name="busNumber2">0rdinal number of the second bus</param>
 /// <returns>True if there is a connection between buses and false otherwise</returns>
 bool SystemModel::SystemModel::checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const {
-	for (uint8_t i{}; i < admittanceMatrix.columnIndex.size(); i++) {
-		if ((admittanceMatrix.columnIndex.at(i) == busNumber1 && admittanceMatrix.rowIndex.at(i) == busNumber2) ||
-			(admittanceMatrix.rowIndex.at(i) == busNumber1 && admittanceMatrix.columnIndex.at(i) == busNumber2)) {
+	for (uint8_t i{}; i < admittanceMatrix.size(); i++) {
+		if ((std::get<1>(admittanceMatrix.at(i)) == busNumber1 && std::get<0>(admittanceMatrix.at(i)) == busNumber2) ||
+			(std::get<0>(admittanceMatrix.at(i)) == busNumber1 && std::get<1>(admittanceMatrix.at(i)) == busNumber2)) {
 			return true;
 		}
 	}
@@ -448,10 +435,11 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 			for (uint8_t j{ 1 }; j < systemModel.numberOfBuses + 1; j++) {
 				if (systemModel.checkForConnectionBetweenToBuses(i, j)) {
 					uint8_t k{};
-					while (!(systemModel.admittanceMatrix.rowIndex.at(k) == i && systemModel.admittanceMatrix.columnIndex.at(k) == j)) {
+					while (!(std::get<0>(systemModel.admittanceMatrix.at(k)) == i && std::get<1>(systemModel.admittanceMatrix.at(k)) == j)) {
 						k++;
 					}
-					stream << std::setw(20) << systemModel.admittanceMatrix.values.at(k) << " ";
+
+					stream << std::setw(20) << std::get<2>(systemModel.admittanceMatrix.at(k)) << " ";
 				} else {
 					stream << std::setw(20) << std::complex{ 0.0, 0.0 } << " ";
 				}
@@ -497,10 +485,11 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 	}
 
 	int64_t index{};
-	while (admittanceMatrix.rowIndex.at(index) != admittanceMatrix.columnIndex.at(index)) {
+	while (std::get<0>(admittanceMatrix.at(index)) != std::get<1>(admittanceMatrix.at(index))) {
 		index++;
 	}
-	admittanceMatrix.values.at(index) = admittanceMatrix.values.at(index) + admittance;
+
+	std::get<2>(admittanceMatrix.at(index)) += admittance;
 }
 
 
@@ -538,11 +527,11 @@ SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) con
 				for (uint8_t i{}; i < numberOfBuses; i++) {
 					uint8_t k{};
 					AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
-					while (!(admittanceMatrix.columnIndex.at(k) == i + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+					while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 						k++;
 					}
-					sum += v.at(i + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-						* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(i));;
+					sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+						* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));;
 				}
 
 				return v.at(busNumber - 1 + numberOfBuses) * sum - bus.getActivePower().value();
@@ -557,12 +546,12 @@ SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) con
 				for (uint8_t i{}; i < numberOfBuses; i++) {
 					uint8_t k{};
 					AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
-					while (!(admittanceMatrix.columnIndex.at(k) == i + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+					while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 						k++;
 					}
 
-					sum += v.at(i + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-						* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(i));
+					sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+						* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));
 				}
 
 				return v.at(busNumber - 1 + numberOfBuses) * sum + bus.getActivePower().value();
@@ -572,12 +561,12 @@ SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) con
 				for (uint8_t i{}; i < numberOfBuses; i++) {
 					uint8_t k{};
 					AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
-					while (!(admittanceMatrix.columnIndex.at(k) == i + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+					while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 						k++;
 					}
 
-					sum += v.at(i + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-						* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(i));
+					sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+						* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));
 				}
 
 				return v.at(busNumber - 1 + numberOfBuses) * sum + bus.getReactivePower().value();
@@ -636,12 +625,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 							}
 
 							uint8_t k{};
-							while (!(admittanceMatrix.columnIndex.at(k) == j + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 								k++;
 							}
 
-							sum += v.at(j + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-								* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(j));
+							sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+								* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 						}
 
 						return - v.at(busNumber - 1 + numberOfBuses) * sum;
@@ -652,12 +641,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
 						uint8_t k{};
-						while (!(admittanceMatrix.columnIndex.at(k) == i && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+						while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 							k++;
 						}
 
-						return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-							* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(i - 1));
+						return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+							* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
 					});
 				} else if (i == busNumber + numberOfBuses) {
 					// dfip/dvi
@@ -667,15 +656,15 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 
 						for (uint8_t j{}; j < numberOfBuses; j++) {
 							uint8_t k{};
-							while (!(admittanceMatrix.columnIndex.at(k) == j + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 								k++;
 							}
 							if (j + 1 == busNumber) {
-								sum += 2 * std::abs(admittanceMatrix.values.at(k)) * v.at(busNumber - 1 + numberOfBuses)
-									* std::cos(std::arg(admittanceMatrix.values.at(k)));
+								sum += 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
+									* std::cos(std::arg(std::get<2>(admittanceMatrix.at(k))));
 							} else {
-								sum += std::abs(admittanceMatrix.values.at(k)) * v.at(j + numberOfBuses)
-									* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(j));
+								sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
+									* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 							}
 						}
 
@@ -687,12 +676,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
 						uint8_t k{};
-						while (!(admittanceMatrix.columnIndex.at(k) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+						while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 							k++;
 						}
 
-						return v.at(busNumber - 1 + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-							* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
+						return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
 					});
 				}
 			}
@@ -716,12 +705,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 							}
 
 							uint8_t k{};
-							while (!(admittanceMatrix.columnIndex.at(k) == j + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 								k++;
 							}
 
-							sum += v.at(j + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-								* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(j));
+							sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+								* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 						}
 
 						return - v.at(busNumber - 1 + numberOfBuses) * sum;
@@ -732,12 +721,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
 						uint8_t k{};
-						while (!(admittanceMatrix.columnIndex.at(k) == i && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+						while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 							k++;
 						}
 
-						return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-							* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(i - 1));
+						return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+							* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
 					});
 				} else if (i == busNumber + numberOfBuses) {
 					// dfip/dvi
@@ -747,15 +736,15 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 
 						for (uint8_t j{}; j < numberOfBuses; j++) {
 							uint8_t k{};
-							while (!(admittanceMatrix.columnIndex.at(k) == j + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 								k++;
 							}
 							if (j + 1 == busNumber) {
-								sum += 2 * std::abs(admittanceMatrix.values.at(k)) * v.at(busNumber - 1 + numberOfBuses)
-									* std::cos(std::arg(admittanceMatrix.values.at(k)));
+								sum += 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
+									* std::cos(std::arg(std::get<2>(admittanceMatrix.at(k))));
 							} else {
-								sum += std::abs(admittanceMatrix.values.at(k)) * v.at(j + numberOfBuses)
-									* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(j));
+								sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
+									* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 							}
 						}
 
@@ -767,12 +756,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
 						uint8_t k{};
-						while (!(admittanceMatrix.columnIndex.at(k) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+						while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 							k++;
 						}
 
-						return v.at(busNumber - 1 + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-							* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
+						return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
 					});
 				}
 			}
@@ -789,12 +778,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 							}
 
 							uint8_t k{};
-							while (!(admittanceMatrix.columnIndex.at(k) == j + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 								k++;
 							}
 
-							sum += v.at(j + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-								* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(j));
+							sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+								* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 						}
 
 						return v.at(busNumber - 1 + numberOfBuses) * sum;
@@ -805,12 +794,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
 						uint8_t k{};
-						while (!(admittanceMatrix.columnIndex.at(k) == i && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+						while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 							k++;
 						}
 
-						return - v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-							* std::cos(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(i - 1));
+						return - v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
 					});
 				} else if (i == busNumber + numberOfBuses) {
 					// dfiq/dvi
@@ -820,15 +809,15 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 
 						for (uint8_t j{}; j < numberOfBuses; j++) {
 							uint8_t k{};
-							while (!(admittanceMatrix.columnIndex.at(k) == j + 1 && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 								k++;
 							}
 							if (j + 1 == busNumber) {
-								sum -= 2 * std::abs(admittanceMatrix.values.at(k)) * v.at(busNumber - 1 + numberOfBuses)
-									* std::sin(std::arg(admittanceMatrix.values.at(k)));
+								sum -= 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
+									* std::sin(std::arg(std::get<2>(admittanceMatrix.at(k))));
 							} else {
-								sum += std::abs(admittanceMatrix.values.at(k)) * v.at(j + numberOfBuses)
-									* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(j));
+								sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
+									* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 							}
 						}
 
@@ -840,12 +829,12 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
 						uint8_t k{};
-						while (!(admittanceMatrix.columnIndex.at(k) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && admittanceMatrix.rowIndex.at(k) == busNumber)) {
+						while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
 							k++;
 						}
 
-						return v.at(busNumber - 1 + numberOfBuses) * std::abs(admittanceMatrix.values.at(k))
-							* std::sin(v.at(busNumber - 1) - std::arg(admittanceMatrix.values.at(k)) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
+						return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+							* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
 					});
 				}
 			}

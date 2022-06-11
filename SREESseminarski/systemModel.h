@@ -4,6 +4,8 @@
 #include <optional>
 #include <functional>
 #include <utility>
+#include <tuple>
+
 
 
 namespace SystemModel {
@@ -15,19 +17,15 @@ namespace SystemModel {
 
 
 
+	using AdmittanceMatrix = std::vector<std::tuple<uint8_t, uint8_t, std::complex<double>>>;
+
+
+
 	enum class TypeOfBus { Slack, PV, PQ };
 
 
 
 	enum class ThreePhaseLoadConfigurationsType { Star, GroundedStar, Delta };
-
-
-
-	struct AdmittanceMatrix {
-		std::vector<uint8_t> columnIndex;
-		std::vector<uint8_t> rowIndex;
-		std::vector<std::complex<double>> values;
-	};
 
 
 
