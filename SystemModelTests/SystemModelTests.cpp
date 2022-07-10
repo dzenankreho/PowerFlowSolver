@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "../SREESseminarski/systemModel.cpp"  
+#include "../SREESseminarski/newtonRaphson.cpp"  
 
 const double eps{ 1e-10 };
 
@@ -301,6 +302,76 @@ namespace SystemModelTests {
 
 						}
 					}
+				}
+			}
+
+			TEST_METHOD(systemModelWithSolverTest) {
+				SystemModel::SystemModel systemModel{ 10 };
+
+				std::complex<double> v1{ 0.8, 0.6 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(std::abs(v1));
+				systemModel.getBus(1).setVoltagePhase(std::arg(v1));
+
+				systemModel.addBus(SystemModel::TypeOfBus::PV);
+				systemModel.getBus(2).setActivePower(3);
+				systemModel.getBus(2).setVoltageMagnitude(1.02);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(3).setActivePower(1.5);
+				systemModel.getBus(3).setReactivePower(0.8);
+
+				systemModel.addLine(1, 2, 0.05, 0.1, 0);
+				systemModel.addLine(1, 3, 0.025, 0.03, 0);
+				systemModel.addLine(2, 3, 0.02, 0.02, 0);
+
+				std::vector<double> x0{ 1, 1, 1,1.000000000000000, 1.020000000000000, 1 }, x(6);
+				double err;
+				int maxNumberOfIter = 50, iter;
+				newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iter);
+
+				for (int i{}; i < x.size() / 2; i++) {
+					x.at(i) *= 180 / (PI);
+				}
+
+				int i{};
+				for (double el : {36.8698976458, 42.0564436745, 39.4010787087, 1.0, 1.02, 0.9816686928}) {
+					Assert::AreEqual(el, x.at(i++), eps);
+				}
+			}
+
+			TEST_METHOD(systemModelWithSolverTest2) {
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(1).setActivePower(1.5);
+				systemModel.getBus(1).setReactivePower(0.6);
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(2).setVoltageMagnitude(1.02);
+				systemModel.getBus(2).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PV);
+				systemModel.getBus(3).setActivePower(1.8);
+				systemModel.getBus(3).setVoltageMagnitude(1);
+
+				systemModel.addLine(1, 2, 0.0028, 0.0281, 0.0071);
+				systemModel.addLine(1, 3, 0.003, 0.0304, 0.0066);
+				systemModel.addLine(2, 3, 0.0011, 0.0108, 0.0185);
+
+				std::vector<double> x0{ 0, 0, 0, 1.02, 1.02, 1 }, x(6);
+				double err;
+				int maxNumberOfIter = 50, iter;
+				newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iter);
+
+				for (int i{}; i < x.size() / 2; i++) {
+					x.at(i) *= 180 / (4 * std::atan(1));
+				}
+
+				int i{};
+				for (double el : { -0.872622603161, 0.0, 0.676001376542, 0.99931707839, 1.02, 1.0}) {
+					Assert::AreEqual(el, x.at(i++), eps);
 				}
 			}
 	};
