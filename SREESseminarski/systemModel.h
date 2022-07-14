@@ -62,48 +62,48 @@ namespace SystemModel {
 
 
 	class SystemModel {
-			AdmittanceMatrix admittanceMatrix;
-			uint8_t numberOfBuses{};
-			std::vector<Bus> buses;
-			const uint8_t maxNumberOfBuses;
-			bool checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const;
-		public:
-			SystemModel(uint8_t maxNumberOfBuses) : maxNumberOfBuses{ maxNumberOfBuses } {}
+		AdmittanceMatrix admittanceMatrix;
+		uint8_t numberOfBuses{};
+		std::vector<Bus> buses;
+		const uint8_t maxNumberOfBuses;
+		bool checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const;
+	public:
+		SystemModel(uint8_t maxNumberOfBuses) : maxNumberOfBuses{ maxNumberOfBuses } {}
 
-			AdmittanceMatrix getAdmittanceMatrix() const {
-				return admittanceMatrix;
-			}
+		AdmittanceMatrix getAdmittanceMatrix() const {
+			return admittanceMatrix;
+		}
 
-			uint8_t getNumberOfBuses() const {
-				return numberOfBuses;
-			}
+		uint8_t getNumberOfBuses() const {
+			return numberOfBuses;
+		}
 
-			Bus& getBus(uint8_t busNumber);
+		Bus& getBus(uint8_t busNumber);
 
-			void addBus(TypeOfBus typeOfBus);
+		void addBus(TypeOfBus typeOfBus);
 
-			void addLoad(uint8_t busNumber, double activePower, double reactivePower);
+		void addLoad(uint8_t busNumber, double activePower, double reactivePower);
 
-			void addLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b);
+		void addLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b);
 
-			friend std::ostream& operator <<(std::ostream& stream, const SystemModel& systemModel);
+		friend std::ostream& operator <<(std::ostream& stream, const SystemModel& systemModel);
 
-			void addGenerator(uint8_t busNumber, double voltageMagnitude, double activePower);
+		void addGenerator(uint8_t busNumber, double voltageMagnitude, double activePower);
 
-			void addSlackGenerator(uint8_t busNumber, double voltageMagnitude, double voltagePhase);
+		void addSlackGenerator(uint8_t busNumber, double voltageMagnitude, double voltagePhase);
 
-			bool hasSlackBeenAssigned() const;
+		bool hasSlackBeenAssigned() const;
 
-			void addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b, double n);
+		void addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
 
-			void addCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
+		void addCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
 
-			fi getBusFunctions(uint8_t busNumber) const;
+		fi getBusFunctions(uint8_t busNumber) const;
 
-			dfidx getDerivativesOfBusFunctions(uint8_t busNumber) const;
+		dfidx getDerivativesOfBusFunctions(uint8_t busNumber) const;
 	};
 
-	
+
 
 	std::ostream& operator <<(std::ostream& stream, const SystemModel& systemModel);
 }

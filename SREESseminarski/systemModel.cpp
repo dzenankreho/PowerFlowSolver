@@ -133,7 +133,7 @@ void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
 	if (numberOfBuses + 1 == maxNumberOfBuses) {
 		if (typeOfBus != TypeOfBus::Slack) {
 			bool slackFound{ false };
-			for (const Bus &bus : buses) {
+			for (const Bus& bus : buses) {
 				if (bus.getTypeOfBus() == TypeOfBus::Slack) {
 					slackFound = true;
 				}
@@ -144,7 +144,7 @@ void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
 			}
 		}
 	}
- 
+
 	if (typeOfBus == TypeOfBus::Slack && hasSlackBeenAssigned()) {
 		throw std::logic_error("There already exists a slack bus.");
 	}
@@ -222,7 +222,7 @@ void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, d
 		throw std::logic_error("Line or transformer already present between nodes.");
 	}
 
-	std::complex<double> z_s{ r, x }, y_sh{0, b};
+	std::complex<double> z_s{ r, x }, y_sh{ 0, b };
 
 	admittanceMatrix.push_back({ busNumber1, busNumber2, -1.0 / z_s });
 
@@ -309,8 +309,8 @@ void SystemModel::SystemModel::addSlackGenerator(uint8_t busNumber, double volta
 /// Check whether the slack bus has been assigned
 /// </summary>
 /// <returns>True if the slack bus has been assigned and false otherwise</returns>
-bool SystemModel::SystemModel::hasSlackBeenAssigned() const  {
-	for (const Bus &bus : buses) {
+bool SystemModel::SystemModel::hasSlackBeenAssigned() const {
+	for (const Bus& bus : buses) {
 		if (bus.getTypeOfBus() == TypeOfBus::Slack) {
 			return true;
 		}
@@ -330,8 +330,7 @@ bool SystemModel::SystemModel::hasSlackBeenAssigned() const  {
 /// <param name="x">Series reactance of the transformer PI equivalent</param>
 /// <param name="g">Shunt conductance of the transformer PI equivalent</param>
 /// <param name="b">Shunt susceptance of the transformer PI equivalent</param>
-/// <param name="n">Transformer turns ratio</param>
-void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b, double n) {
+void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b) {
 	if (busNumber1 > buses.size() || busNumber1 == 0) {
 		throw std::out_of_range("Invalid bus number 1.");
 	}
@@ -344,11 +343,13 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 		throw std::logic_error("Line or transformer already present between nodes.");
 	}
 
+	double n{ 1.0 };
+
 	std::complex<double> z_s{ r, x }, y_sh{ g, -b };
 
-	admittanceMatrix.push_back({ busNumber1, busNumber2, - n / z_s });
+	admittanceMatrix.push_back({ busNumber1, busNumber2, -n / z_s });
 
-	admittanceMatrix.push_back({ busNumber2, busNumber1, - n / z_s });
+	admittanceMatrix.push_back({ busNumber2, busNumber1, -n / z_s });
 
 	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
 		admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
@@ -415,16 +416,16 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 
 			switch (systemModel.buses.at(i).getTypeOfBus()) {
 				case TypeOfBus::Slack:
-						stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
-						stream << "\t\tVoltage phase: " << systemModel.buses.at(i).getVoltagePhase().value() << std::endl;
+					stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
+					stream << "\t\tVoltage phase: " << systemModel.buses.at(i).getVoltagePhase().value() << std::endl;
 					break;
 				case TypeOfBus::PV:
-						stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
-						stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
+					stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
+					stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
 					break;
 				case TypeOfBus::PQ:
-						stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
-						stream << "\t\tReactive power: " << systemModel.buses.at(i).getReactivePower().value() << std::endl;
+					stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
+					stream << "\t\tReactive power: " << systemModel.buses.at(i).getReactivePower().value() << std::endl;
 					break;
 			}
 		}
@@ -470,11 +471,11 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 		throw std::logic_error("Cannot add capacitor bank to slack bus.");
 	}
 
-	std::complex<double> admittance{0, 0};
+	std::complex<double> admittance{ 0, 0 };
 
 	switch (configurationType) {
 		case ThreePhaseLoadConfigurationsType::Delta:
-			admittance = {0, 3 * 2 * PI * 50 * c};
+			admittance = { 0, 3 * 2 * PI * 50 * c };
 			break;
 		case ThreePhaseLoadConfigurationsType::Star:
 			admittance = { 0, 2 * PI * 50 * c };
@@ -600,7 +601,7 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 
 	switch (bus.getTypeOfBus()) {
 		case TypeOfBus::Slack:
-			for (uint8_t i{1}; i < 2 * numberOfBuses + 1; i++) {
+			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
 				dfipdx.push_back([i, busNumber](std::vector<double> v) -> double {
 					return i == busNumber;
 				});
@@ -633,7 +634,7 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 								* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 						}
 
-						return - v.at(busNumber - 1 + numberOfBuses) * sum;
+						return -v.at(busNumber - 1 + numberOfBuses) * sum;
 					});
 				} else if (i <= numberOfBuses) {
 					// dfip/dfj
@@ -713,7 +714,7 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 								* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
 						}
 
-						return - v.at(busNumber - 1 + numberOfBuses) * sum;
+						return -v.at(busNumber - 1 + numberOfBuses) * sum;
 					});
 				} else if (i <= numberOfBuses) {
 					// dfip/dfj
@@ -798,7 +799,7 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 							k++;
 						}
 
-						return - v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+						return -v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
 							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
 					});
 				} else if (i == busNumber + numberOfBuses) {

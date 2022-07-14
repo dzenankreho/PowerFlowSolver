@@ -133,7 +133,7 @@ namespace SystemModelTests {
 				systemModel.getBus(3).setReactivePower(1.36);
 
 				systemModel.addLine(1, 2, 0.1, 0.2, 3.0);
-				systemModel.addTransformer(1, 3, 0.4, 0.5, 10.0, 3.0, 1.5);
+				systemModel.addTransformer(1, 3, 0.4, 0.5, 10.0, 3.0);
 
 				stringStream << systemModel;
 
@@ -148,7 +148,7 @@ namespace SystemModelTests {
 					output += tmp;
 				}
 
-				Assert::AreEqual("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-1.46341,1.82927) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-1.46341,1.82927)                (0,0)    (13.4451,-6.1189) \n",
+				Assert::AreEqual("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-0.97561,1.21951) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-0.97561,1.21951)                (0,0)   (5.97561,-2.71951) \n",
 					output.c_str());
 			}
 
