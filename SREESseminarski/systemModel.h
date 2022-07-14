@@ -67,6 +67,11 @@ namespace SystemModel {
 		std::vector<Bus> buses;
 		const uint8_t maxNumberOfBuses;
 		bool checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const;
+		std::vector<std::tuple<uint8_t, uint8_t, double, double, double, double>> branches;
+		void addBranchToAdmittanceMatrix(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
+		std::vector<std::tuple<uint8_t, double, ThreePhaseLoadConfigurationsType>> capacitorBanks;
+		void addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
+		void recalculateAdmittanceMatrix();
 	public:
 		SystemModel(uint8_t maxNumberOfBuses) : maxNumberOfBuses{ maxNumberOfBuses } {}
 
@@ -101,6 +106,12 @@ namespace SystemModel {
 		fi getBusFunctions(uint8_t busNumber) const;
 
 		dfidx getDerivativesOfBusFunctions(uint8_t busNumber) const;
+
+		void removeBranch(uint8_t busNumber1, uint8_t busNumber2);
+
+		void changeLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b);
+
+		void changeTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
 	};
 
 

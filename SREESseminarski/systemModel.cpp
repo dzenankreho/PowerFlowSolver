@@ -222,35 +222,9 @@ void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, d
 		throw std::logic_error("Line or transformer already present between nodes.");
 	}
 
-	std::complex<double> z_s{ r, x }, y_sh{ 0, b };
+	branches.push_back({ busNumber1, busNumber2, r, x, 0, b });
 
-	admittanceMatrix.push_back({ busNumber1, busNumber2, -1.0 / z_s });
-
-	admittanceMatrix.push_back({ busNumber2, busNumber1, -1.0 / z_s });
-
-	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
-		admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
-	} else {
-		int64_t index{};
-		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
-			std::get<0>(admittanceMatrix.at(index)) == busNumber1)) {
-			index++;
-		}
-
-		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
-	}
-
-	if (!checkForConnectionBetweenToBuses(busNumber2, busNumber2)) {
-		admittanceMatrix.push_back({ busNumber2, busNumber2, y_sh / 2.0 + 1.0 / z_s });
-	} else {
-		int64_t index{};
-		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
-			std::get<0>(admittanceMatrix.at(index)) == busNumber2)) {
-			index++;
-		}
-
-		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
-	}
+	addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, 0, b);
 }
 
 
@@ -343,13 +317,40 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 		throw std::logic_error("Line or transformer already present between nodes.");
 	}
 
-	double n{ 1.0 };
+	branches.push_back({ busNumber1, busNumber2, r, x, g, -b });
 
-	std::complex<double> z_s{ r, x }, y_sh{ g, -b };
+	addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, g, -b);
+}
 
-	admittanceMatrix.push_back({ busNumber1, busNumber2, -n / z_s });
 
-	admittanceMatrix.push_back({ busNumber2, busNumber1, -n / z_s });
+
+/// <summary>
+/// Adds a line or transformer to admittance matrix
+/// </summary>
+/// <param name="busNumber1">0rdinal number of the first bus</param>
+/// <param name="busNumber2">0rdinal number of the second bus</param>
+/// <param name="r">Series resistance of the PI equivalent</param>
+/// <param name="x">Series reactance of the PI equivalent</param>
+/// <param name="g">Shunt conductance of the PI equivalent</param>
+/// <param name="b">Shunt susceptance of the PI equivalent</param>
+void SystemModel::SystemModel::addBranchToAdmittanceMatrix(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b) {
+	if (busNumber1 > buses.size() || busNumber1 == 0) {
+		throw std::out_of_range("Invalid bus number 1.");
+	}
+
+	if (busNumber2 > buses.size() || busNumber2 == 0) {
+		throw std::out_of_range("Invalid bus number 2.");
+	}
+
+	if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+		throw std::logic_error("Line or transformer already present between nodes.");
+	}
+
+	std::complex<double> z_s{ r, x }, y_sh{ g, b };
+
+	admittanceMatrix.push_back({ busNumber1, busNumber2, -1.0 / z_s });
+
+	admittanceMatrix.push_back({ busNumber2, busNumber1, -1.0 / z_s });
 
 	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
 		admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
@@ -364,7 +365,7 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 	}
 
 	if (!checkForConnectionBetweenToBuses(busNumber2, busNumber2)) {
-		admittanceMatrix.push_back({ busNumber2, busNumber2, (y_sh / 2.0 + 1.0 / z_s) * n * n });
+		admittanceMatrix.push_back({ busNumber2, busNumber2, y_sh / 2.0 + 1.0 / z_s });
 	} else {
 		int64_t index{};
 		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
@@ -372,7 +373,7 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 			index++;
 		}
 
-		std::get<2>(admittanceMatrix.at(index)) += (y_sh / 2.0 + 1.0 / z_s) * n * n;
+		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
 	}
 }
 
@@ -463,6 +464,28 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 /// <param name="c">One phase capacitance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
 void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
+	if (busNumber > buses.size() || busNumber == 0) {
+		throw std::out_of_range("Invalid bus number.");
+	}
+
+	if (buses.at(busNumber - 1).getTypeOfBus() == TypeOfBus::Slack) {
+		throw std::logic_error("Cannot add capacitor bank to slack bus.");
+	}
+
+	capacitorBanks.push_back({ busNumber, c, configurationType });
+
+	addCapacitorBankToAdmittanceMatrix(busNumber, c, configurationType);
+}
+
+
+
+/// <summary>
+/// Adds a capacitor bank to admittance matrix
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <param name="c">One phase capacitance of the bank</param>
+/// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
+void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
 	}
@@ -843,4 +866,133 @@ SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_
 	}
 
 	return { dfipdx, dfiqdx };
+}
+
+
+
+/// <summary>
+/// Recalculates the admittance matrix using current values of branches and capacitorBanks 
+/// </summary>
+void SystemModel::SystemModel::recalculateAdmittanceMatrix() {
+	admittanceMatrix.clear();
+
+	for (const auto& branch : branches) {
+		addBranchToAdmittanceMatrix(std::get<0>(branch), std::get<1>(branch), std::get<2>(branch),
+			std::get<3>(branch), std::get<4>(branch), std::get<5>(branch));
+	}
+
+	for (const auto& capacitorBank : capacitorBanks) {
+		addCapacitorBankToAdmittanceMatrix(std::get<0>(capacitorBank), std::get<1>(capacitorBank), std::get<2>(capacitorBank));
+	}
+}
+
+
+
+/// <summary>
+/// Removes a line or transformer between buses
+/// </summary>
+/// <param name="busNumber1">0rdinal number of the first bus</param>
+/// <param name="busNumber2">0rdinal number of the second bus</param>
+void SystemModel::SystemModel::removeBranch(uint8_t busNumber1, uint8_t busNumber2) {
+	if (busNumber1 > buses.size() || busNumber1 == 0) {
+		throw std::out_of_range("Invalid bus number 1.");
+	}
+
+	if (busNumber2 > buses.size() || busNumber2 == 0) {
+		throw std::out_of_range("Invalid bus number 2.");
+	}
+
+	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+		throw std::logic_error("Line or transformer not present between nodes.");
+	}
+
+	for (size_t i{}; i < branches.size(); i++) {
+		if ((std::get<0>(branches.at(i)) == busNumber1 && std::get<1>(branches.at(i)) == busNumber2) ||
+			(std::get<0>(branches.at(i)) == busNumber2 && std::get<1>(branches.at(i)) == busNumber1)) {
+			branches.erase(branches.begin() + i, branches.begin() + i + 1);
+			break;
+		}
+	}
+
+	recalculateAdmittanceMatrix();
+}
+
+
+
+/// <summary>
+///	Changes the parameters of the line between buses
+/// </summary>
+/// <param name="busNumber1">Ordinal number of the first bus</param>
+/// <param name="busNumber2">Ordinal number of the second bus</param>
+/// <param name="r">Series resistance of the transmission line PI equivalent</param>
+/// <param name="x">Series reactance of the transmission line PI equivalent</param>
+/// <param name="b">Shunt susceptance of the transmission line PI equivalent</param>
+void SystemModel::SystemModel::changeLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b) {
+	if (busNumber1 > buses.size() || busNumber1 == 0) {
+		throw std::out_of_range("Invalid bus number 1.");
+	}
+
+	if (busNumber2 > buses.size() || busNumber2 == 0) {
+		throw std::out_of_range("Invalid bus number 2.");
+	}
+
+	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+		throw std::logic_error("Line or transformer not present between nodes.");
+	}
+
+	for (auto& line : branches) {
+		if ((std::get<0>(line) == busNumber1 && std::get<1>(line) == busNumber2) ||
+			(std::get<0>(line) == busNumber2 && std::get<1>(line) == busNumber1)) {
+			if ((std::get<5>(line) < 0)) {
+				throw std::logic_error("Not a line but a transformer present between nodes.");
+			}
+
+			std::get<2>(line) = r;
+			std::get<3>(line) = x;
+			std::get<5>(line) = b;
+		}
+	}
+
+	recalculateAdmittanceMatrix();
+}
+
+
+
+/// <summary>
+/// Changes the parameters of the transformer between buses
+/// </summary>
+/// <param name="busNumber1">0rdinal number of the first bus</param>
+/// <param name="busNumber2">0rdinal number of the second bus</param>
+/// <param name="r">Series resistance of the transformer PI equivalent</param>
+/// <param name="x">Series reactance of the transformer PI equivalent</param>
+/// <param name="g">Shunt conductance of the transformer PI equivalent</param>
+/// <param name="b">Shunt susceptance of the transformer PI equivalent</param>
+void SystemModel::SystemModel::changeTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b) {
+	if (busNumber1 > buses.size() || busNumber1 == 0) {
+		throw std::out_of_range("Invalid bus number 1.");
+	}
+
+	if (busNumber2 > buses.size() || busNumber2 == 0) {
+		throw std::out_of_range("Invalid bus number 2.");
+	}
+
+	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+		throw std::logic_error("Line or transformer not present between nodes.");
+	}
+
+	for (auto& xfmr : branches) {
+		if ((std::get<0>(xfmr) == busNumber1 && std::get<1>(xfmr) == busNumber2) ||
+			(std::get<0>(xfmr) == busNumber2 && std::get<1>(xfmr) == busNumber1)) {
+			if ((std::get<5>(xfmr) > 0)) {
+				throw std::logic_error("Not a transformer but a line present between nodes.");
+			}
+
+			std::get<2>(xfmr) = r;
+			std::get<3>(xfmr) = x;
+			std::get<4>(xfmr) = g;
+			std::get<5>(xfmr) = -b;
+		}
+	}
+
+	recalculateAdmittanceMatrix();
 }

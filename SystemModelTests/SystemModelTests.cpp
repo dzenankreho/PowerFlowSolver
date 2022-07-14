@@ -374,5 +374,137 @@ namespace SystemModelTests {
 					Assert::AreEqual(el, x.at(i++), eps);
 				}
 			}
+
+			TEST_METHOD(removeBranchTest) {
+				std::stringstream stringStream;
+
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(1);
+				systemModel.getBus(1).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(2).setActivePower(1.01);
+				systemModel.getBus(2).setReactivePower(1.03);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(3).setActivePower(1.25);
+				systemModel.getBus(3).setReactivePower(1.36);
+
+				systemModel.addLine(1, 2, 0.1, 0.2, 3.0);
+
+				stringStream << systemModel;
+
+				systemModel.addTransformer(1, 3, 0.4, 0.5, 10.0, 3.0);
+
+				stringStream << systemModel;
+
+				systemModel.removeBranch(3, 1);
+
+				stringStream << systemModel;
+
+				systemModel.removeBranch(1, 2);
+
+				stringStream << systemModel;
+
+				std::string output;
+
+				while (stringStream) {
+					if (!output.empty()) {
+						output += "\n";
+					}
+					std::string tmp;
+					std::getline(stringStream, tmp);
+					output += tmp;
+				}
+				
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4)                (0,0) \n              (-2,4)             (2,-2.5)                (0,0) \n               (0,0)                (0,0)                (0,0) \n" };
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-0.97561,1.21951) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-0.97561,1.21951)                (0,0)   (5.97561,-2.71951) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4)                (0,0) \n              (-2,4)             (2,-2.5)                (0,0) \n               (0,0)                (0,0)                (0,0) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n               (0,0)                (0,0)                (0,0) \n               (0,0)                (0,0)                (0,0) \n               (0,0)                (0,0)                (0,0) \n");
+
+				Assert::AreEqual(expected.c_str(), output.c_str());
+			}
+
+			TEST_METHOD(changeLineTest) {
+				std::stringstream stringStream;
+
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(1);
+				systemModel.getBus(1).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(2).setActivePower(1.01);
+				systemModel.getBus(2).setReactivePower(1.03);
+
+				systemModel.addLine(1, 2, 0.1, 0.2, 3.0);
+				stringStream << systemModel;
+
+				systemModel.changeLine(1, 2, 0.4, 0.1, 5.0);
+				stringStream << systemModel;
+
+				systemModel.changeLine(2, 1, 0.1, 0.2, 3.0);
+				stringStream << systemModel;
+
+				std::string output;
+
+				while (stringStream) {
+					if (!output.empty()) {
+						output += "\n";
+					}
+					std::string tmp;
+					std::getline(stringStream, tmp);
+					output += tmp;
+				}
+
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n   (2.35294,1.91176)  (-2.35294,0.588235) \n (-2.35294,0.588235)    (2.35294,1.91176) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n");
+
+				Assert::AreEqual(expected.c_str(), output.c_str());
+			}
+
+			TEST_METHOD(changeTransformerTest) {
+				std::stringstream stringStream;
+
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(1);
+				systemModel.getBus(1).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(2).setActivePower(1.01);
+				systemModel.getBus(2).setReactivePower(1.03);
+
+				systemModel.addTransformer(1, 2, 0.4, 0.5, 10.0, 3.0);
+				stringStream << systemModel;
+
+				systemModel.changeTransformer(1, 2, 0.2, 1.0, 15.0, 5.0);
+				stringStream << systemModel;
+
+				systemModel.changeTransformer(2, 1, 0.4, 0.5, 10.0, 3.0);
+				stringStream << systemModel;
+
+				std::string output;
+
+				while (stringStream) {
+					if (!output.empty()) {
+						output += "\n";
+					}
+					std::string tmp;
+					std::getline(stringStream, tmp);
+					output += tmp;
+				}
+
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n  (5.97561,-2.71951)   (-0.97561,1.21951) \n  (-0.97561,1.21951)   (5.97561,-2.71951) \n" };
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n  (7.69231,-3.46154) (-0.192308,0.961538) \n(-0.192308,0.961538)   (7.69231,-3.46154) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n  (5.97561,-2.71951)   (-0.97561,1.21951) \n  (-0.97561,1.21951)   (5.97561,-2.71951) \n");
+
+				Assert::AreEqual(expected.c_str(), output.c_str());
+			}
 	};
 }
