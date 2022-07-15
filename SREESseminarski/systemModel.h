@@ -130,6 +130,10 @@ namespace SystemModel {
 		void removeCapacitorBank(uint8_t busNumber);
 
 		void changeCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
+
+		std::vector<std::tuple<uint8_t, double, ThreePhaseLoadConfigurationsType>> getCapacitorBanks() const {
+			return capacitorBanks;
+		}
 	};
 
 
