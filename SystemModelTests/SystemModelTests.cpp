@@ -506,5 +506,130 @@ namespace SystemModelTests {
 
 				Assert::AreEqual(expected.c_str(), output.c_str());
 			}
+
+			TEST_METHOD(addCapacitorBankTest) {
+				std::stringstream stringStream;
+
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(1);
+				systemModel.getBus(1).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(2).setActivePower(1.01);
+				systemModel.getBus(2).setReactivePower(1.03);
+
+				systemModel.addLine(1, 2, 0.1, 0.2, 3.0);
+
+				stringStream << systemModel;
+
+				systemModel.addCapacitorBank(1, 1 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+
+				stringStream << systemModel;
+
+				std::string output;
+
+				while (stringStream) {
+					if (!output.empty()) {
+						output += "\n";
+					}
+					std::string tmp;
+					std::getline(stringStream, tmp);
+					output += tmp;
+				}
+
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+
+
+				Assert::AreEqual(expected.c_str(), output.c_str());
+			}
+
+			TEST_METHOD(changeCapacitorBankTest) {
+				std::stringstream stringStream;
+
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(1);
+				systemModel.getBus(1).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(2).setActivePower(1.01);
+				systemModel.getBus(2).setReactivePower(1.03);
+
+				systemModel.addLine(1, 2, 0.1, 0.2, 3.0);
+
+				stringStream << systemModel;
+
+				systemModel.addCapacitorBank(1, 1 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+
+				stringStream << systemModel;
+
+				systemModel.changeCapacitorBank(1, 2 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+
+				stringStream << systemModel;
+
+				std::string output;
+
+				while (stringStream) {
+					if (!output.empty()) {
+						output += "\n";
+					}
+					std::string tmp;
+					std::getline(stringStream, tmp);
+					output += tmp;
+				}
+
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,3.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+
+				Assert::AreEqual(expected.c_str(), output.c_str());
+			}
+
+			TEST_METHOD(removeCapacitorBankTest) {
+				std::stringstream stringStream;
+
+				SystemModel::SystemModel systemModel{ 10 };
+
+				systemModel.addBus(SystemModel::TypeOfBus::Slack);
+				systemModel.getBus(1).setVoltageMagnitude(1);
+				systemModel.getBus(1).setVoltagePhase(0);
+
+				systemModel.addBus(SystemModel::TypeOfBus::PQ);
+				systemModel.getBus(2).setActivePower(1.01);
+				systemModel.getBus(2).setReactivePower(1.03);
+
+				systemModel.addLine(1, 2, 0.1, 0.2, 3.0);
+
+				stringStream << systemModel;
+
+				systemModel.addCapacitorBank(1, 1 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+
+				stringStream << systemModel;
+
+				systemModel.removeCapacitorBank(1);
+
+				stringStream << systemModel;
+
+				std::string output;
+
+				while (stringStream) {
+					if (!output.empty()) {
+						output += "\n";
+					}
+					std::string tmp;
+					std::getline(stringStream, tmp);
+					output += tmp;
+				}
+
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+
+				Assert::AreEqual(expected.c_str(), output.c_str());
+			}
 	};
 }

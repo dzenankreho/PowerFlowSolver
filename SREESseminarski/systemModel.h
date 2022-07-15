@@ -124,6 +124,12 @@ namespace SystemModel {
 		std::vector<Branch> getBranches() const {
 			return branches;
 		}
+
+		void removeBus(uint8_t busNumber);
+
+		void removeCapacitorBank(uint8_t busNumber);
+
+		void changeCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
 	};
 
 

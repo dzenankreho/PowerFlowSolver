@@ -468,10 +468,6 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 		throw std::out_of_range("Invalid bus number.");
 	}
 
-	if (buses.at(busNumber - 1).getTypeOfBus() == TypeOfBus::Slack) {
-		throw std::logic_error("Cannot add capacitor bank to slack bus.");
-	}
-
 	capacitorBanks.push_back({ busNumber, c, configurationType });
 
 	addCapacitorBankToAdmittanceMatrix(busNumber, c, configurationType);
@@ -488,10 +484,6 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
-	}
-
-	if (buses.at(busNumber - 1).getTypeOfBus() == TypeOfBus::Slack) {
-		throw std::logic_error("Cannot add capacitor bank to slack bus.");
 	}
 
 	std::complex<double> admittance{ 0, 0 };
@@ -993,6 +985,97 @@ void SystemModel::SystemModel::changeTransformer(uint8_t busNumber1, uint8_t bus
 			std::get<6>(xfmr) = -b;
 		}
 	}
+
+	recalculateAdmittanceMatrix();
+}
+
+
+
+/// <summary>
+/// Removes the given bus from the system
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+void SystemModel::SystemModel::removeBus(uint8_t busNumber) {
+	if (busNumber == 0) {
+		throw std::logic_error("Invalid bus number.");
+	}
+
+	try {
+		buses.at(busNumber - 1);
+	} catch (...) {
+		throw std::logic_error("Invalid bus number.");
+	}
+
+	buses.erase(buses.begin() + busNumber, buses.begin() + busNumber + 1);
+
+	for (size_t i{}; i < branches.size(); ) {
+		if (std::get<1>(branches.at(i)) == busNumber || std::get<2>(branches.at(i)) == busNumber) {
+			branches.erase(branches.begin() + i, branches.begin() + i + 1);
+			continue;
+		}
+		i++;
+	}
+
+
+	for (size_t i{}; i < admittanceMatrix.size(); ) {
+		if (std::get<0>(admittanceMatrix.at(i)) == busNumber || std::get<1>(admittanceMatrix.at(i)) == busNumber) {
+			admittanceMatrix.erase(admittanceMatrix.begin() + i, admittanceMatrix.begin() + i + 1);
+			continue;
+		}
+		i++;
+	}
+
+	try {
+		removeCapacitorBank(busNumber);
+	} catch (std::logic_error) {
+		recalculateAdmittanceMatrix();
+	}
+}
+
+
+
+/// <summary>
+/// Removes the capacitor bank that is connected to the given bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+void SystemModel::SystemModel::removeCapacitorBank(uint8_t busNumber) {
+	if (busNumber > buses.size() || busNumber == 0) {
+		throw std::out_of_range("Invalid bus number.");
+	}
+
+	auto it{ std::find_if(capacitorBanks.begin(), capacitorBanks.end(),
+		[busNumber](const auto& capBank) { return std::get<0>(capBank) == busNumber; }) };
+
+	if (it == capacitorBanks.end()) {
+		throw std::logic_error("Capacitor bank not connected to bus");
+	}
+
+	capacitorBanks.erase(it, it + 1);
+
+	recalculateAdmittanceMatrix();
+}
+
+
+
+/// <summary>
+/// Changes the parameters of the capacitor bank connected to the given bus
+/// </summary>
+/// <param name="busNumber">Ordinal number of the desired bus</param>
+/// <param name="c">One phase capacitance of the bank</param>
+/// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
+void SystemModel::SystemModel::changeCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
+	if (busNumber > buses.size() || busNumber == 0) {
+		throw std::out_of_range("Invalid bus number.");
+	}
+
+	auto it{ std::find_if(capacitorBanks.begin(), capacitorBanks.end(),
+		[busNumber](const auto& capBank) { return std::get<0>(capBank) == busNumber; }) };
+	
+	if (it == capacitorBanks.end()) {
+		throw std::logic_error("Capacitor bank not connected to bus");
+	}
+
+	*it = { busNumber, c, configurationType };
 
 	recalculateAdmittanceMatrix();
 }
