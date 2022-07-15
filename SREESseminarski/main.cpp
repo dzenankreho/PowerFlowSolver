@@ -1,6 +1,7 @@
 #include <iostream>
 #include "systemModel.h"
 #include "newtonRaphson.h"
+#include "export.h"
 
 const double eps{ 1e-10 };
 
@@ -38,5 +39,7 @@ int main() {
 	double err;
 	int maxNumberOfIter = 50,iter;
 	newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iter);
+	exportToLatex(systemModel); 
+	exportToHTML(systemModel);
 	return 0;
 }
