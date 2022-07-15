@@ -9,6 +9,18 @@
 
 
 namespace SystemModel {
+	enum class TypeOfBus { Slack, PV, PQ };
+
+
+
+	enum class ThreePhaseLoadConfigurationsType { Star, GroundedStar, Delta };
+	
+
+
+	enum class TypeOfBranch { Line, Transformer };
+
+
+
 	using fi = std::pair<std::function<double(std::vector<double>)>, std::function<double(std::vector<double>)>>;
 
 
@@ -21,11 +33,7 @@ namespace SystemModel {
 
 
 
-	enum class TypeOfBus { Slack, PV, PQ };
-
-
-
-	enum class ThreePhaseLoadConfigurationsType { Star, GroundedStar, Delta };
+	using Branch = std::tuple<TypeOfBranch, uint8_t, uint8_t, double, double, double, double>;
 
 
 
@@ -67,7 +75,7 @@ namespace SystemModel {
 		std::vector<Bus> buses;
 		const uint8_t maxNumberOfBuses;
 		bool checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const;
-		std::vector<std::tuple<uint8_t, uint8_t, double, double, double, double>> branches;
+		std::vector<Branch> branches;
 		void addBranchToAdmittanceMatrix(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
 		std::vector<std::tuple<uint8_t, double, ThreePhaseLoadConfigurationsType>> capacitorBanks;
 		void addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
@@ -112,6 +120,10 @@ namespace SystemModel {
 		void changeLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b);
 
 		void changeTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
+
+		std::vector<Branch> getBranches() const {
+			return branches;
+		}
 	};
 
 

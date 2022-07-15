@@ -222,7 +222,7 @@ void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, d
 		throw std::logic_error("Line or transformer already present between nodes.");
 	}
 
-	branches.push_back({ busNumber1, busNumber2, r, x, 0, b });
+	branches.push_back({ TypeOfBranch::Line, busNumber1, busNumber2, r, x, 0, b });
 
 	addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, 0, b);
 }
@@ -317,7 +317,7 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 		throw std::logic_error("Line or transformer already present between nodes.");
 	}
 
-	branches.push_back({ busNumber1, busNumber2, r, x, g, -b });
+	branches.push_back({ TypeOfBranch::Transformer, busNumber1, busNumber2, r, x, g, -b });
 
 	addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, g, -b);
 }
@@ -877,8 +877,8 @@ void SystemModel::SystemModel::recalculateAdmittanceMatrix() {
 	admittanceMatrix.clear();
 
 	for (const auto& branch : branches) {
-		addBranchToAdmittanceMatrix(std::get<0>(branch), std::get<1>(branch), std::get<2>(branch),
-			std::get<3>(branch), std::get<4>(branch), std::get<5>(branch));
+		addBranchToAdmittanceMatrix(std::get<1>(branch), std::get<2>(branch), std::get<3>(branch),
+			std::get<4>(branch), std::get<5>(branch), std::get<6>(branch));
 	}
 
 	for (const auto& capacitorBank : capacitorBanks) {
@@ -907,8 +907,8 @@ void SystemModel::SystemModel::removeBranch(uint8_t busNumber1, uint8_t busNumbe
 	}
 
 	for (size_t i{}; i < branches.size(); i++) {
-		if ((std::get<0>(branches.at(i)) == busNumber1 && std::get<1>(branches.at(i)) == busNumber2) ||
-			(std::get<0>(branches.at(i)) == busNumber2 && std::get<1>(branches.at(i)) == busNumber1)) {
+		if ((std::get<1>(branches.at(i)) == busNumber1 && std::get<2>(branches.at(i)) == busNumber2) ||
+			(std::get<1>(branches.at(i)) == busNumber2 && std::get<2>(branches.at(i)) == busNumber1)) {
 			branches.erase(branches.begin() + i, branches.begin() + i + 1);
 			break;
 		}
@@ -941,15 +941,15 @@ void SystemModel::SystemModel::changeLine(uint8_t busNumber1, uint8_t busNumber2
 	}
 
 	for (auto& line : branches) {
-		if ((std::get<0>(line) == busNumber1 && std::get<1>(line) == busNumber2) ||
-			(std::get<0>(line) == busNumber2 && std::get<1>(line) == busNumber1)) {
-			if ((std::get<5>(line) < 0)) {
+		if ((std::get<1>(line) == busNumber1 && std::get<2>(line) == busNumber2) ||
+			(std::get<1>(line) == busNumber2 && std::get<2>(line) == busNumber1)) {
+			if ((std::get<0>(line) == TypeOfBranch::Transformer)) {
 				throw std::logic_error("Not a line but a transformer present between nodes.");
 			}
 
-			std::get<2>(line) = r;
-			std::get<3>(line) = x;
-			std::get<5>(line) = b;
+			std::get<3>(line) = r;
+			std::get<4>(line) = x;
+			std::get<6>(line) = b;
 		}
 	}
 
@@ -981,16 +981,16 @@ void SystemModel::SystemModel::changeTransformer(uint8_t busNumber1, uint8_t bus
 	}
 
 	for (auto& xfmr : branches) {
-		if ((std::get<0>(xfmr) == busNumber1 && std::get<1>(xfmr) == busNumber2) ||
-			(std::get<0>(xfmr) == busNumber2 && std::get<1>(xfmr) == busNumber1)) {
-			if ((std::get<5>(xfmr) > 0)) {
+		if ((std::get<1>(xfmr) == busNumber1 && std::get<2>(xfmr) == busNumber2) ||
+			(std::get<1>(xfmr) == busNumber2 && std::get<2>(xfmr) == busNumber1)) {
+			if ((std::get<0>(xfmr) == TypeOfBranch::Line)) {
 				throw std::logic_error("Not a transformer but a line present between nodes.");
 			}
 
-			std::get<2>(xfmr) = r;
-			std::get<3>(xfmr) = x;
-			std::get<4>(xfmr) = g;
-			std::get<5>(xfmr) = -b;
+			std::get<3>(xfmr) = r;
+			std::get<4>(xfmr) = x;
+			std::get<5>(xfmr) = g;
+			std::get<6>(xfmr) = -b;
 		}
 	}
 
