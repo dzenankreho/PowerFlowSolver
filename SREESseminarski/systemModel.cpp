@@ -1030,6 +1030,8 @@ void SystemModel::SystemModel::removeBus(uint8_t busNumber) {
 	} catch (std::logic_error) {
 		recalculateAdmittanceMatrix();
 	}
+
+	numberOfBuses--;
 }
 
 
