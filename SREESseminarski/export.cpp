@@ -19,6 +19,7 @@ void exportToLatex(SystemModel::SystemModel s) {
     myfile << "\\usepackage{multirow}" << std::endl;
     myfile << "\\usepackage{tabularx}" << std::endl;
     myfile << "\\usepackage{float}" << std::endl;
+    myfile << "\\usepackage{makecell}" << std::endl;
     myfile << "\\title{PowerFlow Solver Export}" << std::endl;
     myfile << "\\author{}" << std::endl;
     myfile << "\\date{}" << std::endl;
@@ -55,6 +56,57 @@ void exportToLatex(SystemModel::SystemModel s) {
 
     myfile << "\t \\end{tabular}" << std::endl;
     myfile << "\\end{table}" << std::endl;
+
+    auto branches(s.getBranches());
+
+    myfile << "\\section*{Line information}" << std::endl;
+    myfile << "\\begin{table}[H]" << std::endl;
+    myfile << "\t \\centering" << std::endl;
+    myfile << "\t \\begin{tabular}{|c|c|c|c|c|}" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;
+    myfile << "\t \t From bus \\textnumero&To bus \\textnumero&\\makecell{Series\\\\resistance}&\\makecell{Series\\\\reactance}&\\makecell{Shunt\\\\susceptance}\\\\" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;
+
+    
+    for (int i = 0; i < branches.size(); i++)
+    {
+        if (std::get<0>(branches[i]) == SystemModel::TypeOfBranch::Line) {
+            myfile << "\t \t Bus " << int(std::get<1>(branches[i]))
+                << "& Bus " << int(std::get<2>(branches[i]))
+                << "& " << std::get<3>(branches[i]) << " [p.u]&"
+                << std::get<4>(branches[i]) << " [p.u]&"
+                << std::get<6>(branches[i]) << " [p.u]\\\\" << std::endl;
+            myfile << "\t \t \\hline" << std::endl;
+        }
+    }
+    myfile << "\t \\end{tabular}" << std::endl;
+    myfile << "\\end{table}" << std::endl;
+
+    
+    myfile << "\\section*{Transformer information}" << std::endl;
+    myfile << "\\begin{table}[H]" << std::endl;
+    myfile << "\t \\centering" << std::endl;
+    myfile << "\t \\begin{tabular}{|c|c|c|c|c|c|}" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;
+    myfile << "\t \t From bus \\textnumero&To bus \\textnumero&\\makecell{Series\\\\resistance}&\\makecell{Series\\\\reactance}&\\makecell{Shunt\\\\conductance}&\\makecell{Shunt\\\\susceptance}\\\\" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;
+
+
+    for (int i = 0; i < branches.size(); i++)
+    {
+        if (std::get<0>(branches[i]) == SystemModel::TypeOfBranch::Transformer) {
+            myfile << "\t \t Bus " << int(std::get<1>(branches[i]))
+                << "& Bus " << int(std::get<2>(branches[i]))
+                << "& " << std::get<3>(branches[i]) << " [p.u]&"
+                << std::get<4>(branches[i]) << " [p.u]&"
+                << std::get<5>(branches[i]) << " [p.u]&"
+                << std::get<6>(branches[i]) << " [p.u]\\\\" << std::endl;
+            myfile << "\t \t \\hline" << std::endl;
+        }
+    }
+    myfile << "\t \\end{tabular}" << std::endl;
+    myfile << "\\end{table}" << std::endl;
+
 
     auto mat(s.getAdmittanceMatrix());
     std::vector<int> col, row;
@@ -185,6 +237,66 @@ void exportToHTML(SystemModel::SystemModel s) {
     }
     myfile << "</table>" << std::endl;
 
+
+    auto branches(s.getBranches());
+
+
+    myfile << "Line information: " << std::endl;
+    myfile << "</p>" << std::endl;
+    myfile << "<table style=\"text-align:center\">" << std::endl;
+    myfile << "<tr>" << std::endl;
+    myfile << "<th>From bus &numero;</th>" << std::endl;
+    myfile << "<th>To bus &numero;</th>" << std::endl;
+    myfile << "<th>Series resistance</th>" << std::endl;
+    myfile << "<th>Series reactance</th>" << std::endl;
+    myfile << "<th>Shunt susceptance</th>" << std::endl;
+    myfile << "</tr>" << std::endl;
+
+
+    for (int i = 0; i < branches.size(); i++)
+    {
+        myfile << "<tr>" << std::endl;
+        if (std::get<0>(branches[i]) == SystemModel::TypeOfBranch::Line) {
+            myfile << "<td> Bus " << int(std::get<1>(branches[i])) << "</td>"
+                << "<td> Bus " << int(std::get<2>(branches[i])) << "</td>"
+                << "<td>" << std::get<3>(branches[i]) << " [p.u]</td>"
+                << "<td>" << std::get<4>(branches[i]) << " [p.u]</td>"
+                << "<td>" << std::get<6>(branches[i]) << " [p.u]</td>" << std::endl;
+        }
+        myfile << "</tr>" << std::endl;
+    }
+    myfile << "</table>" << std::endl;
+
+
+    myfile << "Transformer information: " << std::endl;
+    myfile << "</p>" << std::endl;
+    myfile << "<table style=\"text-align:center\">" << std::endl;
+    myfile << "<tr>" << std::endl;
+    myfile << "<th>From bus &numero;</th>" << std::endl;
+    myfile << "<th>To bus &numero;</th>" << std::endl;
+    myfile << "<th>Series resistance</th>" << std::endl;
+    myfile << "<th>Series reactance</th>" << std::endl;
+    myfile << "<th>Shunt conductance</th>" << std::endl;
+    myfile << "<th>Shunt susceptance</th>" << std::endl;
+    myfile << "</tr>" << std::endl;
+
+
+    for (int i = 0; i < branches.size(); i++)
+    {
+        myfile << "<tr>" << std::endl;
+        if (std::get<0>(branches[i]) == SystemModel::TypeOfBranch::Transformer) {
+            myfile << "<td> Bus " << int(std::get<1>(branches[i])) << "</td>"
+                << "<td> Bus " << int(std::get<2>(branches[i])) << "</td>"
+                << "<td>" << std::get<3>(branches[i]) << " [p.u]</td>"
+                << "<td>" << std::get<4>(branches[i]) << " [p.u]</td>"
+                << "<td>" << std::get<5>(branches[i]) << " [p.u]</td>"
+                << "<td>" << std::get<6>(branches[i]) << " [p.u]</td>" << std::endl;
+        }
+        myfile << "</tr>" << std::endl;
+    }
+    myfile << "</table>" << std::endl;
+
+   
 
     myfile << "<p style=\"text-align:left\">" << std::endl;
     myfile << "System admittance matrix: " << std::endl;
