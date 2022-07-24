@@ -431,6 +431,52 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 			}
 		}
 
+		
+
+		const auto& branches{ systemModel.getBranches() };
+
+		for (size_t i{}; i < branches.size(); i++) {
+			if (i == 0) {
+				stream << "\nBranches:" << std::endl;
+			}
+
+			stream << "\tFrom Bus: " << int(std::get<1>(branches.at(i))) << " to Bus: " << int(std::get<2>(branches.at(i))) << std::endl;
+			stream << "\t\tType: " << ((int(std::get<0>(branches.at(i))) == 0) ? ("Line") : ("Transformer")) << std::endl;
+			stream << "\t\tSeries resistance: " << std::get<3>(branches.at(i)) << std::endl;
+			stream << "\t\tSeries reactance: " << std::get<4>(branches.at(i)) << std::endl;
+			if (std::get<0>(branches.at(i)) == TypeOfBranch::Transformer) {
+				stream << "\t\tShunt conductance: " << std::get<5>(branches.at(i)) << std::endl;
+			}
+			stream << "\t\tShunt susceptance: " << std::abs(std::get<6>(branches.at(i))) << std::endl;
+		}
+
+
+
+		const auto& capBanks{ systemModel.getCapacitorBanks() };
+
+		for (size_t i{}; i < capBanks.size(); i++) {
+			if (i == 0) {
+				stream << "\nCapacitor banks:" << std::endl;
+			}
+
+			stream << "\tAt Bus: " << std::get<0>(capBanks.at(i)) << std::endl;
+
+			switch (std::get<2>(capBanks.at(i))) {
+				case ThreePhaseLoadConfigurationsType::Delta:
+					stream << "\t\tLoad Configurations Type: Delta" << std::endl;
+					break;
+				case ThreePhaseLoadConfigurationsType::GroundedStar:
+					stream << "\t\tLoad Configurations Type: Grounded Star" << std::endl;
+					break;
+				case ThreePhaseLoadConfigurationsType::Star:
+					stream << "\t\tLoad Configurations Type: Star" << std::endl;
+					break;
+			}
+			
+			stream << "\t\tCapacitance: " << std::get<1>(capBanks.at(i)) << std::endl;
+		}
+		
+
 
 		stream << std::endl << "System admittance matrix:" << std::endl;
 		for (uint8_t i{ 1 }; i < systemModel.numberOfBuses + 1; i++) {

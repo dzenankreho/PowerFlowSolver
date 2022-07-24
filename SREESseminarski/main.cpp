@@ -26,6 +26,8 @@ int main() {
 	systemModel.addLine(1, 3, 0.025, 0.03, 0);
 	systemModel.addLine(2, 3, 0.02, 0.02, 0);
 
+	std::cout << systemModel << std::endl;
+
 	std::vector<double> x1{ 0.643501108793284, 0.737073919144267, 0.689630454314943,1.000000000000000, 1.020000000000000, 0.982939705318109 };
 
 	std::vector<std::vector<double>> actualValues{ { 1, 0, 0, 0, 0, 0 },
@@ -39,7 +41,11 @@ int main() {
 	double err;
 	int maxNumberOfIter = 50,iter;
 	newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iter);
-	exportToLatex(systemModel); 
-	exportToHTML(systemModel);
+
+	//exportToLatex(systemModel); 
+	//exportToHTML(systemModel);
+
+	//system("pdflatex main.tex");
+
 	return 0;
 }
