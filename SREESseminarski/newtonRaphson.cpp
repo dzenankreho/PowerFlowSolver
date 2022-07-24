@@ -164,7 +164,7 @@ int newtonRaphson(SystemModel::SystemModel sm, int maxNumberOfIter, double eps, 
 		std::cout << iter << " " << err<<std::endl;
 		if (eps >= err)
 		{
-			std::cout << "Algorithm converges in " << iter << " iterations, with error " << err;
+			std::cout << "Algorithm converges in " << iter << " iterations, with error " << err << std::endl;
 			return 1;
 		}
 		if (iter == maxNumberOfIter)

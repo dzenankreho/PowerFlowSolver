@@ -2,6 +2,7 @@
 #include "systemModel.h"
 #include "newtonRaphson.h"
 #include "export.h"
+#include "import.h"
 
 const double eps{ 1e-10 };
 
@@ -24,7 +25,10 @@ int main() {
 
 	systemModel.addLine(1, 2, 0.05, 0.1, 0);
 	systemModel.addLine(1, 3, 0.025, 0.03, 0);
-	systemModel.addLine(2, 3, 0.02, 0.02, 0);
+	systemModel.addTransformer(2, 3, 0.02, 0.02, 0,0);
+	systemModel.addCapacitorBank(1, 0.03, SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+	systemModel.addCapacitorBank(2, 0.05, SystemModel::ThreePhaseLoadConfigurationsType::GroundedStar);
+	systemModel.addCapacitorBank(3, 0.07, SystemModel::ThreePhaseLoadConfigurationsType::Star);
 
 	std::cout << systemModel << std::endl;
 
@@ -42,8 +46,14 @@ int main() {
 	int maxNumberOfIter = 50,iter;
 	newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iter);
 
-	//exportToLatex(systemModel); 
-	//exportToHTML(systemModel);
+	exportToLatex(systemModel); 
+	exportToHTML(systemModel);
+	exportToTxt("test.txt", systemModel);
+
+
+	SystemModel::SystemModel systemModel1{ 10 };
+	importFromTxt("test.txt", systemModel1);
+	std::cout << systemModel1;
 
 	//system("pdflatex main.tex");
 

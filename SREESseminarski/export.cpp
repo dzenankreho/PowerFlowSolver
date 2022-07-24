@@ -87,8 +87,8 @@ void exportToLatex(SystemModel::SystemModel s) {
     myfile << "\\begin{table}[H]" << std::endl;
     myfile << "\t \\centering" << std::endl;
     myfile << "\t \\begin{tabular}{|c|c|c|c|c|c|}" << std::endl;
-    myfile << "\t \t \\hline" << std::endl;
-    myfile << "\t \t From bus \\textnumero&To bus \\textnumero&\\makecell{Series\\\\resistance}&\\makecell{Series\\\\reactance}&\\makecell{Shunt\\\\conductance}&\\makecell{Shunt\\\\susceptance}\\\\" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;myfile << "\t \t From bus \\textnumero&To bus \\textnumero&\\makecell{Series\\\\resistance}&\\makecell{Series\\\\reactance}&\\makecell{Shunt\\\\conductance}&\\makecell{Shunt\\\\susceptance}\\\\" << std::endl;
+    
     myfile << "\t \t \\hline" << std::endl;
 
 
@@ -103,6 +103,33 @@ void exportToLatex(SystemModel::SystemModel s) {
                 << std::get<6>(branches[i]) << " [p.u]\\\\" << std::endl;
             myfile << "\t \t \\hline" << std::endl;
         }
+    }
+    myfile << "\t \\end{tabular}" << std::endl;
+    myfile << "\\end{table}" << std::endl;
+
+
+    myfile << "\\section*{Capacitor bank information}" << std::endl;
+    myfile << "\\begin{table}[H]" << std::endl;
+    myfile << "\t \\centering" << std::endl;
+    myfile << "\t \\begin{tabular}{|c|c|c|}" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;
+    myfile << "\t \t Bus \\textnumero& \\makecell{Bank\\\\capacitance}&\\makecell{Bank\\\\configuration type}\\\\" << std::endl;
+    myfile << "\t \t \\hline" << std::endl;
+    auto banks(s.getCapacitorBanks());
+
+    for (int i = 0; i < banks.size(); i++)
+    {
+        myfile << "\t \t Bus " << int(std::get<0>(banks[i]))
+            << "& " << std::get<1>(banks[i]) << " [p.u]&";
+        if (std::get<2>(banks[i]) == SystemModel::ThreePhaseLoadConfigurationsType::Delta)
+            myfile << "Delta\\\\";
+        else if (std::get<2>(banks[i]) == SystemModel::ThreePhaseLoadConfigurationsType::Star)
+                myfile << "Star\\\\";
+        else if (std::get<2>(banks[i]) == SystemModel::ThreePhaseLoadConfigurationsType::GroundedStar)
+            myfile << "Grounded Star\\\\";
+
+
+        myfile << "\t \t \\hline" << std::endl;
     }
     myfile << "\t \\end{tabular}" << std::endl;
     myfile << "\\end{table}" << std::endl;
@@ -296,6 +323,32 @@ void exportToHTML(SystemModel::SystemModel s) {
     }
     myfile << "</table>" << std::endl;
 
+    auto banks(s.getCapacitorBanks());
+
+    myfile << "Capacitor bank information: " << std::endl;
+    myfile << "</p>" << std::endl;
+    myfile << "<table style=\"text-align:center\">" << std::endl;
+    myfile << "<tr>" << std::endl;
+    myfile << "<th>Bus &numero;</th>" << std::endl;
+    myfile << "<th>Bank capacitance</th>" << std::endl;
+    myfile << "<th>Bank configuration type</th>" << std::endl;
+    myfile << "</tr>" << std::endl;
+
+
+    for (int i = 0; i < banks.size(); i++)
+    {
+        myfile << "<tr>" << std::endl;
+        myfile << "<td> Bus " << int(std::get<0>(banks[i])) << "</td>"
+            << "<td>" << std::get<1>(banks[i]) << " [p.u.]</td>";
+        if (std::get<2>(banks[i]) == SystemModel::ThreePhaseLoadConfigurationsType::Delta)
+            myfile << "<td>Delta</td>";
+        else if (std::get<2>(banks[i]) == SystemModel::ThreePhaseLoadConfigurationsType::Star)
+            myfile << "<td>Star</td>";
+        else if (std::get<2>(banks[i]) == SystemModel::ThreePhaseLoadConfigurationsType::GroundedStar)
+            myfile << "<td>Grounded Star</td>";
+        myfile << "</tr>" << std::endl;
+    }
+    myfile << "</table>" << std::endl;
    
 
     myfile << "<p style=\"text-align:left\">" << std::endl;
@@ -350,4 +403,91 @@ void exportToHTML(SystemModel::SystemModel s) {
     myfile << std::endl << "</p>" << std::endl;
     myfile << std::endl << "</body>" << std::endl;
     myfile << std::endl << "</html>" << std::endl;
+}
+
+
+void exportToTxt(const char* filename, SystemModel::SystemModel s)
+{
+    try {
+        std::ofstream outFile;
+        outFile.open(filename);
+        if (!outFile)
+        {
+            std::cerr << "Cannot open file: " << filename << "\n";
+            exit(1);
+        }
+
+        const char* busTypeStrings[]{ "Slack", "PV", "PQ" };
+
+        outFile << "Buses:" << std::endl;
+
+        for (int i = 0; i < s.getNumberOfBuses(); i++) {
+            outFile << "\tBus: " << i + 1 << std::endl;
+
+            outFile << "\t\tType: " << busTypeStrings[int(s.getBus(i + 1).getTypeOfBus())] << std::endl;
+
+            switch (s.getBus(i + 1).getTypeOfBus()) {
+            case SystemModel::TypeOfBus::Slack:
+                outFile << "\t\tVoltage magnitude: " << s.getBus(i + 1).getVoltageMagnitude().value() << std::endl;
+                outFile << "\t\tVoltage phase: " << s.getBus(i + 1).getVoltagePhase().value() << std::endl;
+                break;
+            case SystemModel::TypeOfBus::PV:
+                outFile << "\t\tActive power: " << s.getBus(i + 1).getActivePower().value() << std::endl;
+                outFile << "\t\tVoltage magnitude: " << s.getBus(i + 1).getVoltageMagnitude().value() << std::endl;
+                break;
+            case SystemModel::TypeOfBus::PQ:
+                outFile << "\t\tActive power: " << s.getBus(i + 1).getActivePower().value() << std::endl;
+                outFile << "\t\tReactive power: " << s.getBus(i + 1).getReactivePower().value() << std::endl;
+                break;
+            }
+        }
+
+
+
+        const auto& branches{ s.getBranches() };
+
+        for (size_t i{}; i < branches.size(); i++) {
+            if (i == 0) {
+                outFile << "\nBranches:" << std::endl;
+            }
+
+            outFile << "\tFrom Bus: " << int(std::get<1>(branches.at(i))) << " to Bus: " << int(std::get<2>(branches.at(i))) << std::endl;
+            outFile << "\t\tType: " << ((int(std::get<0>(branches.at(i))) == 0) ? ("Line") : ("Transformer")) << std::endl;
+            outFile << "\t\tSeries resistance: " << std::get<3>(branches.at(i)) << std::endl;
+            outFile << "\t\tSeries reactance: " << std::get<4>(branches.at(i)) << std::endl;
+            if (std::get<0>(branches.at(i)) == SystemModel::TypeOfBranch::Transformer) {
+                outFile << "\t\tShunt conductance: " << std::get<5>(branches.at(i)) << std::endl;
+            }
+            outFile << "\t\tShunt susceptance: " << std::abs(std::get<6>(branches.at(i))) << std::endl;
+        }
+
+
+
+        const auto& capBanks{ s.getCapacitorBanks() };
+
+        for (size_t i{}; i < capBanks.size(); i++) {
+            if (i == 0) {
+                outFile << "\nCapacitor banks:" << std::endl;
+            }
+
+            outFile << "\tAt Bus: " << int(std::get<0>(capBanks.at(i))) << std::endl;
+
+            switch (std::get<2>(capBanks.at(i))) {
+            case SystemModel::ThreePhaseLoadConfigurationsType::Delta:
+                outFile << "\t\tLoad Configurations Type: Delta" << std::endl;
+                break;
+            case SystemModel::ThreePhaseLoadConfigurationsType::GroundedStar:
+                outFile << "\t\tLoad Configurations Type: Grounded Star" << std::endl;
+                break;
+            case SystemModel::ThreePhaseLoadConfigurationsType::Star:
+                outFile << "\t\tLoad Configurations Type: Star" << std::endl;
+                break;
+            }
+
+            outFile << "\t\tCapacitance: " << std::get<1>(capBanks.at(i)) << std::endl;
+        }
+    }
+    catch (...) {
+        throw std::logic_error("System is incomplete.");
+    }
 }

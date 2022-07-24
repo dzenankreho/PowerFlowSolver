@@ -459,7 +459,7 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 				stream << "\nCapacitor banks:" << std::endl;
 			}
 
-			stream << "\tAt Bus: " << std::get<0>(capBanks.at(i)) << std::endl;
+			stream << "\tAt Bus: " << int(std::get<0>(capBanks.at(i))) << std::endl;
 
 			switch (std::get<2>(capBanks.at(i))) {
 				case ThreePhaseLoadConfigurationsType::Delta:
