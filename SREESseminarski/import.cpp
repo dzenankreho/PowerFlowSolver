@@ -7,6 +7,12 @@
 #include "systemModel.h"
 
 
+/// <summary>
+///  Imports SystemModel from the .txt file
+/// </summary>
+/// <param name="const char*">Name of the file</param>
+/// <param name="SystemModel::SystemModel">System model</param>
+/// <returns></returns>
 void importFromTxt(const char* filename, SystemModel::SystemModel& systemModel)
 {
     try {

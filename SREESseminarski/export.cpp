@@ -8,6 +8,12 @@
 
 const double eps{ 1e-10 };
 
+
+/// <summary>
+///  Exports SystemModel to the main.tex file
+/// </summary>
+/// <param name="SystemModel::SystemModel">System model</param>
+/// <returns></returns>
 void exportToLatex(SystemModel::SystemModel s) {
     std::ofstream myfile("main.tex");
     myfile << "\\documentclass[a4paper, 12pt]{article}" << std::endl;
@@ -188,7 +194,11 @@ void exportToLatex(SystemModel::SystemModel s) {
     myfile << std::endl << "\\end{document}" << std::endl;
 }
 
-
+/// <summary>
+///  Exports SystemModel to the main.html file
+/// </summary>
+/// <param name="SystemModel::SystemModel">System model</param>
+/// <returns></returns>
 void exportToHTML(SystemModel::SystemModel s) {
     std::ofstream myfile("main.html");
     myfile << "<!DOCTYPE html>" << std::endl;
@@ -405,7 +415,12 @@ void exportToHTML(SystemModel::SystemModel s) {
     myfile << std::endl << "</html>" << std::endl;
 }
 
-
+/// <summary>
+///  Exports SystemModel to the .tex file
+/// </summary>
+/// <param name="const char*">Name of the file</param>
+/// <param name="SystemModel::SystemModel">System model</param>
+/// <returns></returns>
 void exportToTxt(const char* filename, SystemModel::SystemModel s)
 {
     try {

@@ -55,7 +55,7 @@ int main() {
 	importFromTxt("test.txt", systemModel1);
 	std::cout << systemModel1;
 
-	//system("pdflatex main.tex");
+	system("pdflatex main.tex");
 
 	return 0;
 }

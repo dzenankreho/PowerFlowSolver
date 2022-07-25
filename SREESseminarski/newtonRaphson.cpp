@@ -6,6 +6,12 @@
 #include <vector>
 
 
+/// <summary>
+///  Matrix and vector product operator overload
+/// </summary>
+/// <param name="std::vector<std::vector<T>>">Vector of vector type</param>
+/// <param name="std::vector<T>">Vector type</param>
+/// <returns>Vector that is the result of matrix and vector product</returns>
 template <typename T>
 std::vector<T> operator *(const std::vector<std::vector<T>>& matrix, const std::vector<T>& vector)
 {
@@ -23,6 +29,11 @@ std::vector<T> operator *(const std::vector<std::vector<T>>& matrix, const std::
 	return ret;
 }
 
+/// <summary>
+///  Unary minus sign matrix operator overload
+/// </summary>
+/// <param name="std::vector<std::vector<T>>">Matrix of type</param>
+/// <returns>Reverse sign elements of matrix</returns>
 template <typename T>
 std::vector<std::vector<T>> operator -(const std::vector<std::vector<T>>& matrix)
 {
@@ -40,7 +51,11 @@ std::vector<std::vector<T>> operator -(const std::vector<std::vector<T>>& matrix
 }
 
 
-
+/// <summary>
+///  Absolute value of vector
+/// </summary>
+/// <param name="std::vector<double>">Vector of double elements</param>
+/// <returns>Absolute value of elements in the argument vector</returns>
 std::vector<double> absVector(const std::vector<double>& vec)
 {
 	std::vector<double> abs_vec;
@@ -49,6 +64,16 @@ std::vector<double> absVector(const std::vector<double>& vec)
 	return abs_vec;
 }
 
+
+/// <summary>
+///  Cofactor of the matrix
+/// </summary>
+/// <param name="std::vector<std::vector<double>>">Matrix to get cofactor from</param>
+/// <param name="std::vector<std::vector<double>>">Cofactor matrix</param>
+/// <param name="int">Row of the cofactor that needs to be found</param>
+/// <param name="int">Column of the cofactor that needs to be found</param>
+/// <param name="int">Size of square matrix</param>
+/// <returns></returns>
 void cofactor(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& t, int p, int q, int n) {
 	int i(0), j(0);
 	for (int r = 0; r < n; r++)
@@ -67,6 +92,13 @@ void cofactor(const std::vector<std::vector<double>>& matrix, std::vector<std::v
 	}
 }
 
+
+/// <summary>
+///  Determinant of matrix
+/// </summary>
+/// <param name="std::vector<std::vector<double>>">Matrix to get determinant from</param>
+/// <param name="int">Size of square matrix</param>
+/// <returns>Double value of determinant</returns>
 double determinant(std::vector<std::vector<double>> matrix, int n)
 {
 	double D(0);
@@ -86,6 +118,12 @@ double determinant(std::vector<std::vector<double>> matrix, int n)
 	return D;
 }
 
+/// <summary>
+///  Adjoint matrix
+/// </summary>
+/// <param name="std::vector<std::vector<double>>">Matrix to get adjoint from</param>
+/// <param name="std::vector<std::vector<double>>">Referece to adjoint matrix</param>
+/// <returns></returns>
 void adjoint(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& adj)
 {
 	if (matrix.size() == 1) {
@@ -109,6 +147,13 @@ void adjoint(const std::vector<std::vector<double>>& matrix, std::vector<std::ve
 	}
 }
 
+
+/// <summary>
+///  Inverse matrix
+/// </summary>
+/// <param name="std::vector<std::vector<double>>">Matrix to get inverse from</param>
+/// <param name="double">Sinuglarity check</param>
+/// <returns>Matrix that is inverse from the first argument</returns>
 std::vector<std::vector<double>> inverseMatrix(const std::vector<std::vector<double>>& matrix, double eps = 1e-10)
 {
 	double det(determinant(matrix,matrix.size()));
@@ -125,6 +170,17 @@ std::vector<std::vector<double>> inverseMatrix(const std::vector<std::vector<dou
 
 }
 
+/// <summary>
+///  Newton Raphson method
+/// </summary>
+/// <param name="SystemModel::SystemModel">System model</param>
+/// <param name="int">Maximum number of iterations</param>
+/// <param name="double">Maximum tolerance</param>
+/// <param name="std::vector<double>">Starting solution vector</param>
+/// <param name="std::vector<double>">Reference to solution vector</param>
+/// <param name="double">Reference to tolerance achieved</param>
+/// <param name="int">Reference to number of iterations preformed</param>
+/// <returns>Int value that shows if the system converges or not. Returns 1 if converges, returns 0 if it does not</returns>
 int newtonRaphson(SystemModel::SystemModel sm, int maxNumberOfIter, double eps, std::vector<double> x0, std::vector<double> &x, double &err, int &iter)
 {
 	x.resize(x0.size());
