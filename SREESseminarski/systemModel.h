@@ -78,7 +78,7 @@ namespace SystemModel {
 		std::vector<Branch> branches;
 		void addBranchToAdmittanceMatrix(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
 		std::vector<std::tuple<uint8_t, double, ThreePhaseLoadConfigurationsType>> capacitorBanks;
-		void addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
+		void addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType);
 		void recalculateAdmittanceMatrix();
 	public:
 		SystemModel(uint8_t maxNumberOfBuses) : maxNumberOfBuses{ maxNumberOfBuses } {}
@@ -109,7 +109,7 @@ namespace SystemModel {
 
 		void addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b);
 
-		void addCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
+		void addCapacitorBank(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType);
 
 		fi getBusFunctions(uint8_t busNumber) const;
 
@@ -129,7 +129,7 @@ namespace SystemModel {
 
 		void removeCapacitorBank(uint8_t busNumber);
 
-		void changeCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType);
+		void changeCapacitorBank(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType);
 
 		std::vector<std::tuple<uint8_t, double, ThreePhaseLoadConfigurationsType>> getCapacitorBanks() const {
 			return capacitorBanks;

@@ -473,7 +473,7 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 					break;
 			}
 			
-			stream << "\t\tCapacitance: " << std::get<1>(capBanks.at(i)) << std::endl;
+			stream << "\t\tSusceptance: " << std::get<1>(capBanks.at(i)) << std::endl;
 		}
 		
 
@@ -507,16 +507,16 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 /// Adds a capacitor bank to a bus
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
-/// <param name="c">One phase capacitance of the bank</param>
+/// <param name="b">One phase susceptance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
-void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
+void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
 	}
 
-	capacitorBanks.push_back({ busNumber, c, configurationType });
+	capacitorBanks.push_back({ busNumber, b, configurationType });
 
-	addCapacitorBankToAdmittanceMatrix(busNumber, c, configurationType);
+	addCapacitorBankToAdmittanceMatrix(busNumber, b, configurationType);
 }
 
 
@@ -525,9 +525,9 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double c, Thr
 /// Adds a capacitor bank to admittance matrix
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
-/// <param name="c">One phase capacitance of the bank</param>
+/// <param name="b">One phase susceptance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
-void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
+void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
 	}
@@ -536,13 +536,13 @@ void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNum
 
 	switch (configurationType) {
 		case ThreePhaseLoadConfigurationsType::Delta:
-			admittance = { 0, 3 * 2 * PI * 50 * c };
+			admittance = { 0, 3 * b };
 			break;
 		case ThreePhaseLoadConfigurationsType::Star:
-			admittance = { 0, 2 * PI * 50 * c };
+			admittance = { 0, b };
 			break;
 		case ThreePhaseLoadConfigurationsType::GroundedStar:
-			admittance = { 0, 2 * PI * 50 * c };
+			admittance = { 0, b };
 			break;
 	}
 
@@ -1109,9 +1109,9 @@ void SystemModel::SystemModel::removeCapacitorBank(uint8_t busNumber) {
 /// Changes the parameters of the capacitor bank connected to the given bus
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
-/// <param name="c">One phase capacitance of the bank</param>
+/// <param name="b">One phase susceptance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
-void SystemModel::SystemModel::changeCapacitorBank(uint8_t busNumber, double c, ThreePhaseLoadConfigurationsType configurationType) {
+void SystemModel::SystemModel::changeCapacitorBank(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType) {
 	if (busNumber > buses.size() || busNumber == 0) {
 		throw std::out_of_range("Invalid bus number.");
 	}
@@ -1123,7 +1123,7 @@ void SystemModel::SystemModel::changeCapacitorBank(uint8_t busNumber, double c, 
 		throw std::logic_error("Capacitor bank not connected to bus");
 	}
 
-	*it = { busNumber, c, configurationType };
+	*it = { busNumber, b, configurationType };
 
 	recalculateAdmittanceMatrix();
 }
