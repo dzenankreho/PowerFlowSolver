@@ -148,7 +148,7 @@ namespace SystemModelTests {
 					output += tmp;
 				}
 
-				Assert::AreEqual("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-0.97561,1.21951) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-0.97561,1.21951)                (0,0)   (5.97561,-2.71951) \n",
+				Assert::AreEqual("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\tFrom Bus: 1 to Bus: 3\n\t\tType: Transformer\n\t\tSeries resistance: 0.4\n\t\tSeries reactance: 0.5\n\t\tShunt conductance: 10\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-0.97561,1.21951) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-0.97561,1.21951)                (0,0)   (5.97561,-2.71951) \n",
 					output.c_str());
 			}
 
@@ -187,8 +187,8 @@ namespace SystemModelTests {
 					std::getline(stringStream, tmp);
 					output += tmp;
 				}
-
-				Assert::AreEqual("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0.643501\n\tBus: 2\n\t\tType: PV\n\t\tActive power: 3\n\t\tVoltage magnitude: 1.02\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.5\n\t\tReactive power: 0.8\n\nSystem admittance matrix:\n  (20.3934,-27.6721)               (-4,8)   (-16.3934,19.6721) \n              (-4,8)             (29,-33)             (-25,25) \n  (-16.3934,19.6721)             (-25,25)   (41.3934,-44.6721) \n",
+				
+				Assert::AreEqual("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0.643501\n\tBus: 2\n\t\tType: PV\n\t\tActive power: 3\n\t\tVoltage magnitude: 1.02\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.5\n\t\tReactive power: 0.8\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.05\n\t\tSeries reactance: 0.1\n\t\tShunt susceptance: 0\n\tFrom Bus: 1 to Bus: 3\n\t\tType: Line\n\t\tSeries resistance: 0.025\n\t\tSeries reactance: 0.03\n\t\tShunt susceptance: 0\n\tFrom Bus: 2 to Bus: 3\n\t\tType: Line\n\t\tSeries resistance: 0.02\n\t\tSeries reactance: 0.02\n\t\tShunt susceptance: 0\n\nSystem admittance matrix:\n  (20.3934,-27.6721)               (-4,8)   (-16.3934,19.6721) \n              (-4,8)             (29,-33)             (-25,25) \n  (-16.3934,19.6721)             (-25,25)   (41.3934,-44.6721) \n",
 					output.c_str());
 			}
 
@@ -418,10 +418,10 @@ namespace SystemModelTests {
 					std::getline(stringStream, tmp);
 					output += tmp;
 				}
-				
-				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4)                (0,0) \n              (-2,4)             (2,-2.5)                (0,0) \n               (0,0)                (0,0)                (0,0) \n" };
-				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-0.97561,1.21951) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-0.97561,1.21951)                (0,0)   (5.97561,-2.71951) \n");
-				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4)                (0,0) \n              (-2,4)             (2,-2.5)                (0,0) \n               (0,0)                (0,0)                (0,0) \n");
+
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4)                (0,0) \n              (-2,4)             (2,-2.5)                (0,0) \n               (0,0)                (0,0)                (0,0) \n" };
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\tFrom Bus: 1 to Bus: 3\n\t\tType: Transformer\n\t\tSeries resistance: 0.4\n\t\tSeries reactance: 0.5\n\t\tShunt conductance: 10\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n  (7.97561,-5.21951)               (-2,4)   (-0.97561,1.21951) \n              (-2,4)             (2,-2.5)                (0,0) \n  (-0.97561,1.21951)                (0,0)   (5.97561,-2.71951) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4)                (0,0) \n              (-2,4)             (2,-2.5)                (0,0) \n               (0,0)                (0,0)                (0,0) \n");
 				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\tBus: 3\n\t\tType: PQ\n\t\tActive power: 1.25\n\t\tReactive power: 1.36\n\nSystem admittance matrix:\n               (0,0)                (0,0)                (0,0) \n               (0,0)                (0,0)                (0,0) \n               (0,0)                (0,0)                (0,0) \n");
 
 				Assert::AreEqual(expected.c_str(), output.c_str());
@@ -460,9 +460,9 @@ namespace SystemModelTests {
 					output += tmp;
 				}
 
-				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
-				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n   (2.35294,1.91176)  (-2.35294,0.588235) \n (-2.35294,0.588235)    (2.35294,1.91176) \n");
-				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n");
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.4\n\t\tSeries reactance: 0.1\n\t\tShunt susceptance: 5\n\nSystem admittance matrix:\n   (2.35294,1.91176)  (-2.35294,0.588235) \n (-2.35294,0.588235)    (2.35294,1.91176) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n");
 
 				Assert::AreEqual(expected.c_str(), output.c_str());
 			}
@@ -500,9 +500,9 @@ namespace SystemModelTests {
 					output += tmp;
 				}
 
-				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n  (5.97561,-2.71951)   (-0.97561,1.21951) \n  (-0.97561,1.21951)   (5.97561,-2.71951) \n" };
-				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n  (7.69231,-3.46154) (-0.192308,0.961538) \n(-0.192308,0.961538)   (7.69231,-3.46154) \n");
-				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n  (5.97561,-2.71951)   (-0.97561,1.21951) \n  (-0.97561,1.21951)   (5.97561,-2.71951) \n");
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Transformer\n\t\tSeries resistance: 0.4\n\t\tSeries reactance: 0.5\n\t\tShunt conductance: 10\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n  (5.97561,-2.71951)   (-0.97561,1.21951) \n  (-0.97561,1.21951)   (5.97561,-2.71951) \n" };
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Transformer\n\t\tSeries resistance: 0.2\n\t\tSeries reactance: 1\n\t\tShunt conductance: 15\n\t\tShunt susceptance: 5\n\nSystem admittance matrix:\n  (7.69231,-3.46154) (-0.192308,0.961538) \n(-0.192308,0.961538)   (7.69231,-3.46154) \n");
+				expected += std::string("Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Transformer\n\t\tSeries resistance: 0.4\n\t\tSeries reactance: 0.5\n\t\tShunt conductance: 10\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n  (5.97561,-2.71951)   (-0.97561,1.21951) \n  (-0.97561,1.21951)   (5.97561,-2.71951) \n");
 
 				Assert::AreEqual(expected.c_str(), output.c_str());
 			}
@@ -524,7 +524,7 @@ namespace SystemModelTests {
 
 				stringStream << systemModel;
 
-				systemModel.addCapacitorBank(1, 1 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+				systemModel.addCapacitorBank(1, 1, SystemModel::ThreePhaseLoadConfigurationsType::Delta);
 
 				stringStream << systemModel;
 
@@ -538,11 +538,12 @@ namespace SystemModelTests {
 					std::getline(stringStream, tmp);
 					output += tmp;
 				}
+		
 
-				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
-				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nCapacitor banks:\n\tAt Bus: 1\n\t\tLoad Configurations Type: Delta\n\t\tSusceptance: 1\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
 
-
+			
 				Assert::AreEqual(expected.c_str(), output.c_str());
 			}
 
@@ -563,11 +564,11 @@ namespace SystemModelTests {
 
 				stringStream << systemModel;
 
-				systemModel.addCapacitorBank(1, 1 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+				systemModel.addCapacitorBank(1, 1, SystemModel::ThreePhaseLoadConfigurationsType::Delta);
 
 				stringStream << systemModel;
 
-				systemModel.changeCapacitorBank(1, 2 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+				systemModel.changeCapacitorBank(1, 2, SystemModel::ThreePhaseLoadConfigurationsType::Delta);
 
 				stringStream << systemModel;
 
@@ -581,10 +582,10 @@ namespace SystemModelTests {
 					std::getline(stringStream, tmp);
 					output += tmp;
 				}
-
-				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
-				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
-				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,3.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+			
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nCapacitor banks:\n\tAt Bus: 1\n\t\tLoad Configurations Type: Delta\n\t\tSusceptance: 1\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nCapacitor banks:\n\tAt Bus: 1\n\t\tLoad Configurations Type: Delta\n\t\tSusceptance: 2\n\nSystem admittance matrix:\n             (2,3.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
 
 				Assert::AreEqual(expected.c_str(), output.c_str());
 			}
@@ -606,7 +607,7 @@ namespace SystemModelTests {
 
 				stringStream << systemModel;
 
-				systemModel.addCapacitorBank(1, 1 / (400 * std::atan(1)), SystemModel::ThreePhaseLoadConfigurationsType::Delta);
+				systemModel.addCapacitorBank(1, 1, SystemModel::ThreePhaseLoadConfigurationsType::Delta);
 
 				stringStream << systemModel;
 
@@ -625,9 +626,9 @@ namespace SystemModelTests {
 					output += tmp;
 				}
 
-				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
-				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
-				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+				std::string expected{ "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n" };
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nCapacitor banks:\n\tAt Bus: 1\n\t\tLoad Configurations Type: Delta\n\t\tSusceptance: 1\n\nSystem admittance matrix:\n             (2,0.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
+				expected += "Buses:\n\tBus: 1\n\t\tType: Slack\n\t\tVoltage magnitude: 1\n\t\tVoltage phase: 0\n\tBus: 2\n\t\tType: PQ\n\t\tActive power: 1.01\n\t\tReactive power: 1.03\n\nBranches:\n\tFrom Bus: 1 to Bus: 2\n\t\tType: Line\n\t\tSeries resistance: 0.1\n\t\tSeries reactance: 0.2\n\t\tShunt susceptance: 3\n\nSystem admittance matrix:\n            (2,-2.5)               (-2,4) \n              (-2,4)             (2,-2.5) \n";
 
 				Assert::AreEqual(expected.c_str(), output.c_str());
 			}
