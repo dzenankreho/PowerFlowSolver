@@ -6,7 +6,7 @@
 #include <tuple>
 
 
-const double eps{ 1e-10 };
+double eps{ 1e-10 };
 
 
 /// <summary>
@@ -421,7 +421,11 @@ void exportToHTML(SystemModel::SystemModel s) {
 /// <param name="const char*">Name of the file</param>
 /// <param name="SystemModel::SystemModel">System model</param>
 /// <returns></returns>
-void exportToTxt(const char* filename, SystemModel::SystemModel s)
+void exportToTxt(const char* filename, SystemModel::SystemModel s,
+                 std::vector<std::vector<std::tuple<int, double, double, std::string, double, double, int>>> buses,
+                 std::vector<std::tuple<int, int, double, double, double, std::string, double, double, double, double>> lineValues,
+                 std::vector<std::tuple<int, double, std::string, std::string, double, double>> batteryValues,
+                 std::vector<std::tuple<int, int, double, double, double, double, std::string, double, double>> transValues)
 {
     try {
         std::ofstream outFile;
@@ -433,6 +437,11 @@ void exportToTxt(const char* filename, SystemModel::SystemModel s)
         }
 
         const char* busTypeStrings[]{ "Slack", "PV", "PQ" };
+        std::vector<std::tuple<int, double, double, std::string, double, double, int>> slackValues, pvValues, pqValues;
+        slackValues = buses.at(0);
+        pvValues = buses.at(1);
+        pqValues = buses.at(2);
+        int j = 0, k = 0, l = 0;
 
         outFile << "Buses:" << std::endl;
 
@@ -443,23 +452,34 @@ void exportToTxt(const char* filename, SystemModel::SystemModel s)
 
             switch (s.getBus(i + 1).getTypeOfBus()) {
             case SystemModel::TypeOfBus::Slack:
-                outFile << "\t\tVoltage magnitude: " << s.getBus(i + 1).getVoltageMagnitude().value() << std::endl;
-                outFile << "\t\tVoltage phase: " << s.getBus(i + 1).getVoltagePhase().value() << std::endl;
+                        outFile << "\t\tVoltage magnitude: " << s.getBus(i + 1).getVoltageMagnitude().value() << std::endl;
+                        outFile << "\t\tVoltage phase: " << s.getBus(i + 1).getVoltagePhase().value() << std::endl;
+                        outFile << "\t\tColor: " << std::get<3>(slackValues[j]) << std::endl;
+                        outFile << "\t\tX: " <<  std::get<4>(slackValues[j])<< std::endl;
+                        outFile << "\t\tY: " << std::get<5>(slackValues[j]) << std::endl;
+                    j++;
                 break;
             case SystemModel::TypeOfBus::PV:
-                outFile << "\t\tActive power: " << s.getBus(i + 1).getActivePower().value() << std::endl;
-                outFile << "\t\tVoltage magnitude: " << s.getBus(i + 1).getVoltageMagnitude().value() << std::endl;
+                        outFile << "\t\tActive power: " << s.getBus(i + 1).getActivePower().value() << std::endl;
+                        outFile << "\t\tVoltage magnitude: " << s.getBus(i + 1).getVoltageMagnitude().value() << std::endl;
+                        outFile << "\t\tColor: " << std::get<3>(pvValues[k]) << std::endl;
+                        outFile << "\t\tX: " <<  std::get<4>(pvValues[k])<< std::endl;
+                        outFile << "\t\tY: " << std::get<5>(pvValues[k]) << std::endl;
+                    k++;
                 break;
             case SystemModel::TypeOfBus::PQ:
-                outFile << "\t\tActive power: " << s.getBus(i + 1).getActivePower().value() << std::endl;
-                outFile << "\t\tReactive power: " << s.getBus(i + 1).getReactivePower().value() << std::endl;
+                        outFile << "\t\tActive power: " << s.getBus(i + 1).getActivePower().value() << std::endl;
+                        outFile << "\t\tReactive power: " << s.getBus(i + 1).getReactivePower().value() << std::endl;
+                        outFile << "\t\tColor: " << std::get<3>(pqValues[l]) << std::endl;
+                        outFile << "\t\tX: " <<  std::get<4>(pqValues[l])<< std::endl;
+                        outFile << "\t\tY: " << std::get<5>(pqValues[l]) << std::endl;
+                    l++;
                 break;
             }
         }
 
-
-
         const auto& branches{ s.getBranches() };
+        int m = 0, n = 0;
 
         for (size_t i{}; i < branches.size(); i++) {
             if (i == 0) {
@@ -470,10 +490,26 @@ void exportToTxt(const char* filename, SystemModel::SystemModel s)
             outFile << "\t\tType: " << ((int(std::get<0>(branches.at(i))) == 0) ? ("Line") : ("Transformer")) << std::endl;
             outFile << "\t\tSeries resistance: " << std::get<3>(branches.at(i)) << std::endl;
             outFile << "\t\tSeries reactance: " << std::get<4>(branches.at(i)) << std::endl;
-            if (std::get<0>(branches.at(i)) == SystemModel::TypeOfBranch::Transformer) {
+            if (std::get<0>(branches.at(i)) == SystemModel::TypeOfBranch::Transformer)
                 outFile << "\t\tShunt conductance: " << std::get<5>(branches.at(i)) << std::endl;
-            }
+            
             outFile << "\t\tShunt susceptance: " << std::abs(std::get<6>(branches.at(i))) << std::endl;
+            if (std::get<0>(branches.at(i)) == SystemModel::TypeOfBranch::Line)
+            {
+                outFile << "\t\tColor: " << std::get<5>(lineValues[m]) << std::endl;
+                outFile << "\t\tX_1: " <<  std::get<6>(lineValues[m])<< std::endl;
+                outFile << "\t\tY_1: " << std::get<7>(lineValues[m]) << std::endl;
+                outFile << "\t\tX_2: " <<  std::get<8>(lineValues[m])<< std::endl;
+                outFile << "\t\tY_2: " << std::get<9>(lineValues[m]) << std::endl;
+                m++;
+            }
+            else
+            {
+                outFile << "\t\tColor: " << std::get<6>(transValues[n]) << std::endl;
+                outFile << "\t\tX: " <<  std::get<7>(transValues[n])<< std::endl;
+                outFile << "\t\tY: " << std::get<8>(transValues[n]) << std::endl;
+                n++;
+            }
         }
 
 
@@ -500,6 +536,10 @@ void exportToTxt(const char* filename, SystemModel::SystemModel s)
             }
 
             outFile << "\t\tCapacitance: " << std::get<1>(capBanks.at(i)) << std::endl;
+            outFile << "\t\tColor: " << std::get<3>(batteryValues[i]) << std::endl;
+            outFile << "\t\tX: " <<  std::get<4>(batteryValues[i])<< std::endl;
+            outFile << "\t\tY: " << std::get<5>(batteryValues[i]) << std::endl;
+            
         }
     }
     catch (...) {
