@@ -14,10 +14,12 @@
 
 SystemModel::SystemModel systemModel{10};
 
-std::vector<std::tuple<int, double, double, const char*, double, double>> pvValues, pqValues, slackValues;
-std::vector<std::tuple<int, int, double, double, double, const char*, double, double, double, double>> lineValues;
-std::vector<std::tuple<int, double, const char*, const char*, double, double>> batteryValues;
-std::vector<std::tuple<int, int, double, double, double, double, const char*, double, double>> transValues;
+std::vector<std::tuple<int, double, double, std::string, double, double, int>> pvValues, pqValues, slackValues, sortedBuses;
+std::vector<std::tuple<int, int, double, double, double, std::string, double, double, double, double>> lineValues;
+std::vector<std::tuple<int, double, std::string, std::string, double, double>> batteryValues;
+std::vector<std::tuple<int, int, double, double, double, double, std::string, double, double>> transValues;
+
+std::vector<std::vector<std::tuple<int, double, double, std::string, double, double, int>>> buses;
 std::vector<std::tuple<int, int>> coordinates;
 std::vector<const char*> outputText;
 
@@ -129,17 +131,6 @@ const char *colors[] = {
   "Plum",
   "Thistle",
   "Lavender",
-  "MistyRose",
-  "AntiqueWhite",
-  "Linen",
-  "Beige",
-  "WhiteSmoke",
-  "LavenderBlush",
-  "OldLace",
-  "AliceBlue",
-  "Seashell",
-  "Ivory",
-  "White",
   "Black",
   "DarkSlateGray",
   "DimGray",
@@ -158,8 +149,9 @@ GtkApplication *app;
 
 const double eps{ 1e-10 };
 
+char pngPathName[512];
 int startPoint = 0, startId, endId, capId, capX, capY;
-int i, idx = 0, setFlag = 0, tabNumber;
+int i, idx = 0, setFlag = 0, tabNumber, capColor;
 GtkWidget *lblDevice, *tab, *btnSolve;
 GtkWidget* win, *add, *treeview, *gridSlack, *gridPV, *gridPQ, *gridLine, *gridBattery, *gridTrans;
 GtkWidget* area, *fixed,* pressedElement;
@@ -172,10 +164,191 @@ static void pqTable(GSimpleAction *action, GVariant *parameter, gpointer user_da
 static void lineTable(GSimpleAction *action, GVariant *parameter, gpointer user_data);
 static void batteryTable(GSimpleAction *action, GVariant *parameter, gpointer user_data);
 static void transTable(GSimpleAction *action, GVariant *parameter, gpointer user_data);
-//static void pressed (GtkGestureClick *gesture, int n_press, double x, double y, GtkWidget *area);
+static GtkWidget *colorElement (const char *color, int op);
+static void drawLine (GtkWidget *widget, std::string color);
 
 double start_x, start_y, end_x, end_y;
 int deviceSelected = 0, deviceIdx = 1, flagPressed = 0, xValDevice, yValDevice;
+
+
+static void
+on_save_response (GtkNativeDialog *dialog,
+                  int        response)
+{
+  if (response == GTK_RESPONSE_ACCEPT)
+    {
+        GtkFileChooser* chooser = GTK_FILE_CHOOSER(dialog);
+        GFile* file = gtk_file_chooser_get_file(chooser);
+        const char* path = g_file_get_path(file);
+        strcpy(pngPathName, path);
+        g_object_unref(file);
+        exportToTxt(path, systemModel, buses, lineValues, batteryValues, transValues);
+    }
+    g_object_unref(dialog);
+}
+
+static void exportToText(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+    GtkFileChooserNative* dlg;
+    dlg = gtk_file_chooser_native_new("Save Scheme", GTK_WINDOW(win), GTK_FILE_CHOOSER_ACTION_SAVE, "_Save", "_Cancel");
+    g_signal_connect (dlg, "response", G_CALLBACK (on_save_response),NULL);
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(dlg));
+    
+}
+int importFlag = 0;
+
+static void on_open_response (GtkDialog *dialog, int response)
+{
+    SystemModel::SystemModel systemModel{10};
+    if (response == GTK_RESPONSE_ACCEPT)
+      {
+          GtkFileChooser* chooser = GTK_FILE_CHOOSER(dialog);
+          GFile* file = gtk_file_chooser_get_file(chooser);
+          const char* path = g_file_get_path(file);
+          slackValues.clear();
+          pvValues.clear();
+          pqValues.clear();
+          lineValues.clear();
+          batteryValues.clear();
+          transValues.clear();
+          buses.clear();
+          if(importFromTxt(path, systemModel, &buses, &sortedBuses, &lineValues, &batteryValues, &transValues))
+          {
+              importFlag = 1;
+              slackValues = buses[0];
+              pvValues = buses[1];
+              pqValues = buses[2];
+              g_object_unref(file);
+              g_object_unref(dialog);
+              int k = 0, l = 0, m = 0;
+              for(int i = 0; i < sortedBuses.size(); i++)
+              {
+                  int type = std::get<6>(sortedBuses[i]);
+                  switch(type)
+                  {
+                      case 1:
+                      {
+                          GtkWidget* slack;
+                          const char* color = std::get<3>(slackValues[k]).c_str();
+                          double x,y;
+                          x = std::get<4>(slackValues[k]);
+                          y = std::get<5>(slackValues[k]);
+                          slack = colorElement(color, 1);
+                          gtk_fixed_put(GTK_FIXED(fixed), slack, x, y);
+                          k++;
+                          break;
+                      }
+                          
+                      case 2:
+                      {
+                          GtkWidget* pv;
+                          const char* color2 = std::get<3>(pvValues[l]).c_str();
+                          double x3,y3;
+                          x3 = std::get<4>(pvValues[l]);
+                          y3 = std::get<5>(pvValues[l]);
+                          pv = colorElement(color2, 2);
+                          gtk_fixed_put(GTK_FIXED(fixed), pv, x3, y3);
+                          l++;
+                          break;
+                      }
+                          
+                      case 3:
+                      {
+                          GtkWidget* pq;
+                          const char* color3 = std::get<3>(pqValues[m]).c_str();
+                          double x4,y4;
+                          x4 = std::get<4>(pqValues[m]);
+                          y4 = std::get<5>(pqValues[m]);
+                          pq = colorElement(color3, 3);
+                          gtk_fixed_put(GTK_FIXED(fixed), pq, x4, y4);
+                          m++;
+                          break;
+                      }
+                  }
+              }
+              for(int i = 0; i < transValues.size(); i++)
+              {
+                  GtkWidget* transformer;
+                  const char* color = std::get<6>(transValues[i]).c_str();
+                  double x,y;
+                  int bus1, bus2;
+                  bus1 = std::get<0>(transValues[i]);
+                  bus2 = std::get<1>(transValues[i]);
+                  x = std::get<7>(transValues[i]);
+                  y = std::get<8>(transValues[i]);
+                  transformer = colorElement(color, 6);
+                  gtk_fixed_put(GTK_FIXED(fixed), transformer, x, y);
+                  
+                  for(int j = 0; j < 3; j++)
+                  {
+                      for(int k = 0; k < buses[j].size(); k++)
+                      {
+                          if(bus1 == std::get<0>(buses[j][k]))
+                          {
+                              start_x = std::get<4>(buses[j][k]) + 22;
+                              start_y = std::get<5>(buses[j][k]) + 22;
+                          }
+                          if(bus2 == std::get<0>(buses[j][k]))
+                          {
+                              end_x = std::get<4>(buses[j][k]) + 22;
+                              end_y = std::get<5>(buses[j][k]) + 22;
+                              drawLine(area, std::get<5>(lineValues[0]));
+                          }
+                          
+                      }
+                  }
+              }
+              for(int i = 0; i < batteryValues.size(); i++)
+              {
+                  GtkWidget* battery;
+                  int id = std::get<0>(batteryValues[i]);
+                  const char* color = std::get<3>(batteryValues[i]).c_str();
+                  double x,y;
+                  x = std::get<4>(batteryValues[i]);
+                  y = std::get<5>(batteryValues[i]);
+                  for(int j = 0; j < 3; j++)
+                  {
+                      for(int k = 0; k < buses[j].size(); k++)
+                      {
+                          if(id == std::get<0>(buses[j][k]))
+                          {
+                              start_x = x + 22;
+                              start_y = y + 10;
+                              end_x = std::get<4>(buses[j][k]) + 22;
+                              end_y = std::get<5>(buses[j][k]) + 22;
+                              drawLine(area, std::get<3>(batteryValues[i]));
+                          }
+                      }
+                  }
+                  battery = colorElement(color, 5);
+                  gtk_fixed_put(GTK_FIXED(fixed), battery, x, y);
+              }
+              for(int i = 0; i < lineValues.size(); i++)
+              {
+                  start_x = std::get<6>(lineValues[i])+27;
+                  start_y = std::get<7>(lineValues[i])+22;
+                  end_x = std::get<8>(lineValues[i])+27;
+                  end_y = std::get<9>(lineValues[i])+22;
+                  drawLine(area, std::get<5>(lineValues[i]));
+              }
+              return;
+          }
+          g_object_unref(file);
+      }
+      g_object_unref(dialog);
+}
+
+
+static void importFromText(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+    GtkFileChooserNative* dlg;
+    dlg = gtk_file_chooser_native_new("Save Scheme", GTK_WINDOW(win), GTK_FILE_CHOOSER_ACTION_OPEN, "_Open", "_Cancel");
+    g_signal_connect (dlg, "response", G_CALLBACK (on_open_response),NULL);
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(dlg));
+    
+}
+
+
 
 static void closeTab()
 {
@@ -432,25 +605,47 @@ drawHLine (GtkDrawingArea *drawingarea,
 }
 
 static void
-drawLine (GtkWidget *widget)
+drawLine (GtkWidget *widget, std::string color)
 {
     cairo_t *cr;
     cr = cairo_create (surface);
     GdkRGBA rgba;
-
-    if (gdk_rgba_parse (&rgba, colors[i]))
-    {
-        gdk_cairo_set_source_rgba (cr, &rgba);
-        cairo_set_line_width(cr, 2);
-        cairo_move_to(cr, start_x, start_y);
-        cairo_line_to(cr, end_x, end_y);
-        cairo_stroke(cr);
     
-        cairo_destroy (cr);
-
-        gtk_widget_queue_draw (widget);
+    if(color == "")
+        gdk_rgba_parse (&rgba, colors[i]);
+    else
+    {
+        const char* clr = color.c_str();
+        gdk_rgba_parse (&rgba, clr);
     }
+
+    gdk_cairo_set_source_rgba (cr, &rgba);
+    cairo_set_line_width(cr, 2);
+    cairo_move_to(cr, start_x, start_y);
+    cairo_line_to(cr, end_x, end_y);
+    cairo_stroke(cr);
+
+    cairo_destroy (cr);
+    gtk_widget_queue_draw (widget);
 }
+
+//static void
+//lineWithId(GtkWidget *widget, std::string color)
+//{
+//    cairo_t *cr;
+//    cr = cairo_create (surface);
+//    GdkRGBA rgba;
+//    const char* clr = color.c_str();
+//    gdk_rgba_parse (&rgba, clr);
+//    gdk_cairo_set_source_rgba (cr, &rgba);
+//    cairo_set_line_width(cr, 2);
+//    cairo_move_to(cr, start_x, start_y);
+//    cairo_line_to(cr, end_x, end_y);
+//    cairo_stroke(cr);
+//
+//    cairo_destroy (cr);
+//    gtk_widget_queue_draw (widget);
+//}
 
 
 static void
@@ -484,8 +679,8 @@ colorElement (const char *color, int op)
     GtkWidget *area;
     area = gtk_drawing_area_new ();
  
-    gtk_drawing_area_set_content_width (GTK_DRAWING_AREA (area), 40);
-    gtk_drawing_area_set_content_height (GTK_DRAWING_AREA (area), 40);
+    gtk_drawing_area_set_content_width (GTK_DRAWING_AREA (area), 50);
+    gtk_drawing_area_set_content_height (GTK_DRAWING_AREA (area), 50);
     
     switch(op)
     {
@@ -522,6 +717,8 @@ int getBusId (double line_x, double line_y)
     }
     return 0;
 }
+
+
 static void setLineValues()
 {
     GtkListStore *store;
@@ -530,10 +727,12 @@ static void setLineValues()
     store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(lineList)));
     if(startId != endId && (startId != 0 && endId != 0))
     {
+
         lineValues.push_back(std::make_tuple(startId, endId, 0, 0, 0, colors[i], start_x, start_y, end_x, end_y));
         int i =(int) lineValues.size() - 1;
+        const char *color = std::get<5>(lineValues[i]).c_str();
         gtk_list_store_append(store, &iter);
-        gtk_list_store_set(store, &iter, START_BUS, std::get<0>(lineValues[i]), END_BUS, std::get<1>(lineValues[i]), REAL_IMPEDANCE, std::get<2>(lineValues[i]),IMAG_IMPEDANCE,std::get<3>(lineValues[i]), SHUNT, std::get<4>(lineValues[i]), COLOR, std::get<5>(lineValues[i]), -1);
+        gtk_list_store_set(store, &iter, START_BUS, std::get<0>(lineValues[i]), END_BUS, std::get<1>(lineValues[i]), REAL_IMPEDANCE, std::get<2>(lineValues[i]),IMAG_IMPEDANCE,std::get<3>(lineValues[i]), SHUNT, std::get<4>(lineValues[i]), COLOR, color, -1);
     }
     if(startId == 0 && endId != 0)
     {
@@ -572,7 +771,7 @@ pressedLine (GtkGestureClick *gesture,
             endId = getBusId(end_x, end_y);
             startPoint = 0;
             //gtk_widget_set_size_request(area, 1100, 700);
-            drawLine(area);
+            drawLine(area, "");
             setLineValues();
         }
     }
@@ -584,23 +783,28 @@ static void setSlackValues()
     GtkListStore *storeSlack;
     storeSlack = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(slackList)));
     int val = deviceIdx - 1;
-    
-    slackValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice));
+
+    slackValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice, 1));
     int i = (int)slackValues.size() - 1;
+    const char *color = std::get<3>(slackValues[i]).c_str();
     gtk_list_store_append(storeSlack, &iter);
-    gtk_list_store_set (storeSlack, &iter, BUS_ID, std::get<0>(slackValues[i]), VOLTAGE_MAGNITUDE, std::get<1>(slackValues[i]), VOLTAGE_PHASE, std::get<2>(slackValues[i]), COLOR, std::get<3>(slackValues[i]), -1);
+    gtk_list_store_set (storeSlack, &iter, BUS_ID, std::get<0>(slackValues[i]), VOLTAGE_MAGNITUDE, std::get<1>(slackValues[i]), VOLTAGE_PHASE, std::get<2>(slackValues[i]), COLOR, color, -1);
+    sortedBuses.push_back(slackValues[i]);
 }
 
 static void setPvValues()
 {
     GtkTreeIter iter;
     GtkListStore *storePv;
+
     storePv = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(pvList)));
     int val = deviceIdx - 1;
-    pvValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice));
+    pvValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice, 2));
     int k = (int)pvValues.size() - 1;
+    const char *color = std::get<3>(pvValues[k]).c_str();
     gtk_list_store_append(storePv, &iter);
-    gtk_list_store_set (storePv, &iter, BUS_ID, std::get<0>(pvValues[k]), VOLTAGE_MAGNITUDE, std::get<1>(pvValues[k]), ACTIVE_POWER, std::get<2>(pvValues[k]),COLOR, std::get<3>(pvValues[k]), -1);
+    gtk_list_store_set (storePv, &iter, BUS_ID, std::get<0>(pvValues[k]), VOLTAGE_MAGNITUDE, std::get<1>(pvValues[k]), ACTIVE_POWER, std::get<2>(pvValues[k]),COLOR, color, -1);
+    sortedBuses.push_back(pvValues[k]);
 }
 
 static void setPqValues()
@@ -610,21 +814,24 @@ static void setPqValues()
     store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(pqList)));
 
     int val = deviceIdx - 1;
-    pqValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice));
+    pqValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice, 3));
     int i = (int) pqValues.size() - 1;
+    const char *color = std::get<3>(pqValues[i]).c_str();
     gtk_list_store_append(store, &iter);
-    gtk_list_store_set (store, &iter, BUS_ID, std::get<0>(pqValues[i]), ACTIVE_POWER, std::get<1>(pqValues[i]), REACTIVE_POWER, std::get<2>(pqValues[i]),COLOR, std::get<3>(pqValues[i]), -1);
+    gtk_list_store_set (store, &iter, BUS_ID, std::get<0>(pqValues[i]), ACTIVE_POWER, std::get<1>(pqValues[i]), REACTIVE_POWER, std::get<2>(pqValues[i]),COLOR, color, -1);
+    sortedBuses.push_back(pqValues[i]);
 }
 static void setCapacitorValues()
 {
     GtkTreeIter iter;
     GtkListStore *store;
     store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(batteryList)));
-    
-    batteryValues.push_back(std::make_tuple(capId, 0, "Delta", colors[i], capX, capY));
+    batteryValues.push_back(std::make_tuple(capId, 0, "Delta", colors[capColor], capX, capY));
     int i = (int)batteryValues.size() - 1;
+    const char *config = std::get<2>(batteryValues[i]).c_str();
+    const char *color = std::get<3>(batteryValues[i]).c_str();
     gtk_list_store_append(store, &iter);
-    gtk_list_store_set (store, &iter, BUS_ID, std::get<0>(batteryValues[i]), CAPACITY, std::get<1>(batteryValues[i]), CONFIGURATION, std::get<2>(batteryValues[i]), COLOR, std::get<3>(batteryValues[i]), -1);
+    gtk_list_store_set (store, &iter, BUS_ID, std::get<0>(batteryValues[i]), CAPACITY, std::get<1>(batteryValues[i]), CONFIGURATION, config, COLOR, color, -1);
 
 }
 
@@ -641,9 +848,11 @@ static void setTransValues()
     if(startId >= 0 && endId >= 0)
     {
         transValues.push_back(std::make_tuple(startId, endId, 0, 0, 0,0, colors[i], xValDevice, yValDevice));
+
         int j =(int) transValues.size() - 1;
+        const char *color = std::get<6>(transValues[j]).c_str();
         gtk_list_store_append(store, &iter);
-        gtk_list_store_set(store, &iter, START_BUS, std::get<0>(transValues[j]), END_BUS, std::get<1>(transValues[j]), REAL_IMPEDANCE, std::get<2>(transValues[j]),IMAG_IMPEDANCE,std::get<3>(transValues[j]), SHUNT_REAL, std::get<4>(transValues[j]),SHUNT, std::get<5>(transValues[j]), COLOR, std::get<6>(transValues[j]), -1);
+        gtk_list_store_set(store, &iter, START_BUS, std::get<0>(transValues[j]), END_BUS, std::get<1>(transValues[j]), REAL_IMPEDANCE, std::get<2>(transValues[j]),IMAG_IMPEDANCE,std::get<3>(transValues[j]), SHUNT_REAL, std::get<4>(transValues[j]),SHUNT, std::get<5>(transValues[j]), COLOR, color, -1);
     }
     
     for(int i = 0; i < lineValues.size(); i++)
@@ -686,6 +895,7 @@ pressed (GtkGestureClick *gesture,
             {
                 capX = x;
                 capY = y;
+                capColor = i;
             }
             flagPressed = 1;
            switch(idx)
@@ -810,11 +1020,6 @@ static void addElement(GtkWidget* btn)
         g_signal_connect (flowbox, "child-activated", G_CALLBACK (activateDevice), gridPopover);
     }
 }
-static void
-quit_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-    std::cout << "Quit" << std::endl;
-}
 
 static void
 exportToLatex(GSimpleAction *action, GVariant *parameter, gpointer user_data)
@@ -828,11 +1033,11 @@ exportToHTML(GSimpleAction *action, GVariant *parameter, gpointer user_data)
     exportToHTML(systemModel);
 }
 
-static void
-exportToText(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-    exportToTxt("test.txt", systemModel);
-}
+//static void
+//exportToText(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+//{
+//    exportToTxt("test.txt", systemModel, pngPathName);
+//}
 
 static void exportMenu(GtkWidget *btn)
 {
@@ -841,7 +1046,7 @@ static void exportMenu(GtkWidget *btn)
         {"latex", exportToLatex, NULL, NULL, NULL, {0, 0, 0}},
         {"html", exportToHTML, NULL, NULL, NULL, {0, 0, 0}},
         {"txt", exportToText, NULL, NULL, NULL, {0, 0, 0}},
-        {"import", quit_activated, NULL, NULL, NULL, {0, 0, 0}}
+        {"import", importFromText, NULL, NULL, NULL, {0, 0, 0}}
     };
     g_action_map_add_action_entries(G_ACTION_MAP(app), actions, G_N_ELEMENTS(actions), app);
     
@@ -1097,12 +1302,14 @@ static void on_tree_view_row_activatedBattery(GtkTreeView *tree_view, GtkTreePat
     
     for(int i = 0; i < batteryValues.size(); i++)
     {
-        if(std::get<0>(batteryValues[i]) == id && std::get<1>(batteryValues[i]) == capacity && !strcmp(std::get<2>(batteryValues[i]),config))
+        const char* c_config = std::get<2>(batteryValues[i]).c_str();
+        if(std::get<0>(batteryValues[i]) == id && std::get<1>(batteryValues[i]) == capacity && !(std::strcmp(c_config,config)))
         {
             kBattery = i;
             break;
         }
     }
+    g_signal_connect (entryId, "activate", G_CALLBACK (setTreeViewRowBattery), NULL);
     g_signal_connect (entryCapacity, "activate", G_CALLBACK (setTreeViewRowBattery), NULL);
     g_signal_connect (comboBox, "changed", G_CALLBACK (comboBoxSelChange), NULL);
 }
@@ -1147,6 +1354,8 @@ static void on_tree_view_row_activatedLine(GtkTreeView *tree_view, GtkTreePath *
             break;
         }
     }
+    g_signal_connect (entryStart, "activate", G_CALLBACK (setTreeViewRowLine), NULL);
+    g_signal_connect (entryEnd, "activate", G_CALLBACK (setTreeViewRowLine), NULL);
     g_signal_connect (entryReal, "activate", G_CALLBACK (setTreeViewRowLine), NULL);
     g_signal_connect (entryImag, "activate", G_CALLBACK (setTreeViewRowLine), NULL);
     g_signal_connect (entryShunt, "activate", G_CALLBACK (setTreeViewRowLine), NULL);
@@ -1194,6 +1403,8 @@ static void on_tree_view_row_activatedTrans(GtkTreeView *tree_view, GtkTreePath 
             break;
         }
     }
+    g_signal_connect (entryStart, "activate", G_CALLBACK (setTreeViewRowTrans), NULL);
+    g_signal_connect (entryEnd, "activate", G_CALLBACK (setTreeViewRowTrans), NULL);
     g_signal_connect (entryReal, "activate", G_CALLBACK (setTreeViewRowTrans), NULL);
     g_signal_connect (entryImag, "activate", G_CALLBACK (setTreeViewRowTrans), NULL);
     g_signal_connect (entryShuntReal, "activate", G_CALLBACK (setTreeViewRowTrans), NULL);
@@ -1233,6 +1444,7 @@ static void on_tree_view_row_activatedPQ(GtkTreeView *tree_view, GtkTreePath *pa
             
         }
     }
+    g_signal_connect (entryId, "activate", G_CALLBACK (setTreeViewRowPQ), NULL);
     g_signal_connect (entryAct, "activate", G_CALLBACK (setTreeViewRowPQ), NULL);
     g_signal_connect (entryReact, "activate", G_CALLBACK (setTreeViewRowPQ), NULL);
 }
@@ -1268,6 +1480,7 @@ static void on_tree_view_row_activatedSlack(GtkTreeView *tree_view, GtkTreePath 
             break;
         }
     }
+    g_signal_connect (entryId, "activate", G_CALLBACK (setTreeViewRowSlack), NULL);
     g_signal_connect (entryMag, "activate", G_CALLBACK (setTreeViewRowSlack), NULL);
     g_signal_connect (entryPhase, "activate", G_CALLBACK (setTreeViewRowSlack), NULL);
 }
@@ -1303,6 +1516,7 @@ static void on_tree_view_row_activatedPV(GtkTreeView *tree_view, GtkTreePath *pa
             break;
         }
     }
+    g_signal_connect (entryId, "activate", G_CALLBACK (setTreeViewRowPV), NULL);
     g_signal_connect (entryMag, "activate", G_CALLBACK (setTreeViewRowPV), NULL);
     g_signal_connect (entryActive, "activate", G_CALLBACK (setTreeViewRowPV), NULL);
 }
@@ -2128,11 +2342,17 @@ void remove_all(GtkWidget *widget, gpointer selection)
 
 static void solveNR(GtkWidget* btn, GtkWidget* dialog)
 {
+    if(!importFlag)
+    {
+        buses.push_back(slackValues);
+        buses.push_back(pvValues);
+        buses.push_back(pqValues);
+    }
+
     GdkDisplay *display;
     GtkCssProvider *cssProvider;
 
     GtkWidget *view;
-    
     display = gtk_widget_get_display (GTK_WIDGET (dialog));
     cssProvider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (cssProvider, "textview { font-size: 14pt; }", -1);
@@ -2159,100 +2379,106 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
             "Buses:\n", -1, "bold", "lmarg",  NULL);
     
     gtk_window_destroy(GTK_WINDOW(dialog));
+    int k = 0, l = 0, m = 0;
     systemModel.addBus(SystemModel::TypeOfBus::Slack);
-
-    for(int i = 0; i < slackValues.size(); i++)
+    for(int i = 0; i < sortedBuses.size(); i++)
     {
-        char output[50];
-        snprintf(output, 50, "%d", std::get<0>(slackValues[i]));
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\tType: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, "Slack", -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tBus ID: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, output, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        char magnitude[50], phase[50];
-        snprintf(magnitude, 50, "%lf", std::get<1>(slackValues[i]));
-        snprintf(phase, 50, "%lf", std::get<2>(slackValues[i]));
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tVoltage magnitude: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, magnitude, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tVoltage phase: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, phase, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-                               
-        systemModel.getBus(std::get<0>(slackValues[i])).setVoltageMagnitude(std::get<1>(slackValues[i]));
-        systemModel.getBus(std::get<0>(slackValues[i])).setVoltagePhase(std::get<2>(slackValues[i]));
+        int type = std::get<6>(sortedBuses[i]);
+        switch(type)
+        {
+            case 1:
+                char output[50];
+                snprintf(output, 50, "%d", std::get<0>(slackValues[k]));
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\tType: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, "Slack", -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tBus ID: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, output, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                char magnitude[50], phase[50];
+                snprintf(magnitude, 50, "%lf", std::get<1>(slackValues[k]));
+                snprintf(phase, 50, "%lf", std::get<2>(slackValues[k]));
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tVoltage magnitude: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, magnitude, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tVoltage phase: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, phase, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                                       
+                systemModel.getBus(std::get<0>(slackValues[k])).setVoltageMagnitude(std::get<1>(slackValues[k]));
+                systemModel.getBus(std::get<0>(slackValues[k])).setVoltagePhase(std::get<2>(slackValues[k]));
+                k++;
+                break;
+                
+            case 2:
+                systemModel.addBus(SystemModel::TypeOfBus::PV);
+                char output2[50];
+                snprintf(output2, 50, "%d", std::get<0>(pvValues[l]));
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\tType: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, "PV", -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tBus ID: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, output2, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                char magnitude2[50], active[50];
+                snprintf(magnitude2, 50, "%lf", std::get<1>(pvValues[l]));
+                snprintf(active, 50, "%lf", std::get<2>(pvValues[l]));
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tVoltage magnitude: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, magnitude2, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tActive power: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, active, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                systemModel.getBus(std::get<0>(pvValues[l])).setVoltageMagnitude(std::get<1>(pvValues[l]));
+                systemModel.getBus(std::get<0>(pvValues[l])).setActivePower(std::get<2>(pvValues[l]));
+                l++;
+                break;
+                
+            case 3:
+                systemModel.addBus(SystemModel::TypeOfBus::PQ);
+                char output3[50];
+                snprintf(output3, 50, "%d", std::get<0>(pqValues[m]));
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\tType: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, "PQ", -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tBus ID: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, output3, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                char reactive[50], active3[50];
+                snprintf(active3, 50, "%lf", std::get<1>(pvValues[m]));
+                snprintf(reactive, 50, "%lf", std::get<2>(pvValues[m]));
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tActive power: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, active3, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+                        "\t\tReactive power: ", -1, "blue_fg", "lmarg",  NULL);
+                gtk_text_buffer_insert(buffer, &iter, reactive, -1);
+                gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+                
+                systemModel.getBus(std::get<0>(pqValues[m])).setActivePower(std::get<1>(pqValues[m]));
+                systemModel.getBus(std::get<0>(pqValues[m])).setReactivePower(std::get<2>(pqValues[m]));
+                m++;
+                break;
+        }
     }
-  
-    for(int i = 0; i < pvValues.size(); i++)
-    {
-        systemModel.addBus(SystemModel::TypeOfBus::PV);
-        char output[50];
-        snprintf(output, 50, "%d", std::get<0>(pvValues[i]));
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\tType: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, "PV", -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tBus ID: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, output, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        char magnitude[50], active[50];
-        snprintf(magnitude, 50, "%lf", std::get<1>(pvValues[i]));
-        snprintf(active, 50, "%lf", std::get<2>(pvValues[i]));
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tVoltage magnitude: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, magnitude, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tActive power: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, active, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        systemModel.getBus(std::get<0>(pvValues[i])).setVoltageMagnitude(std::get<1>(pvValues[i]));
-        systemModel.getBus(std::get<0>(pvValues[i])).setActivePower(std::get<2>(pvValues[i]));
-    }
-
-    for(int i = 0; i < pqValues.size(); i++)
-    {
-        systemModel.addBus(SystemModel::TypeOfBus::PQ);
-        char output[50];
-        snprintf(output, 50, "%d", std::get<0>(pqValues[i]));
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\tType: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, "PQ", -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tBus ID: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, output, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        char reactive[50], active[50];
-        snprintf(active, 50, "%lf", std::get<1>(pvValues[i]));
-        snprintf(reactive, 50, "%lf", std::get<2>(pvValues[i]));
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tActive power: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, active, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-                "\t\tReactive power: ", -1, "blue_fg", "lmarg",  NULL);
-        gtk_text_buffer_insert(buffer, &iter, reactive, -1);
-        gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        systemModel.getBus(std::get<0>(pqValues[i])).setActivePower(std::get<1>(pqValues[i]));
-        systemModel.getBus(std::get<0>(pqValues[i])).setReactivePower(std::get<2>(pqValues[i]));
-    }
-
     gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
             "Branches:\n", -1, "bold", "lmarg",  NULL);
     
@@ -2353,8 +2579,7 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
                 "\tAt Bus: ", -1, "blue_fg", "lmarg",  NULL);
         gtk_text_buffer_insert(buffer, &iter, id, -1);
         gtk_text_buffer_insert(buffer, &iter, "\n", -1);
-        
-        const char* config = std::get<2>(batteryValues[i]);
+        const char* config = std::get<2>(batteryValues[i]).c_str();;
         gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
                 "\t\tLoad Configuration : ", -1, "blue_fg", "lmarg",  NULL);
         if(!strcmp(config, "Delta"))
@@ -2404,26 +2629,32 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
     gtk_notebook_append_page (GTK_NOTEBOOK (tab), sw, head);
     gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (tab), sw, TRUE);
     
+    std::vector<double> x0, x;
+    int size = 0;
+    for(int i = 0; i < 3; i++)
+        size += buses[i].size();
+    for(int i = 0; i < 2*size; i++)
+        x0.push_back(1);
+
     
-        std::vector<double> x0{ 1, 1, 1,1.000000000000000, 1.020000000000000, 1 },x(6);
-        double err;
-        int maxNumberOfIter = 50, iterx;
-        newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iterx);
-    
+    double err;
+    int maxNumberOfIter = 50, iterx;
+    newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iterx);
+
     GtkTextBuffer *bufferNR;
     GtkWidget* viewNR;
-    
+
     viewNR = gtk_text_view_new();
     bufferNR = gtk_text_view_get_buffer(GTK_TEXT_VIEW(viewNR));
-    
+
     gtk_text_buffer_create_tag(bufferNR, "blue_fg",
             "foreground", "blue", NULL);
     gtk_text_buffer_create_tag(bufferNR, "lmarg",
             "left_margin", 5, NULL);
-    
+
     gtk_text_buffer_get_iter_at_offset(bufferNR, &iter, 0);
     gtk_text_buffer_insert(bufferNR, &iter, "\n", -1);
-    
+
     if (eps >= err)
     {
         char iteration[50], error[50];
@@ -2440,7 +2671,7 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
     if (iterx == maxNumberOfIter)
         gtk_text_buffer_insert_with_tags_by_name(bufferNR, &iter,
                 " Maximum number of iterations reached.", -1, "blue_fg", "lmarg",  NULL);
-       
+
     GtkWidget *dialog1, *content_area;
     gtk_widget_set_vexpand(viewNR, TRUE);
     dialog1 = gtk_dialog_new();
