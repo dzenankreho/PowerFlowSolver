@@ -21,3 +21,7 @@ void adjoint(const std::vector<std::vector<double>>& matrix, std::vector<std::ve
 std::vector<std::vector<double>> inverseMatrix(const std::vector<std::vector<double>>& matrix, double eps);
 
 int newtonRaphson(SystemModel::SystemModel sm, int maxNumberOfIter, double eps, std::vector<double> x0, std::vector<double>& x, double& err, int& iter);
+
+void printMatrixValues(std::vector<std::vector<double>> mat);
+
+std::vector<std::vector<double>> inverseMatrixGaussJordan(const std::vector<std::vector<double>>& mat);

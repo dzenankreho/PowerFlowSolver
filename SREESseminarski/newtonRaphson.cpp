@@ -2,6 +2,7 @@
 #include "newtonRaphson.h"
 #include <math.h>
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <vector>
 
@@ -103,8 +104,10 @@ double determinant(std::vector<std::vector<double>> matrix, int n)
 {
 	double D(0);
 	if (n == 1)
+	{
+		std::cout << 1;
 		return matrix[0][0];
-	
+	}
 	// Store cofactors
 	std::vector<std::vector<double>> t(n,std::vector<double>(n)); 
 	
@@ -115,6 +118,7 @@ double determinant(std::vector<std::vector<double>> matrix, int n)
 			D += s * matrix[0][f] * determinant(t, n - 1);
 			s = -s;
 		}
+		
 	return D;
 }
 
@@ -149,14 +153,17 @@ void adjoint(const std::vector<std::vector<double>>& matrix, std::vector<std::ve
 
 
 /// <summary>
-///  Inverse matrix
+///  Inverse matrix using Minors, Cofactors and Ad-jugate Method
 /// </summary>
 /// <param name="std::vector<std::vector<double>>">Matrix to get inverse from</param>
 /// <param name="double">Sinuglarity check</param>
 /// <returns>Matrix that is inverse from the first argument</returns>
 std::vector<std::vector<double>> inverseMatrix(const std::vector<std::vector<double>>& matrix, double eps = 1e-10)
 {
+
+	
 	double det(determinant(matrix,matrix.size()));
+	std::cout << det;
 	if (std::fabs(det) < eps)
 		throw std::range_error("Singular matrix");
 
@@ -169,6 +176,96 @@ std::vector<std::vector<double>> inverseMatrix(const std::vector<std::vector<dou
 	return inv;
 
 }
+
+/// <summary>
+///  Prints matrix values
+/// </summary>
+/// <param name="std::vector<std::vector<double>>">Matrix/param>
+/// <returns></returns>
+void printMatrixValues(std::vector<std::vector<double>> mat) {
+	int n(mat.size()), m(mat[0].size());
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			std::cout << mat[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+	return;
+}
+
+/// <summary>
+///  Inverse matrix using Gauss-Jordan Method
+/// </summary>
+/// <param name="std::vector<std::vector<double>>">Matrix to get inverse from</param>
+/// <param name="double">Double zero number tolerance</param>
+/// <returns>Matrix that is inverse from the first argument</returns>
+std::vector<std::vector<double>> inverseMatrixGaussJordan(const std::vector<std::vector<double>>& mat, double eps = 1e-10)
+{
+	double temp;
+	int n(mat.size());
+	std::vector<std::vector<double>> matrixGaussJordan(n, std::vector<double>(2 * n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 2 * n; j++) {
+			if (j < n) {
+				matrixGaussJordan[i][j] = mat[i][j];
+			}
+			else
+			{
+				if (j == (i + n))
+					matrixGaussJordan[i][j] = 1;
+				else if (j >= n)
+					matrixGaussJordan[i][j] = 0;
+			}
+		}
+	}
+
+	for (int k = 0; k < n; k++)
+	{
+		for (int i = n - 1; i > k; i--) {
+
+			if (matrixGaussJordan[i - 1][k] < matrixGaussJordan[i][k]) {
+				std::vector<double> temp = matrixGaussJordan[i];
+				matrixGaussJordan[i] = matrixGaussJordan[i - 1];
+				matrixGaussJordan[i - 1] = temp;
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (j != i) {
+				if (std::fabs(matrixGaussJordan[i][i]) < eps)
+				{
+					for (int k = n - 1; k > i; k--) {
+
+						if (matrixGaussJordan[k - 1][i] < matrixGaussJordan[k][i]) {
+							std::vector<double> temp = matrixGaussJordan[k];
+							matrixGaussJordan[k] = matrixGaussJordan[k - 1];
+							matrixGaussJordan[k - 1] = temp;
+						}
+					}
+				}
+				temp = matrixGaussJordan[j][i] / matrixGaussJordan[i][i];
+				for (int k = 0; k < 2 * n; k++) {
+					matrixGaussJordan[j][k] -= matrixGaussJordan[i][k] * temp;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		temp = matrixGaussJordan[i][i];
+		for (int j = 0; j < 2 * n; j++) {
+			matrixGaussJordan[i][j] = matrixGaussJordan[i][j] / temp;
+		}
+	}
+	std::vector<std::vector<double>> inv(n, std::vector<double>(n));
+	for (int i = 0; i < n; i++)
+		for (int j = n; j < 2 * n; j++)
+			inv[i][j - n] = matrixGaussJordan[i][j];
+
+	return inv;
+}
+
 
 /// <summary>
 ///  Newton Raphson method
@@ -208,10 +305,9 @@ int newtonRaphson(SystemModel::SystemModel sm, int maxNumberOfIter, double eps, 
 			jacobianCalculated.push_back(pb_vecQ);
 		}
 
-		std::vector <std::vector<double>> inv_jac(inverseMatrix(jacobianCalculated));
+		std::vector <std::vector<double>> inv_jac(inverseMatrixGaussJordan(jacobianCalculated,1e-10));
 
 		std::vector<double> dx(-inv_jac * functionsCalculated);
-
 		for (int i = 0; i < x.size(); i++)
 			x[i] += dx[i];
 
