@@ -22,8 +22,9 @@ std::vector<std::tuple<int, int, double, double, double, double, std::string, do
 std::vector<std::vector<std::tuple<int, double, double, std::string, double, double, int>>> buses;
 std::vector<std::tuple<int, int>> coordinates;
 std::vector<const char*> outputText;
+std::vector<GtkWidget*> elements;
 
-const char *colors[] = {
+const char* colors[] = {
   "DarkRed",
     "Red",
   "FireBrick",
@@ -38,40 +39,16 @@ const char *colors[] = {
   "DarkOrange",
   "Coral",
   "Orange",
-  "DarkKhaki",
-  "Gold",
-  "Khaki",
-  "PeachPuff",
-  "Yellow",
-  "PaleGoldenrod",
-  "Moccasin",
-  "PapayaWhip",
-  "LemonChiffon",
-  "LightGoldenrodYellow",
-  "LightYellow",
   "Maroon",
   "Brown",
   "SaddleBrown",
   "Sienna",
   "Chocolate",
-  "DarkGoldenRod",
-  "Peru",
-  "RosyBrown",
-  "Goldenrod",
-  "SandyBrown",
   "Tan",
   "Burlywood",
   "Wheat",
   "NavajoWhite",
   "Bisque",
-  "BlanchedAlmond",
-  "Cornsilk",
-  "DarkGreen",
-  "Green",
-  "DarkOliveGreen",
-  "ForestGreen",
-  "SeaGreen",
-  "Olive",
   "OliveDrab",
   "MediumSeaGreen",
   "LimeGreen",
@@ -80,10 +57,6 @@ const char *colors[] = {
   "MediumSpringGreen",
   "DarkSeaGreen",
   "MediumAquamarine",
-  "YellowGreen",
-  "LawnGreen",
-  "Chartreuse",
-  "LightGreen",
   "GreenYellow",
   "PaleGreen",
   "Teal",
@@ -101,12 +74,6 @@ const char *colors[] = {
   "Navy",
   "DarkBlue",
   "MediumBlue",
-  "Blue",
-  "MidnightBlue",
-  "RoyalBlue",
-  "SteelBlue",
-  "DodgerBlue",
-  "DeepSkyBlue",
   "CornflowerBlue",
   "SkyBlue",
   "LightSkyBlue",
@@ -123,26 +90,16 @@ const char *colors[] = {
   "Fuchsia",
   "Magenta",
   "SlateBlue",
-  "MediumSlateBlue",
-  "MediumOrchid",
-  "MediumPurple",
   "Orchid",
   "Violet",
   "Plum",
   "Thistle",
   "Lavender",
   "Black",
-  "DarkSlateGray",
-  "DimGray",
-  "SlateGray",
   "Gray",
-  "LightSlateGray",
-  "DarkGray",
-  "Silver",
-  "LightGray",
-  "Gainsboro",
   NULL
 };
+
 
 GtkListStore *store;
 GtkApplication *app;
@@ -151,12 +108,13 @@ const double eps{ 1e-10 };
 
 char pngPathName[512];
 int startPoint = 0, startId, endId, capId, capX, capY;
-int i, idx = 0, setFlag = 0, tabNumber, capColor;
+int i, idx = 0, setFlag = 0, tabNumber, capColor, empty = 0;
 GtkWidget *lblDevice, *tab, *btnSolve;
 GtkWidget* win, *add, *treeview, *gridSlack, *gridPV, *gridPQ, *gridLine, *gridBattery, *gridTrans;
 GtkWidget* area, *fixed,* pressedElement;
 GtkWidget* pvList, *pqList, *lineList, *slackList, *batteryList, *transList;
 static cairo_surface_t *surface = NULL;
+static void drawGrid (GtkWidget *widget);
 static void setCapacitorValues();
 static void pvTable(GSimpleAction *action, GVariant *parameter, gpointer user_data);
 static void slackTable(GSimpleAction *action, GVariant *parameter, gpointer user_data);
@@ -170,9 +128,18 @@ static void drawLine (GtkWidget *widget, std::string color);
 double start_x, start_y, end_x, end_y;
 int deviceSelected = 0, deviceIdx = 1, flagPressed = 0, xValDevice, yValDevice;
 
+static void removeItems()
+{
+    systemModel.admittanceMatrix.clear();
+    systemModel.numberOfBuses = 0;
+    systemModel.buses.clear();
+    systemModel.branches.clear();
+    systemModel.capacitorBanks.clear();
+}
+int save;
 
 static void
-on_save_response (GtkNativeDialog *dialog,
+on_save_response(GtkNativeDialog *dialog,
                   int        response)
 {
   if (response == GTK_RESPONSE_ACCEPT)
@@ -182,13 +149,63 @@ on_save_response (GtkNativeDialog *dialog,
         const char* path = g_file_get_path(file);
         strcpy(pngPathName, path);
         g_object_unref(file);
-        exportToTxt(path, systemModel, buses, lineValues, batteryValues, transValues);
+        switch(save)
+        {
+            case 1:
+                exportToTxt(path, systemModel, buses, lineValues, batteryValues, transValues);
+                break;
+            case 2:
+                exportToLatex(path, systemModel);
+                break;
+            case 3:
+                exportToHTML(path, systemModel);
+                break;
+        }
     }
     g_object_unref(dialog);
 }
 
+static void brisi (int width, int height)
+{
+    removeItems();
+    empty = 1;
+    for(int i = 0; i < elements.size(); i++)
+        gtk_fixed_remove(GTK_FIXED(fixed), elements[i]);
+    elements.clear();
+    buses.clear();
+    slackValues.clear();
+    pvValues.clear();
+    pqValues.clear();
+    batteryValues.clear();
+    lineValues.clear();
+    transValues.clear();
+    sortedBuses.clear();
+    deviceIdx = 1;
+    gtk_widget_queue_draw(area);
+}
+
 static void exportToText(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
+    save = 1;
+    GtkFileChooserNative* dlg;
+    dlg = gtk_file_chooser_native_new("Save Scheme", GTK_WINDOW(win), GTK_FILE_CHOOSER_ACTION_SAVE, "_Save", "_Cancel");
+    g_signal_connect (dlg, "response", G_CALLBACK (on_save_response),NULL);
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(dlg));
+}
+
+static void exportToLatex(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+    save = 2;
+    GtkFileChooserNative* dlg;
+    dlg = gtk_file_chooser_native_new("Save Scheme", GTK_WINDOW(win), GTK_FILE_CHOOSER_ACTION_SAVE, "_Save", "_Cancel");
+    g_signal_connect (dlg, "response", G_CALLBACK (on_save_response),NULL);
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(dlg));
+    
+}
+
+static void exportToHtml(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+    save = 3;
     GtkFileChooserNative* dlg;
     dlg = gtk_file_chooser_native_new("Save Scheme", GTK_WINDOW(win), GTK_FILE_CHOOSER_ACTION_SAVE, "_Save", "_Cancel");
     g_signal_connect (dlg, "response", G_CALLBACK (on_save_response),NULL);
@@ -199,7 +216,7 @@ int importFlag = 0;
 
 static void on_open_response (GtkDialog *dialog, int response)
 {
-    SystemModel::SystemModel systemModel{10};
+    empty = 0;
     if (response == GTK_RESPONSE_ACCEPT)
       {
           GtkFileChooser* chooser = GTK_FILE_CHOOSER(dialog);
@@ -212,7 +229,7 @@ static void on_open_response (GtkDialog *dialog, int response)
           batteryValues.clear();
           transValues.clear();
           buses.clear();
-          if(importFromTxt(path, systemModel, &buses, &sortedBuses, &lineValues, &batteryValues, &transValues))
+          if(importFromTxt(path, &buses, &sortedBuses, &lineValues, &batteryValues, &transValues))
           {
               importFlag = 1;
               slackValues = buses[0];
@@ -235,6 +252,7 @@ static void on_open_response (GtkDialog *dialog, int response)
                           y = std::get<5>(slackValues[k]);
                           slack = colorElement(color, 1);
                           gtk_fixed_put(GTK_FIXED(fixed), slack, x, y);
+                          elements.push_back(slack);
                           k++;
                           break;
                       }
@@ -248,6 +266,7 @@ static void on_open_response (GtkDialog *dialog, int response)
                           y3 = std::get<5>(pvValues[l]);
                           pv = colorElement(color2, 2);
                           gtk_fixed_put(GTK_FIXED(fixed), pv, x3, y3);
+                          elements.push_back(pv);
                           l++;
                           break;
                       }
@@ -261,6 +280,7 @@ static void on_open_response (GtkDialog *dialog, int response)
                           y4 = std::get<5>(pqValues[m]);
                           pq = colorElement(color3, 3);
                           gtk_fixed_put(GTK_FIXED(fixed), pq, x4, y4);
+                          elements.push_back(pq);
                           m++;
                           break;
                       }
@@ -278,7 +298,7 @@ static void on_open_response (GtkDialog *dialog, int response)
                   y = std::get<8>(transValues[i]);
                   transformer = colorElement(color, 6);
                   gtk_fixed_put(GTK_FIXED(fixed), transformer, x, y);
-                  
+                  elements.push_back(transformer);
                   for(int j = 0; j < 3; j++)
                   {
                       for(int k = 0; k < buses[j].size(); k++)
@@ -322,6 +342,7 @@ static void on_open_response (GtkDialog *dialog, int response)
                   }
                   battery = colorElement(color, 5);
                   gtk_fixed_put(GTK_FIXED(fixed), battery, x, y);
+                  elements.push_back(battery);
               }
               for(int i = 0; i < lineValues.size(); i++)
               {
@@ -435,6 +456,8 @@ drawSlack (GtkDrawingArea *drawingarea,
         cairo_move_to(cr,37 ,37);
         cairo_line_to(cr, 42, 32);
         cairo_stroke(cr);
+        if(flagPressed)
+        {
             char num[10];
             sprintf(num, "%d", deviceIdx-1);
             cairo_select_font_face(cr, "Purisa",
@@ -445,6 +468,7 @@ drawSlack (GtkDrawingArea *drawingarea,
             cairo_show_text(cr, num);
             cairo_set_line_width(cr, 4);
             flagPressed = 0;
+        }
 
     }
 }
@@ -624,29 +648,9 @@ drawLine (GtkWidget *widget, std::string color)
     cairo_move_to(cr, start_x, start_y);
     cairo_line_to(cr, end_x, end_y);
     cairo_stroke(cr);
-
-    cairo_destroy (cr);
     gtk_widget_queue_draw (widget);
+    cairo_destroy (cr);
 }
-
-//static void
-//lineWithId(GtkWidget *widget, std::string color)
-//{
-//    cairo_t *cr;
-//    cr = cairo_create (surface);
-//    GdkRGBA rgba;
-//    const char* clr = color.c_str();
-//    gdk_rgba_parse (&rgba, clr);
-//    gdk_cairo_set_source_rgba (cr, &rgba);
-//    cairo_set_line_width(cr, 2);
-//    cairo_move_to(cr, start_x, start_y);
-//    cairo_line_to(cr, end_x, end_y);
-//    cairo_stroke(cr);
-//
-//    cairo_destroy (cr);
-//    gtk_widget_queue_draw (widget);
-//}
-
 
 static void
 drawTransformator (GtkDrawingArea *drawingarea,
@@ -782,7 +786,7 @@ static void setSlackValues()
     GtkTreeIter iter;
     GtkListStore *storeSlack;
     storeSlack = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(slackList)));
-    int val = deviceIdx - 1;
+    int val = deviceIdx;
 
     slackValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice, 1));
     int i = (int)slackValues.size() - 1;
@@ -798,7 +802,7 @@ static void setPvValues()
     GtkListStore *storePv;
 
     storePv = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(pvList)));
-    int val = deviceIdx - 1;
+    int val = deviceIdx;
     pvValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice, 2));
     int k = (int)pvValues.size() - 1;
     const char *color = std::get<3>(pvValues[k]).c_str();
@@ -813,7 +817,7 @@ static void setPqValues()
     GtkTreeIter iter;
     store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(pqList)));
 
-    int val = deviceIdx - 1;
+    int val = deviceIdx;
     pqValues.push_back(std::make_tuple(val, 0, 0, colors[i], xValDevice, yValDevice, 3));
     int i = (int) pqValues.size() - 1;
     const char *color = std::get<3>(pqValues[i]).c_str();
@@ -872,6 +876,7 @@ pressed (GtkGestureClick *gesture,
          double           y,
          GtkWidget       *area)
 {
+    empty = 0;
     if(setFlag)
     {
         if(idx == 3)
@@ -880,11 +885,27 @@ pressed (GtkGestureClick *gesture,
             xValDevice = x;
             yValDevice = y;
             GtkWidget *pressedElement;
+        switch(idx)
+         {
+             case 0:
+                 setSlackValues();
+                 break;
+             case 1:
+                 setPvValues();
+                 break;
+             case 2:
+                 setPqValues();
+                 break;
+             case 5:
+                 setTransValues();
+                 break;
+         }
             pressedElement = colorElement(colors[i], idx + 1);
+            elements.push_back(pressedElement);
          
             gtk_drawing_area_set_content_width (GTK_DRAWING_AREA (pressedElement), 50);
             gtk_drawing_area_set_content_height (GTK_DRAWING_AREA (pressedElement), 50);
-
+        
             gtk_fixed_put(GTK_FIXED(area), pressedElement, x - 27, y - 20);
             if(idx != 4 && idx != 5)
             {
@@ -898,21 +919,6 @@ pressed (GtkGestureClick *gesture,
                 capColor = i;
             }
             flagPressed = 1;
-           switch(idx)
-            {
-                case 0:
-                    setSlackValues();
-                    break;
-                case 1:
-                    setPvValues();
-                    break;
-                case 2:
-                    setPqValues();
-                    break;
-                case 5:
-                    setTransValues();
-                    break;
-            }
             setFlag = 0;
         
 
@@ -1021,17 +1027,6 @@ static void addElement(GtkWidget* btn)
     }
 }
 
-static void
-exportToLatex(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-    exportToLatex(systemModel);
-}
-
-static void
-exportToHTML(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-    exportToHTML(systemModel);
-}
 
 //static void
 //exportToText(GSimpleAction *action, GVariant *parameter, gpointer user_data)
@@ -1044,7 +1039,7 @@ static void exportMenu(GtkWidget *btn)
     static const GActionEntry actions[]
     {
         {"latex", exportToLatex, NULL, NULL, NULL, {0, 0, 0}},
-        {"html", exportToHTML, NULL, NULL, NULL, {0, 0, 0}},
+        {"html", exportToHtml, NULL, NULL, NULL, {0, 0, 0}},
         {"txt", exportToText, NULL, NULL, NULL, {0, 0, 0}},
         {"import", importFromText, NULL, NULL, NULL, {0, 0, 0}}
     };
@@ -2046,7 +2041,7 @@ static void transTable(GSimpleAction *action, GVariant *parameter, gpointer user
         gtk_widget_set_hexpand(vbox, TRUE);
         gtk_grid_attach(GTK_GRID(gridTrans), vbox, 0, 4, 10, 10);
         
-        GtkWidget *head, *image, *btn, *label = gtk_label_new ("Transformator Editing View");
+        GtkWidget *head, *image, *btn, *label = gtk_label_new ("Transformer Editing View");
         head = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_append (GTK_BOX (head), label);
         btn = gtk_button_new();
@@ -2095,7 +2090,7 @@ static void editMenu(GtkWidget *btn)
     g_menu_append_item (menuEdit, menu_item_battery);
     g_object_unref (menu_item_battery);
     
-    GMenuItem *menu_item_transformator = g_menu_item_new ("Transformator", "app.transformator");
+    GMenuItem *menu_item_transformator = g_menu_item_new ("Transformer", "app.transformator");
     g_menu_append_item (menuEdit, menu_item_transformator);
     g_object_unref (menu_item_transformator);
     
@@ -2281,14 +2276,22 @@ draw_cb (GtkDrawingArea *drawing_area,
          int             height,
          gpointer        data)
 {
+    if(empty)
+    {
+        clear_surface();
+        drawGrid(area);
+
+        cairo_set_source_surface (cr, surface, 0, 0);
+        cairo_paint (cr);
+        return;
+    }
     if(grid)
     {
         drawGrid(area);
         grid = 0;
     }
-
-  cairo_set_source_surface (cr, surface, 0, 0);
-  cairo_paint (cr);
+    cairo_set_source_surface (cr, surface, 0, 0);
+    cairo_paint (cr);
 }
 
 int checkCircleInside(int xCenter, int yCenter, int x, int y, int radius)
@@ -2342,17 +2345,18 @@ void remove_all(GtkWidget *widget, gpointer selection)
 
 static void solveNR(GtkWidget* btn, GtkWidget* dialog)
 {
+    removeItems();
     if(!importFlag)
     {
         buses.push_back(slackValues);
         buses.push_back(pvValues);
         buses.push_back(pqValues);
     }
-
+    
     GdkDisplay *display;
     GtkCssProvider *cssProvider;
 
-    GtkWidget *view;
+    GtkWidget *viewData, *viewVoltage;
     display = gtk_widget_get_display (GTK_WIDGET (dialog));
     cssProvider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (cssProvider, "textview { font-size: 14pt; }", -1);
@@ -2361,8 +2365,9 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
     GtkTextBuffer *buffer;
     GtkTextIter iter;
     
-    view = gtk_text_view_new();
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
+    viewData = gtk_text_view_new();
+    viewVoltage = gtk_text_view_new();
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(viewData));
 
     gtk_text_buffer_create_tag(buffer, "gap",
             "pixels_above_lines", 30, NULL);
@@ -2462,8 +2467,8 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
                 gtk_text_buffer_insert(buffer, &iter, "\n", -1);
                 
                 char reactive[50], active3[50];
-                snprintf(active3, 50, "%lf", std::get<1>(pvValues[m]));
-                snprintf(reactive, 50, "%lf", std::get<2>(pvValues[m]));
+                snprintf(active3, 50, "%lf", std::get<1>(pqValues[m]));
+                snprintf(reactive, 50, "%lf", std::get<2>(pqValues[m]));
                 gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
                         "\t\tActive power: ", -1, "blue_fg", "lmarg",  NULL);
                 gtk_text_buffer_insert(buffer, &iter, active3, -1);
@@ -2608,14 +2613,27 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
         gtk_text_buffer_insert(buffer, &iter, "\n", -1);
         
     }
-    GtkWidget *sw;
+    GtkWidget *sw, *swVoltage, *resultBox;
     sw = gtk_scrolled_window_new();
-    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), view);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), viewData);
 
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     
     gtk_widget_set_vexpand(sw, TRUE);
     gtk_widget_set_hexpand(sw, TRUE);
+    
+    swVoltage = gtk_scrolled_window_new();
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(swVoltage), viewVoltage);
+
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(swVoltage), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    
+    gtk_widget_set_vexpand(swVoltage, TRUE);
+    gtk_widget_set_hexpand(swVoltage, TRUE);
+    
+    resultBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+    gtk_box_append(GTK_BOX(resultBox), sw);
+    gtk_box_append(GTK_BOX(resultBox), swVoltage);
+
     std::cout << systemModel << std::endl;
     GtkWidget *head, *image, *btn1, *label = gtk_label_new ("Results");
     head = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -2626,8 +2644,8 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
     g_signal_connect (btn1, "clicked", G_CALLBACK (closeTab), NULL);
     gtk_button_set_child(GTK_BUTTON(btn1), image);
     gtk_box_append (GTK_BOX (head), btn1);
-    gtk_notebook_append_page (GTK_NOTEBOOK (tab), sw, head);
-    gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (tab), sw, TRUE);
+    gtk_notebook_append_page (GTK_NOTEBOOK (tab), resultBox, head);
+    gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (tab), resultBox, TRUE);
     
     std::vector<double> x0, x;
     int size = 0;
@@ -2635,12 +2653,48 @@ static void solveNR(GtkWidget* btn, GtkWidget* dialog)
         size += buses[i].size();
     for(int i = 0; i < 2*size; i++)
         x0.push_back(1);
-
-    
+   
     double err;
     int maxNumberOfIter = 50, iterx;
     newtonRaphson(systemModel, maxNumberOfIter, eps, x0, x, err, iterx);
+    for(int i = 0; i < x.size(); i++)
+        std::cout << x[i] << std::endl;
+    
+    GtkTextBuffer *bufferVoltage;
+    bufferVoltage = gtk_text_view_get_buffer(GTK_TEXT_VIEW(viewVoltage));
 
+    gtk_text_buffer_create_tag(bufferVoltage, "blue_fg",
+            "foreground", "blue", NULL);
+    gtk_text_buffer_create_tag(bufferVoltage, "lmarg",
+            "left_margin", 5, NULL);
+    gtk_text_buffer_create_tag(bufferVoltage, "bold",
+            "weight", PANGO_WEIGHT_BOLD, NULL);
+    
+    gtk_text_buffer_get_iter_at_offset(bufferVoltage, &iter, 0);
+    gtk_text_buffer_insert(bufferVoltage, &iter, "\n", -1);
+    gtk_text_buffer_insert_with_tags_by_name(bufferVoltage, &iter,
+            " Complex node voltage\n\n", -1, "bold", "lmarg",  NULL);
+    gtk_text_buffer_insert(bufferVoltage, &iter, " ", -1);
+    for(int i = 0; i < x.size()/2; i++)
+    {
+        char node[10], magnitude[50], phase[50];
+        unsigned long j = i+x.size()/2;
+        double radToDeg = x[i] * 180/3.14;
+        snprintf(node, 10, "%d", i+1);
+        snprintf(magnitude, 50, "%lf", x[j]);
+        snprintf(phase, 50, "%lf", radToDeg);
+        gtk_text_buffer_insert_with_tags_by_name(bufferVoltage, &iter,
+                node, -1, "bold", "lmarg",  NULL);
+        gtk_text_buffer_insert_with_tags_by_name(bufferVoltage, &iter,
+                ".  ", -1, "bold", "lmarg",  NULL);
+        gtk_text_buffer_insert(bufferVoltage, &iter, magnitude, -1);
+        gtk_text_buffer_insert(bufferVoltage, &iter, " ∠ ", -1);
+        gtk_text_buffer_insert(bufferVoltage, &iter, phase, -1);
+        gtk_text_buffer_insert(bufferVoltage, &iter, "°", -1);
+        gtk_text_buffer_insert(bufferVoltage, &iter, " [p.u.]", -1);
+        gtk_text_buffer_insert(bufferVoltage, &iter, "\n\n ", -1);
+    }
+    
     GtkTextBuffer *bufferNR;
     GtkWidget* viewNR;
 
@@ -2812,6 +2866,7 @@ static void createToolBar(GtkWidget* boxToolBar)
     exportMenu(btnFile);
     editMenu(btnEdit);
     g_signal_connect (btnSolve, "clicked", G_CALLBACK (messageDialog), NULL);
+    g_signal_connect (btnRemove, "clicked", G_CALLBACK (brisi), NULL);
 }
 
 static void createMainGrid(GtkWidget* mainGrid)
@@ -2836,8 +2891,6 @@ static void createMainGrid(GtkWidget* mainGrid)
     gtk_box_append(GTK_BOX(boxArea), areaFrame);
     
     gtk_box_append(GTK_BOX(boxArea), gtk_label_new("After selecting a device type and entering a value, click to place the device"));
-    
-    
     
     gtk_grid_attach(GTK_GRID(mainGrid), boxArea, 1, 0, 1, 1);
 }
