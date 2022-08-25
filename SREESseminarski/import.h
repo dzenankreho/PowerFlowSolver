@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-int importFromTxt(const char* filename, SystemModel::SystemModel& s,
+int importFromTxt(const char* filename, 
                    std::vector<std::vector<std::tuple<int, double, double, std::string, double, double, int>>>* buses,
                    std::vector<std::tuple<int, double, double, std::string, double, double, int>>* sortedBuses,
                    std::vector<std::tuple<int, int, double, double, double, std::string, double, double, double, double>>* lineValues,
