@@ -14,8 +14,8 @@ double eps{ 1e-10 };
 /// </summary>
 /// <param name="SystemModel::SystemModel">System model</param>
 /// <returns></returns>
-void exportToLatex(SystemModel::SystemModel s) {
-    std::ofstream myfile("main.tex");
+void exportToLatex(const char* filename, SystemModel::SystemModel s) {
+    std::ofstream myfile(filename);
     myfile << "\\documentclass[a4paper, 12pt]{article}" << std::endl;
     myfile << "\\usepackage[english]{babel}" << std::endl;
     myfile << "\\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}" << std::endl;
@@ -199,8 +199,8 @@ void exportToLatex(SystemModel::SystemModel s) {
 /// </summary>
 /// <param name="SystemModel::SystemModel">System model</param>
 /// <returns></returns>
-void exportToHTML(SystemModel::SystemModel s) {
-    std::ofstream myfile("main.html");
+void exportToHTML(const char* filename, SystemModel::SystemModel s) {
+    std::ofstream myfile(filename);
     myfile << "<!DOCTYPE html>" << std::endl;
     myfile << "<html>" << std::endl;
     myfile << "<head>" << std::endl;
