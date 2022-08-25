@@ -5,9 +5,9 @@
 #include <string.h>
 
 
-void exportToLatex(SystemModel::SystemModel s);
+void exportToLatex(const char* filename, SystemModel::SystemModel s);
 
-void exportToHTML(SystemModel::SystemModel s);
+void exportToHTML(const char* filename, SystemModel::SystemModel s);
 
 void exportToTxt(const char* filename, SystemModel::SystemModel s,
                  std::vector<std::vector<std::tuple<int, double, double, std::string, double, double, int>>> buses,
