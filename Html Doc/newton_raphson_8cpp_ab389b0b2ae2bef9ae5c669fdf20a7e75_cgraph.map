@@ -1,0 +1,11 @@
+<map id="newtonRaphson" name="newtonRaphson">
+<area shape="rect" id="node1" title="Newton Raphson method" alt="" coords="5,129,120,156"/>
+<area shape="rect" id="node2" href="$newton_raphson_8cpp.html#ac30ec09778ce9767047746ef83448ea3" title="Absolute value of vector" alt="" coords="229,5,310,32"/>
+<area shape="rect" id="node3" href="$class_system_model_1_1_system_model.html#a90ff4abab59174a08aaa153bbf6bd238" title="Gets the bus functions (fi_P and fi_Q) for the desired bus" alt="" coords="174,57,365,98"/>
+<area shape="rect" id="node4" href="$class_system_model_1_1_system_model.html#a48ce61bfa627080bf8d9edf0c2d07091" title="Gets the derivates of the bus functions (dfi_P/dx and dfi_Q/dx) for the desired bus (two rows of the ..." alt="" coords="168,122,371,163"/>
+<area shape="rect" id="node5" href="$class_system_model_1_1_system_model.html#a33c3e50a81ee0a32624237515f111b09" title=" " alt="" coords="174,187,365,229"/>
+<area shape="rect" id="node6" href="$newton_raphson_8cpp.html#ab7adec5a98f13e19c121f8cf74e29682" title="Inverse matrix" alt="" coords="220,253,319,280"/>
+<area shape="rect" id="node7" href="$newton_raphson_8cpp.html#a63129f00109f367f324037fe32e501e5" title="Adjoint matrix" alt="" coords="419,228,479,255"/>
+<area shape="rect" id="node9" href="$newton_raphson_8cpp.html#ad049f67ee0cec615720c3e6c31b0ed9a" title="Determinant of matrix" alt="" coords="527,279,617,305"/>
+<area shape="rect" id="node8" href="$newton_raphson_8cpp.html#a59fbc7ab4e906c283c231d973da3041c" title="Cofactor of the matrix" alt="" coords="665,241,733,268"/>
+</map>

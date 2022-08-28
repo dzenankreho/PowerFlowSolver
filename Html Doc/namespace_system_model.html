@@ -86,6 +86,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:af25820d62457e2ff5658c918d4b3aa3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b4026c7be6bf1a7170dafb0e99b122b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_system_model.html#a5b4026c7be6bf1a7170dafb0e99b122b">AdmittanceMatrix</a> = std::vector&lt; std::tuple&lt; uint8_t, uint8_t, std::complex&lt; double &gt; &gt; &gt;</td></tr>
 <tr class="separator:a5b4026c7be6bf1a7170dafb0e99b122b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af243590eff1f4bbffd31eb98b650fd9f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_system_model.html#af243590eff1f4bbffd31eb98b650fd9f">Branch</a> = std::tuple&lt; <a class="el" href="namespace_system_model.html#ab87f23b604c32019ec4bff0c4dda6f55">TypeOfBranch</a>, uint8_t, uint8_t, double, double, double, double &gt;</td></tr>
+<tr class="separator:af243590eff1f4bbffd31eb98b650fd9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -99,6 +101,10 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903aadb1f4ab5845def61a83d5df13e0c2397">Delta</a>
  }</td></tr>
 <tr class="separator:a58120fd3e59617c2aa4572781996903a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab87f23b604c32019ec4bff0c4dda6f55"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_system_model.html#ab87f23b604c32019ec4bff0c4dda6f55">TypeOfBranch</a> { <a class="el" href="namespace_system_model.html#ab87f23b604c32019ec4bff0c4dda6f55a4803e6b9e63dabf04de980788d6a13c4">Line</a>
+, <a class="el" href="namespace_system_model.html#ab87f23b604c32019ec4bff0c4dda6f55abbca27187a8eb6f1e22cf6b21598fbe4">Transformer</a>
+ }</td></tr>
+<tr class="separator:ab87f23b604c32019ec4bff0c4dda6f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -115,6 +121,20 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">using <a class="el" href="namespace_system_model.html#a5b4026c7be6bf1a7170dafb0e99b122b">SystemModel::AdmittanceMatrix</a> = typedef std::vector&lt;std::tuple&lt;uint8_t, uint8_t, std::complex&lt;double&gt; &gt;&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af243590eff1f4bbffd31eb98b650fd9f" name="af243590eff1f4bbffd31eb98b650fd9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af243590eff1f4bbffd31eb98b650fd9f">&#9670;&nbsp;</a></span>Branch</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespace_system_model.html#af243590eff1f4bbffd31eb98b650fd9f">SystemModel::Branch</a> = typedef std::tuple&lt;<a class="el" href="namespace_system_model.html#ab87f23b604c32019ec4bff0c4dda6f55">TypeOfBranch</a>, uint8_t, uint8_t, double, double, double, double&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -173,6 +193,32 @@ Functions</h2></td></tr>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a58120fd3e59617c2aa4572781996903aa26f93e6e68e28a698377e941cb59f29a" name="a58120fd3e59617c2aa4572781996903aa26f93e6e68e28a698377e941cb59f29a"></a>Star&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a58120fd3e59617c2aa4572781996903aa6095e5789fec52e250ded0ee8260c70f" name="a58120fd3e59617c2aa4572781996903aa6095e5789fec52e250ded0ee8260c70f"></a>GroundedStar&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a58120fd3e59617c2aa4572781996903aadb1f4ab5845def61a83d5df13e0c2397" name="a58120fd3e59617c2aa4572781996903aadb1f4ab5845def61a83d5df13e0c2397"></a>Delta&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="ab87f23b604c32019ec4bff0c4dda6f55" name="ab87f23b604c32019ec4bff0c4dda6f55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab87f23b604c32019ec4bff0c4dda6f55">&#9670;&nbsp;</a></span>TypeOfBranch</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="namespace_system_model.html#ab87f23b604c32019ec4bff0c4dda6f55">SystemModel::TypeOfBranch</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab87f23b604c32019ec4bff0c4dda6f55a4803e6b9e63dabf04de980788d6a13c4" name="ab87f23b604c32019ec4bff0c4dda6f55a4803e6b9e63dabf04de980788d6a13c4"></a>Line&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab87f23b604c32019ec4bff0c4dda6f55abbca27187a8eb6f1e22cf6b21598fbe4" name="ab87f23b604c32019ec4bff0c4dda6f55abbca27187a8eb6f1e22cf6b21598fbe4"></a>Transformer&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -240,6 +286,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespace_system_model_aea8bc330a108d18045e08a1a12853ae6_cgraph.svg" width="423" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>

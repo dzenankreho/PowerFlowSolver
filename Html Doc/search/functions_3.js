@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hasslackbeenassigned_0',['hasSlackBeenAssigned',['../class_system_model_1_1_system_model.html#a165a39931d43ec825c0820d160947546',1,'SystemModel::SystemModel']]]
+  ['determinant_0',['determinant',['../newton_raphson_8cpp.html#ad049f67ee0cec615720c3e6c31b0ed9a',1,'determinant(std::vector&lt; std::vector&lt; double &gt; &gt; matrix, int n):&#160;newtonRaphson.cpp'],['../newton_raphson_8h.html#ad049f67ee0cec615720c3e6c31b0ed9a',1,'determinant(std::vector&lt; std::vector&lt; double &gt; &gt; matrix, int n):&#160;newtonRaphson.cpp']]]
 ];

@@ -1,0 +1,7 @@
+<map id="determinant" name="determinant">
+<area shape="rect" id="node1" title="Determinant of matrix" alt="" coords="521,31,612,57"/>
+<area shape="rect" id="node2" href="$newton_raphson_8cpp.html#a63129f00109f367f324037fe32e501e5" title="Adjoint matrix" alt="" coords="413,5,473,32"/>
+<area shape="rect" id="node3" href="$newton_raphson_8cpp.html#ab7adec5a98f13e19c121f8cf74e29682" title="Inverse matrix" alt="" coords="267,31,365,57"/>
+<area shape="rect" id="node4" href="$newton_raphson_8cpp.html#ab389b0b2ae2bef9ae5c669fdf20a7e75" title="Newton Raphson method" alt="" coords="104,31,219,57"/>
+<area shape="rect" id="node5" href="$main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title=" " alt="" coords="5,31,56,57"/>
+</map>

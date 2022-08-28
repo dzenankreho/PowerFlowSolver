@@ -78,8 +78,7 @@ $(function() {
 <div class="dynheader">
 Collaboration diagram for SystemModel::SystemModel:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model__coll__graph.svg" width="226" height="279"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model__coll__graph.svg" width="226" height="396"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -111,18 +110,40 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a165a39931d43ec825c0820d160947546"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a165a39931d43ec825c0820d160947546">hasSlackBeenAssigned</a> () const</td></tr>
 <tr class="memdesc:a165a39931d43ec825c0820d160947546"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the slack bus has been assigned  <a href="class_system_model_1_1_system_model.html#a165a39931d43ec825c0820d160947546">More...</a><br /></td></tr>
 <tr class="separator:a165a39931d43ec825c0820d160947546"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8a0e238b09fd3bfaf5c05aa536a7f40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#ad8a0e238b09fd3bfaf5c05aa536a7f40">addTransformer</a> (uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b, double n)</td></tr>
-<tr class="memdesc:ad8a0e238b09fd3bfaf5c05aa536a7f40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transformer between buses  <a href="class_system_model_1_1_system_model.html#ad8a0e238b09fd3bfaf5c05aa536a7f40">More...</a><br /></td></tr>
-<tr class="separator:ad8a0e238b09fd3bfaf5c05aa536a7f40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98bf841af1282cbf5cf0af79a06437b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a98bf841af1282cbf5cf0af79a06437b2">addCapacitorBank</a> (uint8_t busNumber, double c, <a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903a">ThreePhaseLoadConfigurationsType</a> configurationType)</td></tr>
-<tr class="memdesc:a98bf841af1282cbf5cf0af79a06437b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a capacitor bank to a bus  <a href="class_system_model_1_1_system_model.html#a98bf841af1282cbf5cf0af79a06437b2">More...</a><br /></td></tr>
-<tr class="separator:a98bf841af1282cbf5cf0af79a06437b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2173148573d8333b7f70367c2f6929c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a2173148573d8333b7f70367c2f6929c0">addTransformer</a> (uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b)</td></tr>
+<tr class="memdesc:a2173148573d8333b7f70367c2f6929c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transformer between buses  <a href="class_system_model_1_1_system_model.html#a2173148573d8333b7f70367c2f6929c0">More...</a><br /></td></tr>
+<tr class="separator:a2173148573d8333b7f70367c2f6929c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3ef26563cd9f4a7761b6a7d37d80579"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#ab3ef26563cd9f4a7761b6a7d37d80579">addCapacitorBank</a> (uint8_t busNumber, double b, <a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903a">ThreePhaseLoadConfigurationsType</a> configurationType)</td></tr>
+<tr class="memdesc:ab3ef26563cd9f4a7761b6a7d37d80579"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a capacitor bank to a bus  <a href="class_system_model_1_1_system_model.html#ab3ef26563cd9f4a7761b6a7d37d80579">More...</a><br /></td></tr>
+<tr class="separator:ab3ef26563cd9f4a7761b6a7d37d80579"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90ff4abab59174a08aaa153bbf6bd238"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespace_system_model.html#a9c15836f2443d16c438dcd1444c69c5c">fi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a90ff4abab59174a08aaa153bbf6bd238">getBusFunctions</a> (uint8_t busNumber) const</td></tr>
 <tr class="memdesc:a90ff4abab59174a08aaa153bbf6bd238"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the bus functions (fi_P and fi_Q) for the desired bus  <a href="class_system_model_1_1_system_model.html#a90ff4abab59174a08aaa153bbf6bd238">More...</a><br /></td></tr>
 <tr class="separator:a90ff4abab59174a08aaa153bbf6bd238"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48ce61bfa627080bf8d9edf0c2d07091"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespace_system_model.html#af25820d62457e2ff5658c918d4b3aa3a">dfidx</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a48ce61bfa627080bf8d9edf0c2d07091">getDerivativesOfBusFunctions</a> (uint8_t busNumber) const</td></tr>
 <tr class="memdesc:a48ce61bfa627080bf8d9edf0c2d07091"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the derivates of the bus functions (dfi_P/dx and dfi_Q/dx) for the desired bus (two rows of the Jacobian associated with the given bus functions)  <a href="class_system_model_1_1_system_model.html#a48ce61bfa627080bf8d9edf0c2d07091">More...</a><br /></td></tr>
 <tr class="separator:a48ce61bfa627080bf8d9edf0c2d07091"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75b787c763e6fab5ac07d37bffe060c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a75b787c763e6fab5ac07d37bffe060c3">removeBranch</a> (uint8_t busNumber1, uint8_t busNumber2)</td></tr>
+<tr class="memdesc:a75b787c763e6fab5ac07d37bffe060c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a line or transformer between buses  <a href="class_system_model_1_1_system_model.html#a75b787c763e6fab5ac07d37bffe060c3">More...</a><br /></td></tr>
+<tr class="separator:a75b787c763e6fab5ac07d37bffe060c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6f4fa7c6669dcc04b5c21efe2f2e3f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#ac6f4fa7c6669dcc04b5c21efe2f2e3f6">changeLine</a> (uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b)</td></tr>
+<tr class="memdesc:ac6f4fa7c6669dcc04b5c21efe2f2e3f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the parameters of the line between buses  <a href="class_system_model_1_1_system_model.html#ac6f4fa7c6669dcc04b5c21efe2f2e3f6">More...</a><br /></td></tr>
+<tr class="separator:ac6f4fa7c6669dcc04b5c21efe2f2e3f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16ad85f411d4e6eac21eb2ac24beb992"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a16ad85f411d4e6eac21eb2ac24beb992">changeTransformer</a> (uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b)</td></tr>
+<tr class="memdesc:a16ad85f411d4e6eac21eb2ac24beb992"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the parameters of the transformer between buses  <a href="class_system_model_1_1_system_model.html#a16ad85f411d4e6eac21eb2ac24beb992">More...</a><br /></td></tr>
+<tr class="separator:a16ad85f411d4e6eac21eb2ac24beb992"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dcd8db16543251dfc280b489a39d3db"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespace_system_model.html#af243590eff1f4bbffd31eb98b650fd9f">Branch</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a6dcd8db16543251dfc280b489a39d3db">getBranches</a> () const</td></tr>
+<tr class="separator:a6dcd8db16543251dfc280b489a39d3db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd16e079a61c018a466eaefc17adf9db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#acd16e079a61c018a466eaefc17adf9db">removeBus</a> (uint8_t busNumber)</td></tr>
+<tr class="memdesc:acd16e079a61c018a466eaefc17adf9db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the given bus from the system  <a href="class_system_model_1_1_system_model.html#acd16e079a61c018a466eaefc17adf9db">More...</a><br /></td></tr>
+<tr class="separator:acd16e079a61c018a466eaefc17adf9db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b02b73bd8a733f4a81411cf67751eeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a6b02b73bd8a733f4a81411cf67751eeb">removeCapacitorBank</a> (uint8_t busNumber)</td></tr>
+<tr class="memdesc:a6b02b73bd8a733f4a81411cf67751eeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the capacitor bank that is connected to the given bus  <a href="class_system_model_1_1_system_model.html#a6b02b73bd8a733f4a81411cf67751eeb">More...</a><br /></td></tr>
+<tr class="separator:a6b02b73bd8a733f4a81411cf67751eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a9898837bf862c240af646e117e82d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#a8a9898837bf862c240af646e117e82d2">changeCapacitorBank</a> (uint8_t busNumber, double b, <a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903a">ThreePhaseLoadConfigurationsType</a> configurationType)</td></tr>
+<tr class="memdesc:a8a9898837bf862c240af646e117e82d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the parameters of the capacitor bank connected to the given bus  <a href="class_system_model_1_1_system_model.html#a8a9898837bf862c240af646e117e82d2">More...</a><br /></td></tr>
+<tr class="separator:a8a9898837bf862c240af646e117e82d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeac1243543078dfac02052bc1c94bb21"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::tuple&lt; uint8_t, double, <a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903a">ThreePhaseLoadConfigurationsType</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_system_model_1_1_system_model.html#aeac1243543078dfac02052bc1c94bb21">getCapacitorBanks</a> () const</td></tr>
+<tr class="separator:aeac1243543078dfac02052bc1c94bb21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -180,11 +201,17 @@ Friends</h2></td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_ad2d6d4881b62a3fffaeb582c0cdb0e2b_icgraph.svg" width="455" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
-<a id="a98bf841af1282cbf5cf0af79a06437b2" name="a98bf841af1282cbf5cf0af79a06437b2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98bf841af1282cbf5cf0af79a06437b2">&#9670;&nbsp;</a></span>addCapacitorBank()</h2>
+<a id="ab3ef26563cd9f4a7761b6a7d37d80579" name="ab3ef26563cd9f4a7761b6a7d37d80579"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3ef26563cd9f4a7761b6a7d37d80579">&#9670;&nbsp;</a></span>addCapacitorBank()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,7 +226,7 @@ Friends</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>c</em>, </td>
+          <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -219,11 +246,17 @@ Friends</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">busNumber</td><td>Ordinal number of the desired bus</td></tr>
-    <tr><td class="paramname">c</td><td>One phase capacitance of the bank</td></tr>
+    <tr><td class="paramname">b</td><td>One phase susceptance of the bank</td></tr>
     <tr><td class="paramname">configurationType</td><td>Three phase load configuration type (delta, star, grounded star) of the bank</td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_ab3ef26563cd9f4a7761b6a7d37d80579_icgraph.svg" width="455" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -326,6 +359,12 @@ Friends</h2></td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_a6f9a78e32b73d5c8395167b5af8c2183_icgraph.svg" width="455" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -417,8 +456,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ad8a0e238b09fd3bfaf5c05aa536a7f40" name="ad8a0e238b09fd3bfaf5c05aa536a7f40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8a0e238b09fd3bfaf5c05aa536a7f40">&#9670;&nbsp;</a></span>addTransformer()</h2>
+<a id="a2173148573d8333b7f70367c2f6929c0" name="a2173148573d8333b7f70367c2f6929c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2173148573d8333b7f70367c2f6929c0">&#9670;&nbsp;</a></span>addTransformer()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -457,13 +496,7 @@ Friends</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>b</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -482,7 +515,179 @@ Friends</h2></td></tr>
     <tr><td class="paramname">x</td><td>Series reactance of the transformer PI equivalent</td></tr>
     <tr><td class="paramname">g</td><td>Shunt conductance of the transformer PI equivalent</td></tr>
     <tr><td class="paramname">b</td><td>Shunt susceptance of the transformer PI equivalent</td></tr>
-    <tr><td class="paramname">n</td><td>Transformer turns ratio</td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_a2173148573d8333b7f70367c2f6929c0_icgraph.svg" width="455" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a8a9898837bf862c240af646e117e82d2" name="a8a9898837bf862c240af646e117e82d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a9898837bf862c240af646e117e82d2">&#9670;&nbsp;</a></span>changeCapacitorBank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SystemModel::SystemModel::changeCapacitorBank </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903a">ThreePhaseLoadConfigurationsType</a>&#160;</td>
+          <td class="paramname"><em>configurationType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the parameters of the capacitor bank connected to the given bus </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">busNumber</td><td>Ordinal number of the desired bus</td></tr>
+    <tr><td class="paramname">b</td><td>One phase susceptance of the bank</td></tr>
+    <tr><td class="paramname">configurationType</td><td>Three phase load configuration type (delta, star, grounded star) of the bank</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac6f4fa7c6669dcc04b5c21efe2f2e3f6" name="ac6f4fa7c6669dcc04b5c21efe2f2e3f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6f4fa7c6669dcc04b5c21efe2f2e3f6">&#9670;&nbsp;</a></span>changeLine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SystemModel::SystemModel::changeLine </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the parameters of the line between buses </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">busNumber1</td><td>Ordinal number of the first bus</td></tr>
+    <tr><td class="paramname">busNumber2</td><td>Ordinal number of the second bus</td></tr>
+    <tr><td class="paramname">r</td><td>Series resistance of the transmission line PI equivalent</td></tr>
+    <tr><td class="paramname">x</td><td>Series reactance of the transmission line PI equivalent</td></tr>
+    <tr><td class="paramname">b</td><td>Shunt susceptance of the transmission line PI equivalent</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a16ad85f411d4e6eac21eb2ac24beb992" name="a16ad85f411d4e6eac21eb2ac24beb992"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16ad85f411d4e6eac21eb2ac24beb992">&#9670;&nbsp;</a></span>changeTransformer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SystemModel::SystemModel::changeTransformer </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the parameters of the transformer between buses </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">busNumber1</td><td>0rdinal number of the first bus</td></tr>
+    <tr><td class="paramname">busNumber2</td><td>0rdinal number of the second bus</td></tr>
+    <tr><td class="paramname">r</td><td>Series resistance of the transformer PI equivalent</td></tr>
+    <tr><td class="paramname">x</td><td>Series reactance of the transformer PI equivalent</td></tr>
+    <tr><td class="paramname">g</td><td>Shunt conductance of the transformer PI equivalent</td></tr>
+    <tr><td class="paramname">b</td><td>Shunt susceptance of the transformer PI equivalent</td></tr>
   </table>
   </dd>
 </dl>
@@ -511,6 +716,43 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_afefb1be12e73649fa402951743ef0490_icgraph.svg" width="356" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a6dcd8db16543251dfc280b489a39d3db" name="a6dcd8db16543251dfc280b489a39d3db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dcd8db16543251dfc280b489a39d3db">&#9670;&nbsp;</a></span>getBranches()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="namespace_system_model.html#af243590eff1f4bbffd31eb98b650fd9f">Branch</a> &gt; SystemModel::SystemModel::getBranches </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_a6dcd8db16543251dfc280b489a39d3db_icgraph.svg" width="423" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -538,6 +780,12 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_system_model_1_1_bus.html">Bus</a> with the given bus number</dd></dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_abff800354c4ef998f396f313de1e6e70_icgraph.svg" width="455" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -566,6 +814,43 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_system_model_1_1_bus.html">Bus</a> functions for the given bus in the form of std::pair of functions, where both functions have a std::vector of doubles as parameters and return a double <br  />
  </dd></dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_a90ff4abab59174a08aaa153bbf6bd238_icgraph.svg" width="463" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aeac1243543078dfac02052bc1c94bb21" name="aeac1243543078dfac02052bc1c94bb21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeac1243543078dfac02052bc1c94bb21">&#9670;&nbsp;</a></span>getCapacitorBanks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::tuple&lt; uint8_t, double, <a class="el" href="namespace_system_model.html#a58120fd3e59617c2aa4572781996903a">ThreePhaseLoadConfigurationsType</a> &gt; &gt; SystemModel::SystemModel::getCapacitorBanks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_aeac1243543078dfac02052bc1c94bb21_icgraph.svg" width="423" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -594,6 +879,12 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Derivatives of the bus functions for the given bus in the form of std::pair of std::vector-s of functions, where both functions have a std::vector of doubles as parameters and return a double <br  />
  </dd></dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_a48ce61bfa627080bf8d9edf0c2d07091_icgraph.svg" width="475" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -619,6 +910,12 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_system_model_1_1_system_model_a33c3e50a81ee0a32624237515f111b09_icgraph.svg" width="463" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -639,6 +936,95 @@ Friends</h2></td></tr>
 
 <p>Check whether the slack bus has been assigned </p>
 <dl class="section return"><dt>Returns</dt><dd>True if the slack bus has been assigned and false otherwise</dd></dl>
+
+</div>
+</div>
+<a id="a75b787c763e6fab5ac07d37bffe060c3" name="a75b787c763e6fab5ac07d37bffe060c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75b787c763e6fab5ac07d37bffe060c3">&#9670;&nbsp;</a></span>removeBranch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SystemModel::SystemModel::removeBranch </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes a line or transformer between buses </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">busNumber1</td><td>0rdinal number of the first bus</td></tr>
+    <tr><td class="paramname">busNumber2</td><td>0rdinal number of the second bus</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acd16e079a61c018a466eaefc17adf9db" name="acd16e079a61c018a466eaefc17adf9db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd16e079a61c018a466eaefc17adf9db">&#9670;&nbsp;</a></span>removeBus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SystemModel::SystemModel::removeBus </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes the given bus from the system </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">busNumber</td><td>Ordinal number of the desired bus</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6b02b73bd8a733f4a81411cf67751eeb" name="a6b02b73bd8a733f4a81411cf67751eeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b02b73bd8a733f4a81411cf67751eeb">&#9670;&nbsp;</a></span>removeCapacitorBank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SystemModel::SystemModel::removeCapacitorBank </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>busNumber</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes the capacitor bank that is connected to the given bus </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">busNumber</td><td>Ordinal number of the desired bus</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
