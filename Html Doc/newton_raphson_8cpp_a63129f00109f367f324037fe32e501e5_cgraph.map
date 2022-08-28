@@ -1,5 +1,0 @@
-<map id="adjoint" name="adjoint">
-<area shape="rect" id="node1" title="Adjoint matrix" alt="" coords="5,6,65,33"/>
-<area shape="rect" id="node2" href="$newton_raphson_8cpp.html#a59fbc7ab4e906c283c231d973da3041c" title="Cofactor of the matrix" alt="" coords="252,6,320,33"/>
-<area shape="rect" id="node3" href="$newton_raphson_8cpp.html#ad049f67ee0cec615720c3e6c31b0ed9a" title="Determinant of matrix" alt="" coords="113,44,204,70"/>
-</map>

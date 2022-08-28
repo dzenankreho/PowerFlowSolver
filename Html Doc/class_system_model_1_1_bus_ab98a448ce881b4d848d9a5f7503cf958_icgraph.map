@@ -1,6 +1,0 @@
-<map id="SystemModel::Bus::getActivePower" name="SystemModel::Bus::getActivePower">
-<area shape="rect" id="node1" title="Gets the value at which the active power for the given bus should be maintained." alt="" coords="160,49,355,90"/>
-<area shape="rect" id="node2" href="$export_8cpp.html#aab0355bdced3f8dc218a973c1047656c" title="Exports SystemModel to the main.html file" alt="" coords="5,5,112,32"/>
-<area shape="rect" id="node3" href="$export_8cpp.html#a3670fd8e8918396eab76c759773bf210" title="Exports SystemModel to the main.tex file" alt="" coords="7,56,111,83"/>
-<area shape="rect" id="node4" href="$export_8cpp.html#a878215740a86c16b0277e838fe4dc24f" title="Exports SystemModel to the .tex file" alt="" coords="13,107,104,133"/>
-</map>

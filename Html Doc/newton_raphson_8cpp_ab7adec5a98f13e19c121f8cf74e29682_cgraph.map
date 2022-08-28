@@ -1,6 +1,0 @@
-<map id="inverseMatrix" name="inverseMatrix">
-<area shape="rect" id="node1" title="Inverse matrix" alt="" coords="5,31,104,57"/>
-<area shape="rect" id="node2" href="$newton_raphson_8cpp.html#a63129f00109f367f324037fe32e501e5" title="Adjoint matrix" alt="" coords="152,5,212,32"/>
-<area shape="rect" id="node4" href="$newton_raphson_8cpp.html#ad049f67ee0cec615720c3e6c31b0ed9a" title="Determinant of matrix" alt="" coords="260,56,351,83"/>
-<area shape="rect" id="node3" href="$newton_raphson_8cpp.html#a59fbc7ab4e906c283c231d973da3041c" title="Cofactor of the matrix" alt="" coords="399,19,467,45"/>
-</map>
