@@ -1690,88 +1690,86 @@ static void pvTable(GSimpleAction *action, GVariant *parameter, gpointer user_da
     
 static void pqTable(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
-        gridPQ = gtk_grid_new();
-        gtk_grid_set_column_homogeneous (GTK_GRID(gridPQ),TRUE);
-
-        GtkWidget *busId, *activePower, *reactivePower, *entryId, *entryActive, *entryReactive;
-        busId = gtk_label_new("Bus ID: ");
-        activePower = gtk_label_new("Active Power: ");
-        reactivePower = gtk_label_new("Reactive Power: ");
+    gridPQ = gtk_grid_new();
+    gtk_grid_set_column_homogeneous (GTK_GRID(gridPQ),TRUE);
+    GtkWidget *busId, *activePower, *reactivePower, *entryId, *entryActive, *entryReactive;
+    busId = gtk_label_new("Bus ID: ");
+    activePower = gtk_label_new("Active Power: ");
+    reactivePower = gtk_label_new("Reactive Power: ");
+    
+    //entry polja
+    entryId = gtk_entry_new();
+    entryActive = gtk_entry_new();
+    entryReactive = gtk_entry_new();
+    
+    GtkEventController* pEvent = gtk_event_controller_focus_new();
+    gtk_widget_add_controller (busId, GTK_EVENT_CONTROLLER(pEvent));
+    g_signal_connect (pEvent, "pressed", G_CALLBACK (pressed), fixed);
+    
+    
+    gtk_grid_set_column_homogeneous(GTK_GRID(gridPQ), TRUE);
+    
+    gtk_grid_attach (GTK_GRID (gridPQ), busId, 0, 0, 1, 1);
+    gtk_grid_attach (GTK_GRID (gridPQ), entryId, 1, 0, 1, 1);
+    
+    gtk_grid_attach (GTK_GRID (gridPQ), activePower, 0, 1, 1, 1);
+    gtk_grid_attach (GTK_GRID (gridPQ), entryActive, 1, 1, 1, 1);
+    gtk_grid_attach (GTK_GRID (gridPQ), reactivePower, 2, 1, 1, 1);
+    gtk_grid_attach (GTK_GRID (gridPQ), entryReactive, 3, 1, 1, 1);
         
-        //entry polja
-        entryId = gtk_entry_new();
-        entryActive = gtk_entry_new();
-        entryReactive = gtk_entry_new();
-
-        gtk_grid_set_column_homogeneous(GTK_GRID(gridPQ), TRUE);
-        
-        gtk_grid_attach (GTK_GRID (gridPQ), busId, 0, 0, 1, 1);
-        gtk_grid_attach (GTK_GRID (gridPQ), entryId, 1, 0, 1, 1);
-        
-        gtk_grid_attach (GTK_GRID (gridPQ), activePower, 0, 1, 1, 1);
-        gtk_grid_attach (GTK_GRID (gridPQ), entryActive, 1, 1, 1, 1);
-        gtk_grid_attach (GTK_GRID (gridPQ), reactivePower, 2, 1, 1, 1);
-        gtk_grid_attach (GTK_GRID (gridPQ), entryReactive, 3, 1, 1, 1);
-            
-        
-        //Table View
-        GtkWidget *sw;
-        GtkWidget *remove, *add, *entry, *removeAll;
-        GtkWidget *vbox, *hbox;
-        pqList = gtk_tree_view_new();
-        initPqList(pqList, pqValues);
-        
-        GtkTreeSelection *selection;
-        sw = gtk_scrolled_window_new();
-        gtk_tree_view_set_reorderable(GTK_TREE_VIEW(pqList), TRUE);
-        gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), pqList);
-
-        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-        gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(pqList), TRUE);
-        gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(pqList), GTK_TREE_VIEW_GRID_LINES_BOTH);
-        
-        gtk_widget_set_vexpand(sw, TRUE);
-        gtk_widget_set_hexpand(sw, TRUE);
-        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-        gtk_box_append(GTK_BOX(vbox), sw);
-
-        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
-        add = gtk_button_new_with_label("Add");
-        remove = gtk_button_new_with_label("Remove");
-        removeAll = gtk_button_new_with_label("Remove All");
-        entry = gtk_entry_new();
-
-        gtk_box_append(GTK_BOX(hbox), add);
-        gtk_box_append(GTK_BOX(hbox), entry);
-        gtk_box_append(GTK_BOX(hbox), remove);
-        gtk_box_append(GTK_BOX(hbox), removeAll);
-        gtk_box_append(GTK_BOX(vbox), hbox);
-
-        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(pqList));
-        gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
-        //path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iter);
-        
-        gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(pqList), TRUE);
-    //    g_signal_connect(G_OBJECT(remove), "clicked", G_CALLBACK(remove_item), selection);
-    //    g_signal_connect(G_OBJECT(removeAll), "clicked", G_CALLBACK(remove_all), selection);
-        g_signal_connect(pqList, "row-activated", G_CALLBACK(on_tree_view_row_activatedPQ), gridPQ);
-        gtk_widget_set_vexpand(vbox, TRUE);
-        gtk_widget_set_hexpand(vbox, TRUE);
-        gtk_grid_attach(GTK_GRID(gridPQ), vbox, 0, 4, 10, 10);
-        
-        
-        GtkWidget *head, *image, *btn, *label = gtk_label_new ("PQ Editing View");
-        head = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_box_append (GTK_BOX (head), label);
-        btn = gtk_button_new();
-        gtk_button_set_has_frame (GTK_BUTTON (btn), FALSE);
-        image = gtk_image_new_from_file("/Users/dzeni/Documents/gtk/_NRGui/Icons/close.png");
-        g_signal_connect (btn, "clicked", G_CALLBACK (closeTab), NULL);
-        gtk_button_set_child(GTK_BUTTON(btn), image);
-        gtk_box_append (GTK_BOX (head), btn);
-        gtk_notebook_append_page (GTK_NOTEBOOK (tab), gridPQ, head);
-        gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (tab), gridPQ, TRUE);
-        tabNumber = gtk_notebook_get_current_page(GTK_NOTEBOOK(tab));
+    
+    //Table View
+    GtkWidget *sw;
+    GtkWidget *remove, *add, *entry, *removeAll;
+    GtkWidget *vbox, *hbox;
+    pqList = gtk_tree_view_new();
+    initPqList(pqList, pqValues);
+    
+    GtkTreeSelection *selection;
+    sw = gtk_scrolled_window_new();
+    gtk_tree_view_set_reorderable(GTK_TREE_VIEW(pqList), TRUE);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), pqList);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(pqList), TRUE);
+    gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(pqList), GTK_TREE_VIEW_GRID_LINES_BOTH);
+    
+    gtk_widget_set_vexpand(sw, TRUE);
+    gtk_widget_set_hexpand(sw, TRUE);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_append(GTK_BOX(vbox), sw);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
+    add = gtk_button_new_with_label("Add");
+    remove = gtk_button_new_with_label("Remove");
+    removeAll = gtk_button_new_with_label("Remove All");
+    entry = gtk_entry_new();
+    gtk_box_append(GTK_BOX(hbox), add);
+    gtk_box_append(GTK_BOX(hbox), entry);
+    gtk_box_append(GTK_BOX(hbox), remove);
+    gtk_box_append(GTK_BOX(hbox), removeAll);
+    gtk_box_append(GTK_BOX(vbox), hbox);
+    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(pqList));
+    gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+    //path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iter);
+    
+    gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(pqList), TRUE);    //    g_signal_connect(G_OBJECT(remove), "clicked", G_CALLBACK(remove_item), selection);    //    g_signal_connect(G_OBJECT(removeAll), "clicked", G_CALLBACK(remove_all), selection);
+    g_signal_connect(pqList, "row-activated", G_CALLBACK(on_tree_view_row_activatedPQ), gridPQ);
+    gtk_widget_set_vexpand(vbox, TRUE);
+    gtk_widget_set_hexpand(vbox, TRUE);
+    gtk_grid_attach(GTK_GRID(gridPQ), vbox, 0, 4, 10, 10);
+    
+    
+    GtkWidget *head, *image, *btn, *label = gtk_label_new ("PQ Editing View");
+    head = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_append (GTK_BOX (head), label);
+    btn = gtk_button_new();
+    gtk_button_set_has_frame (GTK_BUTTON (btn), FALSE);
+    image = gtk_image_new_from_file("/Users/dzeni/Documents/gtk/_NRGui/Icons/close.png");
+    g_signal_connect (btn, "clicked", G_CALLBACK (closeTab), NULL);
+    gtk_button_set_child(GTK_BUTTON(btn), image);
+    gtk_box_append (GTK_BOX (head), btn);
+    gtk_notebook_append_page (GTK_NOTEBOOK (tab), gridPQ, head);
+    gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (tab), gridPQ, TRUE);
+    tabNumber = gtk_notebook_get_current_page(GTK_NOTEBOOK(tab));
     }
 
 static void lineTable(GSimpleAction *action, GVariant *parameter, gpointer user_data)
