@@ -14,11 +14,11 @@
 /// </summary>
 /// <param name="voltageMagnitude">Value of voltage magnitude of the bus</param>
 void SystemModel::Bus::setVoltageMagnitude(double voltageMagnitude) {
-	if (typeOfBus == TypeOfBus::PQ) {
-		throw std::logic_error("Cannot set voltage magnitude for PQ bus.");
-	}
+    if (typeOfBus == TypeOfBus::PQ) {
+        throw std::logic_error("Cannot set voltage magnitude for PQ bus.");
+    }
 
-	this->voltageMagnitude = voltageMagnitude;
+    this->voltageMagnitude = voltageMagnitude;
 }
 
 
@@ -28,11 +28,11 @@ void SystemModel::Bus::setVoltageMagnitude(double voltageMagnitude) {
 /// </summary>
 /// <param name="voltagePhase">Value of voltage phase of the bus</param>
 void SystemModel::Bus::setVoltagePhase(double voltagePhase) {
-	if (typeOfBus != TypeOfBus::Slack) {
-		throw std::logic_error("Cannot set voltage phase for PQ and PV buses.");
-	}
+    if (typeOfBus != TypeOfBus::Slack) {
+        throw std::logic_error("Cannot set voltage phase for PQ and PV buses.");
+    }
 
-	this->voltagePhase = voltagePhase;
+    this->voltagePhase = voltagePhase;
 }
 
 
@@ -42,11 +42,11 @@ void SystemModel::Bus::setVoltagePhase(double voltagePhase) {
 /// </summary>
 /// <param name="activePower">Value of active power for the bus</param>
 void SystemModel::Bus::setActivePower(double activePower) {
-	if (typeOfBus == TypeOfBus::Slack) {
-		throw std::logic_error("Cannot set active power for slack bus.");
-	}
+    if (typeOfBus == TypeOfBus::Slack) {
+        throw std::logic_error("Cannot set active power for slack bus.");
+    }
 
-	this->activePower = activePower;
+    this->activePower = activePower;
 }
 
 
@@ -56,11 +56,11 @@ void SystemModel::Bus::setActivePower(double activePower) {
 /// </summary>
 /// <param name="reactivePower">Value of reactive power for the bus</param>
 void SystemModel::Bus::setReactivePower(double reactivePower) {
-	if (typeOfBus != TypeOfBus::PQ) {
-		throw std::logic_error("Cannot set reactive power for PQ and PV buses.");
-	}
+    if (typeOfBus != TypeOfBus::PQ) {
+        throw std::logic_error("Cannot set reactive power for PQ and PV buses.");
+    }
 
-	this->reactivePower = reactivePower;
+    this->reactivePower = reactivePower;
 }
 
 
@@ -70,11 +70,11 @@ void SystemModel::Bus::setReactivePower(double reactivePower) {
 /// </summary>
 /// <returns>Value of voltage magnitude of the bus</returns>
 std::optional<double> SystemModel::Bus::getVoltageMagnitude() const {
-	if (typeOfBus == TypeOfBus::PQ) {
-		throw std::logic_error("Cannot get voltage magnitude for PQ bus.");
-	}
+    if (typeOfBus == TypeOfBus::PQ) {
+        throw std::logic_error("Cannot get voltage magnitude for PQ bus.");
+    }
 
-	return voltageMagnitude;
+    return voltageMagnitude;
 }
 
 
@@ -84,11 +84,11 @@ std::optional<double> SystemModel::Bus::getVoltageMagnitude() const {
 /// </summary>
 /// <returns>Value of voltage phase of the bus</returns>
 std::optional<double> SystemModel::Bus::getVoltagePhase() const {
-	if (typeOfBus != TypeOfBus::Slack) {
-		throw std::logic_error("Cannot get voltage phase for PQ and PV buses.");
-	}
+    if (typeOfBus != TypeOfBus::Slack) {
+        throw std::logic_error("Cannot get voltage phase for PQ and PV buses.");
+    }
 
-	return voltagePhase;
+    return voltagePhase;
 }
 
 
@@ -98,11 +98,11 @@ std::optional<double> SystemModel::Bus::getVoltagePhase() const {
 /// </summary>
 /// <returns>Value of active power for the bus</returns>
 std::optional<double> SystemModel::Bus::getActivePower() const {
-	if (typeOfBus == TypeOfBus::Slack) {
-		throw std::logic_error("Cannot get active power for slack bus.");
-	}
+    if (typeOfBus == TypeOfBus::Slack) {
+        throw std::logic_error("Cannot get active power for slack bus.");
+    }
 
-	return activePower;
+    return activePower;
 }
 
 
@@ -112,11 +112,11 @@ std::optional<double> SystemModel::Bus::getActivePower() const {
 /// </summary>
 /// <returns>Value of reactive power for the bus</returns>
 std::optional<double> SystemModel::Bus::getReactivePower() const {
-	if (typeOfBus != TypeOfBus::PQ) {
-		throw std::logic_error("Cannot get reactive power for PQ and PV buses.");
-	}
+    if (typeOfBus != TypeOfBus::PQ) {
+        throw std::logic_error("Cannot get reactive power for PQ and PV buses.");
+    }
 
-	return reactivePower;
+    return reactivePower;
 }
 
 
@@ -126,33 +126,33 @@ std::optional<double> SystemModel::Bus::getReactivePower() const {
 /// </summary>
 /// <param name="typeOfBus">Type of the bus (Slack, PV, PQ) to be added to the system</param>
 void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
-	if (numberOfBuses == maxNumberOfBuses) {
-		throw std::length_error("Maximum number of buses reached.");
-	}
+    if (numberOfBuses == maxNumberOfBuses) {
+        throw std::length_error("Maximum number of buses reached.");
+    }
 
-	if (numberOfBuses + 1 == maxNumberOfBuses) {
-		if (typeOfBus != TypeOfBus::Slack) {
-			bool slackFound{ false };
-			for (const Bus& bus : buses) {
-				if (bus.getTypeOfBus() == TypeOfBus::Slack) {
-					slackFound = true;
-				}
-			}
+    if (numberOfBuses + 1 == maxNumberOfBuses) {
+        if (typeOfBus != TypeOfBus::Slack) {
+            bool slackFound{ false };
+            for (const Bus& bus : buses) {
+                if (bus.getTypeOfBus() == TypeOfBus::Slack) {
+                    slackFound = true;
+                }
+            }
 
-			if (!slackFound) {
-				throw std::length_error("Maximum number of buses will be reached without a slack bus.");
-			}
-		}
-	}
+            if (!slackFound) {
+                throw std::length_error("Maximum number of buses will be reached without a slack bus.");
+            }
+        }
+    }
 
-	if (typeOfBus == TypeOfBus::Slack && hasSlackBeenAssigned()) {
-		throw std::logic_error("There already exists a slack bus.");
-	}
+    if (typeOfBus == TypeOfBus::Slack && hasSlackBeenAssigned()) {
+        throw std::logic_error("There already exists a slack bus.");
+    }
 
 
 
-	buses.push_back(Bus(typeOfBus));
-	numberOfBuses++;
+    buses.push_back(Bus(typeOfBus));
+    numberOfBuses++;
 }
 
 
@@ -164,20 +164,20 @@ void SystemModel::SystemModel::addBus(TypeOfBus typeOfBus) {
 /// <param name="activePower">Active power drawn by the load</param>
 /// <param name="reactivePower">Reactive power drawn by the load</param>
 void SystemModel::SystemModel::addLoad(uint8_t busNumber, double activePower, double reactivePower) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	if (buses.at(busNumber - 1).getTypeOfBus() != TypeOfBus::PQ) {
-		throw std::logic_error("Given bus is not a PQ bus.");
-	}
+    if (buses.at(busNumber - 1).getTypeOfBus() != TypeOfBus::PQ) {
+        throw std::logic_error("Given bus is not a PQ bus.");
+    }
 
-	if (buses.at(busNumber - 1).getActivePower() || buses.at(busNumber - 1).getReactivePower()) {
-		throw std::logic_error("Power already set for this bus.");
-	}
+    if (buses.at(busNumber - 1).getActivePower() || buses.at(busNumber - 1).getReactivePower()) {
+        throw std::logic_error("Power already set for this bus.");
+    }
 
-	buses.at(busNumber - 1).setActivePower(activePower);
-	buses.at(busNumber - 1).setReactivePower(reactivePower);
+    buses.at(busNumber - 1).setActivePower(activePower);
+    buses.at(busNumber - 1).setReactivePower(reactivePower);
 }
 
 
@@ -188,15 +188,15 @@ void SystemModel::SystemModel::addLoad(uint8_t busNumber, double activePower, do
 /// <param name="busNumber">Ordinal number of the desired bus</param>
 /// <returns>Bus with the given bus number</returns>
 SystemModel::Bus& SystemModel::SystemModel::getBus(uint8_t busNumber) {
-	if (busNumber == 0) {
-		throw std::logic_error("Invalid bus number.");
-	}
+    if (busNumber == 0) {
+        throw std::logic_error("Invalid bus number.");
+    }
 
-	try {
-		return buses.at(busNumber - 1);
-	} catch (...) {
-		throw std::logic_error("Invalid bus number.");
-	}
+    try {
+        return buses.at(busNumber - 1);
+    } catch (...) {
+        throw std::logic_error("Invalid bus number.");
+    }
 }
 
 
@@ -210,21 +210,21 @@ SystemModel::Bus& SystemModel::SystemModel::getBus(uint8_t busNumber) {
 /// <param name="x">Series reactance of the transmission line PI equivalent</param>
 /// <param name="b">Shunt susceptance of the transmission line PI equivalent</param>
 void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b) {
-	if (busNumber1 > buses.size() || busNumber1 == 0) {
-		throw std::out_of_range("Invalid bus number 1.");
-	}
+    if (busNumber1 > buses.size() || busNumber1 == 0) {
+        throw std::out_of_range("Invalid bus number 1.");
+    }
 
-	if (busNumber2 > buses.size() || busNumber2 == 0) {
-		throw std::out_of_range("Invalid bus number 2.");
-	}
+    if (busNumber2 > buses.size() || busNumber2 == 0) {
+        throw std::out_of_range("Invalid bus number 2.");
+    }
 
-	if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
-		throw std::logic_error("Line or transformer already present between nodes.");
-	}
+    if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+        throw std::logic_error("Line or transformer already present between nodes.");
+    }
 
-	branches.push_back({ TypeOfBranch::Line, busNumber1, busNumber2, r, x, 0, b });
+    branches.push_back({ TypeOfBranch::Line, busNumber1, busNumber2, r, x, 0, b });
 
-	addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, 0, b);
+    addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, 0, b);
 }
 
 
@@ -236,20 +236,20 @@ void SystemModel::SystemModel::addLine(uint8_t busNumber1, uint8_t busNumber2, d
 /// <param name="voltageMagnitude">Voltage magnitude on which the given bus should be maintained</param>
 /// <param name="activePower"Active power on which the given bus should be maintained></param>
 void SystemModel::SystemModel::addGenerator(uint8_t busNumber, double voltageMagnitude, double activePower) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	if (buses.at(busNumber - 1).getTypeOfBus() != TypeOfBus::PV) {
-		throw std::logic_error("Given bus is not a PV bus.");
-	}
+    if (buses.at(busNumber - 1).getTypeOfBus() != TypeOfBus::PV) {
+        throw std::logic_error("Given bus is not a PV bus.");
+    }
 
-	if (buses.at(busNumber - 1).getActivePower() || buses.at(busNumber - 1).getVoltageMagnitude()) {
-		throw std::logic_error("Active power and voltage magnitude already set for this bus.");
-	}
+    if (buses.at(busNumber - 1).getActivePower() || buses.at(busNumber - 1).getVoltageMagnitude()) {
+        throw std::logic_error("Active power and voltage magnitude already set for this bus.");
+    }
 
-	buses.at(busNumber - 1).setActivePower(activePower);
-	buses.at(busNumber - 1).setVoltageMagnitude(voltageMagnitude);
+    buses.at(busNumber - 1).setActivePower(activePower);
+    buses.at(busNumber - 1).setVoltageMagnitude(voltageMagnitude);
 }
 
 
@@ -261,20 +261,20 @@ void SystemModel::SystemModel::addGenerator(uint8_t busNumber, double voltageMag
 /// <param name="voltageMagnitude">Voltage magnitude on which the given bus should be maintained</param>
 /// <param name="voltagePhase">Voltage phase on which the given bus should be maintained</param>
 void SystemModel::SystemModel::addSlackGenerator(uint8_t busNumber, double voltageMagnitude, double voltagePhase) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	if (buses.at(busNumber - 1).getTypeOfBus() != TypeOfBus::Slack) {
-		throw std::logic_error("Given bus is not a PV bus.");
-	}
+    if (buses.at(busNumber - 1).getTypeOfBus() != TypeOfBus::Slack) {
+        throw std::logic_error("Given bus is not a PV bus.");
+    }
 
-	if (buses.at(busNumber - 1).getVoltagePhase() || buses.at(busNumber - 1).getVoltageMagnitude()) {
-		throw std::logic_error("Voltage already set for this bus.");
-	}
+    if (buses.at(busNumber - 1).getVoltagePhase() || buses.at(busNumber - 1).getVoltageMagnitude()) {
+        throw std::logic_error("Voltage already set for this bus.");
+    }
 
-	buses.at(busNumber - 1).setVoltagePhase(voltagePhase);
-	buses.at(busNumber - 1).setVoltageMagnitude(voltageMagnitude);
+    buses.at(busNumber - 1).setVoltagePhase(voltagePhase);
+    buses.at(busNumber - 1).setVoltageMagnitude(voltageMagnitude);
 }
 
 
@@ -284,13 +284,13 @@ void SystemModel::SystemModel::addSlackGenerator(uint8_t busNumber, double volta
 /// </summary>
 /// <returns>True if the slack bus has been assigned and false otherwise</returns>
 bool SystemModel::SystemModel::hasSlackBeenAssigned() const {
-	for (const Bus& bus : buses) {
-		if (bus.getTypeOfBus() == TypeOfBus::Slack) {
-			return true;
-		}
-	}
+    for (const Bus& bus : buses) {
+        if (bus.getTypeOfBus() == TypeOfBus::Slack) {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -305,21 +305,21 @@ bool SystemModel::SystemModel::hasSlackBeenAssigned() const {
 /// <param name="g">Shunt conductance of the transformer PI equivalent</param>
 /// <param name="b">Shunt susceptance of the transformer PI equivalent</param>
 void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b) {
-	if (busNumber1 > buses.size() || busNumber1 == 0) {
-		throw std::out_of_range("Invalid bus number 1.");
-	}
+    if (busNumber1 > buses.size() || busNumber1 == 0) {
+        throw std::out_of_range("Invalid bus number 1.");
+    }
 
-	if (busNumber2 > buses.size() || busNumber2 == 0) {
-		throw std::out_of_range("Invalid bus number 2.");
-	}
+    if (busNumber2 > buses.size() || busNumber2 == 0) {
+        throw std::out_of_range("Invalid bus number 2.");
+    }
 
-	if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
-		throw std::logic_error("Line or transformer already present between nodes.");
-	}
+    if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+        throw std::logic_error("Line or transformer already present between nodes.");
+    }
 
-	branches.push_back({ TypeOfBranch::Transformer, busNumber1, busNumber2, r, x, g, -b });
+    branches.push_back({ TypeOfBranch::Transformer, busNumber1, busNumber2, r, x, g, -b });
 
-	addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, g, -b);
+    addBranchToAdmittanceMatrix(busNumber1, busNumber2, r, x, g, -b);
 }
 
 
@@ -334,47 +334,47 @@ void SystemModel::SystemModel::addTransformer(uint8_t busNumber1, uint8_t busNum
 /// <param name="g">Shunt conductance of the PI equivalent</param>
 /// <param name="b">Shunt susceptance of the PI equivalent</param>
 void SystemModel::SystemModel::addBranchToAdmittanceMatrix(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b) {
-	if (busNumber1 > buses.size() || busNumber1 == 0) {
-		throw std::out_of_range("Invalid bus number 1.");
-	}
+    if (busNumber1 > buses.size() || busNumber1 == 0) {
+        throw std::out_of_range("Invalid bus number 1.");
+    }
 
-	if (busNumber2 > buses.size() || busNumber2 == 0) {
-		throw std::out_of_range("Invalid bus number 2.");
-	}
+    if (busNumber2 > buses.size() || busNumber2 == 0) {
+        throw std::out_of_range("Invalid bus number 2.");
+    }
 
-	if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
-		throw std::logic_error("Line or transformer already present between nodes.");
-	}
+    if (checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+        throw std::logic_error("Line or transformer already present between nodes.");
+    }
 
-	std::complex<double> z_s{ r, x }, y_sh{ g, b };
+    std::complex<double> z_s{ r, x }, y_sh{ g, b };
 
-	admittanceMatrix.push_back({ busNumber1, busNumber2, -1.0 / z_s });
+    admittanceMatrix.push_back({ busNumber1, busNumber2, -1.0 / z_s });
 
-	admittanceMatrix.push_back({ busNumber2, busNumber1, -1.0 / z_s });
+    admittanceMatrix.push_back({ busNumber2, busNumber1, -1.0 / z_s });
 
-	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
-		admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
-	} else {
-		int64_t index{};
-		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
-			std::get<0>(admittanceMatrix.at(index)) == busNumber1)) {
-			index++;
-		}
+    if (!checkForConnectionBetweenToBuses(busNumber1, busNumber1)) {
+        admittanceMatrix.push_back({ busNumber1, busNumber1, y_sh / 2.0 + 1.0 / z_s });
+    } else {
+        int64_t index{};
+        while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
+            std::get<0>(admittanceMatrix.at(index)) == busNumber1)) {
+            index++;
+        }
 
-		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
-	}
+        std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
+    }
 
-	if (!checkForConnectionBetweenToBuses(busNumber2, busNumber2)) {
-		admittanceMatrix.push_back({ busNumber2, busNumber2, y_sh / 2.0 + 1.0 / z_s });
-	} else {
-		int64_t index{};
-		while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
-			std::get<0>(admittanceMatrix.at(index)) == busNumber2)) {
-			index++;
-		}
+    if (!checkForConnectionBetweenToBuses(busNumber2, busNumber2)) {
+        admittanceMatrix.push_back({ busNumber2, busNumber2, y_sh / 2.0 + 1.0 / z_s });
+    } else {
+        int64_t index{};
+        while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) &&
+            std::get<0>(admittanceMatrix.at(index)) == busNumber2)) {
+            index++;
+        }
 
-		std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
-	}
+        std::get<2>(admittanceMatrix.at(index)) += y_sh / 2.0 + 1.0 / z_s;
+    }
 }
 
 
@@ -386,14 +386,14 @@ void SystemModel::SystemModel::addBranchToAdmittanceMatrix(uint8_t busNumber1, u
 /// <param name="busNumber2">0rdinal number of the second bus</param>
 /// <returns>True if there is a connection between buses and false otherwise</returns>
 bool SystemModel::SystemModel::checkForConnectionBetweenToBuses(uint8_t busNumber1, uint8_t busNumber2) const {
-	for (uint8_t i{}; i < admittanceMatrix.size(); i++) {
-		if ((std::get<1>(admittanceMatrix.at(i)) == busNumber1 && std::get<0>(admittanceMatrix.at(i)) == busNumber2) ||
-			(std::get<0>(admittanceMatrix.at(i)) == busNumber1 && std::get<1>(admittanceMatrix.at(i)) == busNumber2)) {
-			return true;
-		}
-	}
+    for (uint8_t i{}; i < admittanceMatrix.size(); i++) {
+        if ((std::get<1>(admittanceMatrix.at(i)) == busNumber1 && std::get<0>(admittanceMatrix.at(i)) == busNumber2) ||
+            (std::get<0>(admittanceMatrix.at(i)) == busNumber1 && std::get<1>(admittanceMatrix.at(i)) == busNumber2)) {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -405,100 +405,100 @@ bool SystemModel::SystemModel::checkForConnectionBetweenToBuses(uint8_t busNumbe
 /// <param name="systemModel">SystemModel object to be printed to the stream</param>
 /// <returns></returns>
 std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& systemModel) {
-	try {
-		const char* busTypeStrings[]{ "Slack", "PV", "PQ" };
+    try {
+        const char* busTypeStrings[]{ "Slack", "PV", "PQ" };
 
-		stream << "Buses:" << std::endl;
+        stream << "Buses:" << std::endl;
 
-		for (uint8_t i{}; i < systemModel.buses.size(); i++) {
-			stream << "\tBus: " << i + 1 << std::endl;
+        for (uint8_t i{}; i < systemModel.buses.size(); i++) {
+            stream << "\tBus: " << i + 1 << std::endl;
 
-			stream << "\t\tType: " << busTypeStrings[int(systemModel.buses.at(i).getTypeOfBus())] << std::endl;
+            stream << "\t\tType: " << busTypeStrings[int(systemModel.buses.at(i).getTypeOfBus())] << std::endl;
 
-			switch (systemModel.buses.at(i).getTypeOfBus()) {
-				case TypeOfBus::Slack:
-					stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
-					stream << "\t\tVoltage phase: " << systemModel.buses.at(i).getVoltagePhase().value() << std::endl;
-					break;
-				case TypeOfBus::PV:
-					stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
-					stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
-					break;
-				case TypeOfBus::PQ:
-					stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
-					stream << "\t\tReactive power: " << systemModel.buses.at(i).getReactivePower().value() << std::endl;
-					break;
-			}
-		}
+            switch (systemModel.buses.at(i).getTypeOfBus()) {
+                case TypeOfBus::Slack:
+                    stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
+                    stream << "\t\tVoltage phase: " << systemModel.buses.at(i).getVoltagePhase().value() << std::endl;
+                    break;
+                case TypeOfBus::PV:
+                    stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
+                    stream << "\t\tVoltage magnitude: " << systemModel.buses.at(i).getVoltageMagnitude().value() << std::endl;
+                    break;
+                case TypeOfBus::PQ:
+                    stream << "\t\tActive power: " << systemModel.buses.at(i).getActivePower().value() << std::endl;
+                    stream << "\t\tReactive power: " << systemModel.buses.at(i).getReactivePower().value() << std::endl;
+                    break;
+            }
+        }
 
-		
+        
 
-		const auto& branches{ systemModel.getBranches() };
+        const auto& branches{ systemModel.getBranches() };
 
-		for (size_t i{}; i < branches.size(); i++) {
-			if (i == 0) {
-				stream << "\nBranches:" << std::endl;
-			}
+        for (size_t i{}; i < branches.size(); i++) {
+            if (i == 0) {
+                stream << "\nBranches:" << std::endl;
+            }
 
-			stream << "\tFrom Bus: " << int(std::get<1>(branches.at(i))) << " to Bus: " << int(std::get<2>(branches.at(i))) << std::endl;
-			stream << "\t\tType: " << ((int(std::get<0>(branches.at(i))) == 0) ? ("Line") : ("Transformer")) << std::endl;
-			stream << "\t\tSeries resistance: " << std::get<3>(branches.at(i)) << std::endl;
-			stream << "\t\tSeries reactance: " << std::get<4>(branches.at(i)) << std::endl;
-			if (std::get<0>(branches.at(i)) == TypeOfBranch::Transformer) {
-				stream << "\t\tShunt conductance: " << std::get<5>(branches.at(i)) << std::endl;
-			}
-			stream << "\t\tShunt susceptance: " << std::abs(std::get<6>(branches.at(i))) << std::endl;
-		}
-
-
-
-		const auto& capBanks{ systemModel.getCapacitorBanks() };
-
-		for (size_t i{}; i < capBanks.size(); i++) {
-			if (i == 0) {
-				stream << "\nCapacitor banks:" << std::endl;
-			}
-
-			stream << "\tAt Bus: " << int(std::get<0>(capBanks.at(i))) << std::endl;
-
-			switch (std::get<2>(capBanks.at(i))) {
-				case ThreePhaseLoadConfigurationsType::Delta:
-					stream << "\t\tLoad Configurations Type: Delta" << std::endl;
-					break;
-				case ThreePhaseLoadConfigurationsType::GroundedStar:
-					stream << "\t\tLoad Configurations Type: Grounded Star" << std::endl;
-					break;
-				case ThreePhaseLoadConfigurationsType::Star:
-					stream << "\t\tLoad Configurations Type: Star" << std::endl;
-					break;
-			}
-			
-			stream << "\t\tSusceptance: " << std::get<1>(capBanks.at(i)) << std::endl;
-		}
-		
+            stream << "\tFrom Bus: " << int(std::get<1>(branches.at(i))) << " to Bus: " << int(std::get<2>(branches.at(i))) << std::endl;
+            stream << "\t\tType: " << ((int(std::get<0>(branches.at(i))) == 0) ? ("Line") : ("Transformer")) << std::endl;
+            stream << "\t\tSeries resistance: " << std::get<3>(branches.at(i)) << std::endl;
+            stream << "\t\tSeries reactance: " << std::get<4>(branches.at(i)) << std::endl;
+            if (std::get<0>(branches.at(i)) == TypeOfBranch::Transformer) {
+                stream << "\t\tShunt conductance: " << std::get<5>(branches.at(i)) << std::endl;
+            }
+            stream << "\t\tShunt susceptance: " << std::abs(std::get<6>(branches.at(i))) << std::endl;
+        }
 
 
-		stream << std::endl << "System admittance matrix:" << std::endl;
-		for (uint8_t i{ 1 }; i < systemModel.numberOfBuses + 1; i++) {
-			for (uint8_t j{ 1 }; j < systemModel.numberOfBuses + 1; j++) {
-				if (systemModel.checkForConnectionBetweenToBuses(i, j)) {
-					uint8_t k{};
-					while (!(std::get<0>(systemModel.admittanceMatrix.at(k)) == i && std::get<1>(systemModel.admittanceMatrix.at(k)) == j)) {
-						k++;
-					}
 
-					stream << std::setw(20) << std::get<2>(systemModel.admittanceMatrix.at(k)) << " ";
-				} else {
-					stream << std::setw(20) << std::complex{ 0.0, 0.0 } << " ";
-				}
-			}
-			stream << std::endl;
-		}
+        const auto& capBanks{ systemModel.getCapacitorBanks() };
 
-		return stream;
-	} catch (...) {
-		throw std::logic_error("System is incomplete.");
-	}
+        for (size_t i{}; i < capBanks.size(); i++) {
+            if (i == 0) {
+                stream << "\nCapacitor banks:" << std::endl;
+            }
+
+            stream << "\tAt Bus: " << int(std::get<0>(capBanks.at(i))) << std::endl;
+
+            switch (std::get<2>(capBanks.at(i))) {
+                case ThreePhaseLoadConfigurationsType::Delta:
+                    stream << "\t\tLoad Configurations Type: Delta" << std::endl;
+                    break;
+                case ThreePhaseLoadConfigurationsType::GroundedStar:
+                    stream << "\t\tLoad Configurations Type: Grounded Star" << std::endl;
+                    break;
+                case ThreePhaseLoadConfigurationsType::Star:
+                    stream << "\t\tLoad Configurations Type: Star" << std::endl;
+                    break;
+            }
+            
+            stream << "\t\tSusceptance: " << std::get<1>(capBanks.at(i)) << std::endl;
+        }
+        
+
+
+        stream << std::endl << "System admittance matrix:" << std::endl;
+        for (uint8_t i{ 1 }; i < systemModel.numberOfBuses + 1; i++) {
+            for (uint8_t j{ 1 }; j < systemModel.numberOfBuses + 1; j++) {
+                if (systemModel.checkForConnectionBetweenToBuses(i, j)) {
+                    uint8_t k{};
+                    while (!(std::get<0>(systemModel.admittanceMatrix.at(k)) == i && std::get<1>(systemModel.admittanceMatrix.at(k)) == j)) {
+                        k++;
+                    }
+
+                    stream << std::setw(20) << std::get<2>(systemModel.admittanceMatrix.at(k)) << " ";
+                } else {
+                    stream << std::setw(20) << std::complex{ 0.0, 0.0 } << " ";
+                }
+            }
+            stream << std::endl;
+        }
+
+        return stream;
+    } catch (...) {
+        throw std::logic_error("System is incomplete.");
+    }
 }
 
 
@@ -510,13 +510,13 @@ std::ostream& SystemModel::operator <<(std::ostream& stream, const SystemModel& 
 /// <param name="b">One phase susceptance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
 void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	capacitorBanks.push_back({ busNumber, b, configurationType });
+    capacitorBanks.push_back({ busNumber, b, configurationType });
 
-	addCapacitorBankToAdmittanceMatrix(busNumber, b, configurationType);
+    addCapacitorBankToAdmittanceMatrix(busNumber, b, configurationType);
 }
 
 
@@ -528,30 +528,30 @@ void SystemModel::SystemModel::addCapacitorBank(uint8_t busNumber, double b, Thr
 /// <param name="b">One phase susceptance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
 void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	std::complex<double> admittance{ 0, 0 };
+    std::complex<double> admittance{ 0, 0 };
 
-	switch (configurationType) {
-		case ThreePhaseLoadConfigurationsType::Delta:
-			admittance = { 0, 3 * b };
-			break;
-		case ThreePhaseLoadConfigurationsType::Star:
-			admittance = { 0, b };
-			break;
-		case ThreePhaseLoadConfigurationsType::GroundedStar:
-			admittance = { 0, b };
-			break;
-	}
+    switch (configurationType) {
+        case ThreePhaseLoadConfigurationsType::Delta:
+            admittance = { 0, 3 * b };
+            break;
+        case ThreePhaseLoadConfigurationsType::Star:
+            admittance = { 0, b };
+            break;
+        case ThreePhaseLoadConfigurationsType::GroundedStar:
+            admittance = { 0, b };
+            break;
+    }
 
-	int64_t index{};
-	while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) && std::get<0>(admittanceMatrix.at(index)) == busNumber)) {
-		index++;
-	}
+    int64_t index{};
+    while (!(std::get<0>(admittanceMatrix.at(index)) == std::get<1>(admittanceMatrix.at(index)) && std::get<0>(admittanceMatrix.at(index)) == busNumber)) {
+        index++;
+    }
 
-	std::get<2>(admittanceMatrix.at(index)) += admittance;
+    std::get<2>(admittanceMatrix.at(index)) += admittance;
 }
 
 
@@ -561,107 +561,107 @@ void SystemModel::SystemModel::addCapacitorBankToAdmittanceMatrix(uint8_t busNum
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
 /// <returns>
-/// Bus functions for the given bus in the form of std::pair of functions, where both 
-/// functions have a std::vector of doubles as parameters and return a double  
+/// Bus functions for the given bus in the form of std::pair of functions, where both
+/// functions have a std::vector of doubles as parameters and return a double
 /// </returns>
 SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) const {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	std::function<double(std::vector<double>)> fip, fiq;
+    std::function<double(std::vector<double>)> fip, fiq;
 
-	const Bus& bus{ buses.at(busNumber - 1) };
-	uint8_t numberOfBuses{ this->numberOfBuses };
+    const Bus& bus{ buses.at(busNumber - 1) };
+    uint8_t numberOfBuses{ this->numberOfBuses };
 
-	switch (bus.getTypeOfBus()) {
-		case TypeOfBus::Slack:
-			fip = [bus, busNumber](std::vector<double> v) -> double {
-				return v.at(busNumber - 1) - bus.getVoltagePhase().value();
-			};
-			fiq = [bus, busNumber, numberOfBuses](std::vector<double> v) -> double {
-				return v.at(busNumber - 1 + numberOfBuses) - bus.getVoltageMagnitude().value();
-			};
-			break;
-		case TypeOfBus::PV:
-			fip = [bus, busNumber, this, numberOfBuses](std::vector<double> v) -> double {
-				double sum{};
-				for (uint8_t i{}; i < numberOfBuses; i++) {
-					uint8_t k{};
-					AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
-					bool notConnected{ false };
-					while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-						k++;
-						if (k == admittanceMatrix.size()) {
-							notConnected = true;
-							break;
-						}
-					}
-					if (notConnected) {
-						continue;
-					}
+    switch (bus.getTypeOfBus()) {
+        case TypeOfBus::Slack:
+            fip = [bus, busNumber](std::vector<double> v) -> double {
+                return v.at(busNumber - 1) - bus.getVoltagePhase().value();
+            };
+            fiq = [bus, busNumber, numberOfBuses](std::vector<double> v) -> double {
+                return v.at(busNumber - 1 + numberOfBuses) - bus.getVoltageMagnitude().value();
+            };
+            break;
+        case TypeOfBus::PV:
+            fip = [bus, busNumber, this, numberOfBuses](std::vector<double> v) -> double {
+                double sum{};
+                for (uint8_t i{}; i < numberOfBuses; i++) {
+                    uint8_t k{};
+                    AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                    bool notConnected{ false };
+                    while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                        k++;
+                        if (k == admittanceMatrix.size()) {
+                            notConnected = true;
+                            break;
+                        }
+                    }
+                    if (notConnected) {
+                        continue;
+                    }
 
-					sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-						* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));;
-				}
+                    sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                        * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));;
+                }
 
-				return v.at(busNumber - 1 + numberOfBuses) * sum - bus.getActivePower().value();
-			};
-			fiq = [bus, busNumber, numberOfBuses](std::vector<double> v) -> double {
-				return v.at(busNumber - 1 + numberOfBuses) - bus.getVoltageMagnitude().value();
-			};
-			break;
-		case TypeOfBus::PQ:
-			fip = [bus, busNumber, this, numberOfBuses](std::vector<double> v) -> double {
-				double sum{};
-				for (uint8_t i{}; i < numberOfBuses; i++) {
-					uint8_t k{};
-					AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
-					bool notConnected{ false };
-					while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-						k++;
-						if (k == admittanceMatrix.size()) {
-							notConnected = true;
-							break;
-						}
-					}
-					if (notConnected) {
-						continue;
-					}
+                return v.at(busNumber - 1 + numberOfBuses) * sum - bus.getActivePower().value();
+            };
+            fiq = [bus, busNumber, numberOfBuses](std::vector<double> v) -> double {
+                return v.at(busNumber - 1 + numberOfBuses) - bus.getVoltageMagnitude().value();
+            };
+            break;
+        case TypeOfBus::PQ:
+            fip = [bus, busNumber, this, numberOfBuses](std::vector<double> v) -> double {
+                double sum{};
+                for (uint8_t i{}; i < numberOfBuses; i++) {
+                    uint8_t k{};
+                    AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                    bool notConnected{ false };
+                    while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                        k++;
+                        if (k == admittanceMatrix.size()) {
+                            notConnected = true;
+                            break;
+                        }
+                    }
+                    if (notConnected) {
+                        continue;
+                    }
 
-					sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-						* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));
-				}
+                    sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                        * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));
+                }
 
-				return v.at(busNumber - 1 + numberOfBuses) * sum + bus.getActivePower().value();
-			};
-			fiq = [bus, busNumber, this, numberOfBuses](std::vector<double> v) -> double {
-				double sum{};
-				for (uint8_t i{}; i < numberOfBuses; i++) {
-					uint8_t k{};
-					AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
-					bool notConnected{ false };
-					while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-						k++;
-						if (k == admittanceMatrix.size()) {
-							notConnected = true;
-							break;
-						}
-					}
-					if (notConnected) {
-						continue;
-					}
+                return v.at(busNumber - 1 + numberOfBuses) * sum + bus.getActivePower().value();
+            };
+            fiq = [bus, busNumber, this, numberOfBuses](std::vector<double> v) -> double {
+                double sum{};
+                for (uint8_t i{}; i < numberOfBuses; i++) {
+                    uint8_t k{};
+                    AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                    bool notConnected{ false };
+                    while (!(std::get<1>(admittanceMatrix.at(k)) == i + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                        k++;
+                        if (k == admittanceMatrix.size()) {
+                            notConnected = true;
+                            break;
+                        }
+                    }
+                    if (notConnected) {
+                        continue;
+                    }
 
-					sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-						* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));
-				}
+                    sum += v.at(i + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                        * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i));
+                }
 
-				return v.at(busNumber - 1 + numberOfBuses) * sum + bus.getReactivePower().value();
-			};
-			break;
-	}
+                return v.at(busNumber - 1 + numberOfBuses) * sum + bus.getReactivePower().value();
+            };
+            break;
+    }
 
-	return { fip, fiq };
+    return { fip, fiq };
 }
 
 
@@ -672,347 +672,347 @@ SystemModel::fi SystemModel::SystemModel::getBusFunctions(uint8_t busNumber) con
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
 /// <returns>
-/// Derivatives of the bus functions for the given bus in the form of std::pair of std::vector-s 
-/// of functions, where both functions have a std::vector of doubles as parameters and return a double  
+/// Derivatives of the bus functions for the given bus in the form of std::pair of std::vector-s
+/// of functions, where both functions have a std::vector of doubles as parameters and return a double
 /// </returns>
 SystemModel::dfidx SystemModel::SystemModel::getDerivativesOfBusFunctions(uint8_t busNumber) const {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	std::vector<std::function<double(std::vector<double>)>> dfipdx, dfiqdx;
+    std::vector<std::function<double(std::vector<double>)>> dfipdx, dfiqdx;
 
-	const Bus& bus{ buses.at(busNumber - 1) };
-	uint8_t numberOfBuses{ this->numberOfBuses };
+    const Bus& bus{ buses.at(busNumber - 1) };
+    uint8_t numberOfBuses{ this->numberOfBuses };
 
-	switch (bus.getTypeOfBus()) {
-		case TypeOfBus::Slack:
-			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
-				dfipdx.push_back([i, busNumber](std::vector<double> v) -> double {
-					return i == busNumber;
-				});
-			}
-			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
-				dfiqdx.push_back([i, busNumber, numberOfBuses](std::vector<double> v) -> double {
-					return i == busNumber + numberOfBuses;
-				});
-			}
-			break;
-		case TypeOfBus::PV:
-			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
-				if (i == busNumber) {
-					// dfip/dfi
-					dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						double sum{};
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+    switch (bus.getTypeOfBus()) {
+        case TypeOfBus::Slack:
+            for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
+                dfipdx.push_back([i, busNumber](std::vector<double> v) -> double {
+                    return i == busNumber;
+                });
+            }
+            for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
+                dfiqdx.push_back([i, busNumber, numberOfBuses](std::vector<double> v) -> double {
+                    return i == busNumber + numberOfBuses;
+                });
+            }
+            break;
+        case TypeOfBus::PV:
+            for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
+                if (i == busNumber) {
+                    // dfip/dfi
+                    dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        double sum{};
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						for (uint8_t j{}; j < numberOfBuses; j++) {
-							if (j + 1 == busNumber) {
-								continue;
-							}
+                        for (uint8_t j{}; j < numberOfBuses; j++) {
+                            if (j + 1 == busNumber) {
+                                continue;
+                            }
 
-							uint8_t k{};
-							bool notConnected{false};
-							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-								k++;
-								if (k == admittanceMatrix.size()) {
-									notConnected = true;
-									break;
-								}
-							}
-							if (notConnected) {
-								continue;
-							}
+                            uint8_t k{};
+                            bool notConnected{false};
+                            while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                                k++;
+                                if (k == admittanceMatrix.size()) {
+                                    notConnected = true;
+                                    break;
+                                }
+                            }
+                            if (notConnected) {
+                                continue;
+                            }
 
-							sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-								* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
-						}
+                            sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                                * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
+                        }
 
-						return -v.at(busNumber - 1 + numberOfBuses) * sum;
-					});
-				} else if (i <= numberOfBuses) {
-					// dfip/dfj
-					dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return -v.at(busNumber - 1 + numberOfBuses) * sum;
+                    });
+                } else if (i <= numberOfBuses) {
+                    // dfip/dfj
+                    dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						uint8_t k{};
-						while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-							k++;
-							if (k == admittanceMatrix.size()) {
-								return 0;
-							}
-						}
+                        uint8_t k{};
+                        while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                            k++;
+                            if (k == admittanceMatrix.size()) {
+                                return 0;
+                            }
+                        }
 
-						return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-							* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
-					});
-				} else if (i == busNumber + numberOfBuses) {
-					// dfip/dvi
-					dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						double sum{};
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                            * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
+                    });
+                } else if (i == busNumber + numberOfBuses) {
+                    // dfip/dvi
+                    dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        double sum{};
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						for (uint8_t j{}; j < numberOfBuses; j++) {
-							uint8_t k{};
-							bool notConnected{ false };
-							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-								k++;
-								if (k == admittanceMatrix.size()) {
-									notConnected = true;
-									break;
-								}
-							}
-							if (notConnected) {
-								continue;
-							}
-							if (j + 1 == busNumber) {
-								sum += 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
-									* std::cos(std::arg(std::get<2>(admittanceMatrix.at(k))));
-							} else {
-								sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
-									* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
-							}
-						}
+                        for (uint8_t j{}; j < numberOfBuses; j++) {
+                            uint8_t k{};
+                            bool notConnected{ false };
+                            while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                                k++;
+                                if (k == admittanceMatrix.size()) {
+                                    notConnected = true;
+                                    break;
+                                }
+                            }
+                            if (notConnected) {
+                                continue;
+                            }
+                            if (j + 1 == busNumber) {
+                                sum += 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
+                                    * std::cos(std::arg(std::get<2>(admittanceMatrix.at(k))));
+                            } else {
+                                sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
+                                    * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
+                            }
+                        }
 
-						return sum;
-					});
-				} else {
-					// dfip/dvj
-					dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return sum;
+                    });
+                } else {
+                    // dfip/dvj
+                    dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						uint8_t k{};
-						while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-							k++;
-							if (k == admittanceMatrix.size()) {
-								return 0;
-							}
-						}
+                        uint8_t k{};
+                        while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                            k++;
+                            if (k == admittanceMatrix.size()) {
+                                return 0;
+                            }
+                        }
 
-						return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
-					});
-				}
-			}
-			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
-				dfiqdx.push_back([i, busNumber, numberOfBuses](std::vector<double> v) -> double {
-					return i == busNumber + numberOfBuses;
-				});
-			}
-			break;
-		case TypeOfBus::PQ:
-			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
-				if (i == busNumber) {
-					// dfip/dfi
-					dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						double sum{};
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                            * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
+                    });
+                }
+            }
+            for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
+                dfiqdx.push_back([i, busNumber, numberOfBuses](std::vector<double> v) -> double {
+                    return i == busNumber + numberOfBuses;
+                });
+            }
+            break;
+        case TypeOfBus::PQ:
+            for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
+                if (i == busNumber) {
+                    // dfip/dfi
+                    dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        double sum{};
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						for (uint8_t j{}; j < numberOfBuses; j++) {
-							if (j + 1 == busNumber) {
-								continue;
-							}
+                        for (uint8_t j{}; j < numberOfBuses; j++) {
+                            if (j + 1 == busNumber) {
+                                continue;
+                            }
 
-							uint8_t k{};
-							bool notConnected{ false };
-							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-								k++;
-								if (k == admittanceMatrix.size()) {
-									notConnected = true;
-									break;
-								}
-							}
-							if (notConnected) {
-								continue;
-							}
+                            uint8_t k{};
+                            bool notConnected{ false };
+                            while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                                k++;
+                                if (k == admittanceMatrix.size()) {
+                                    notConnected = true;
+                                    break;
+                                }
+                            }
+                            if (notConnected) {
+                                continue;
+                            }
 
-							sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-								* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
-						}
+                            sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                                * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
+                        }
 
-						return -v.at(busNumber - 1 + numberOfBuses) * sum;
-					});
-				} else if (i <= numberOfBuses) {
-					// dfip/dfj
-					dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return -v.at(busNumber - 1 + numberOfBuses) * sum;
+                    });
+                } else if (i <= numberOfBuses) {
+                    // dfip/dfj
+                    dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						uint8_t k{};
-						while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-							k++;
-							if (k == admittanceMatrix.size()) {
-								return 0;
-							}
-						}
+                        uint8_t k{};
+                        while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                            k++;
+                            if (k == admittanceMatrix.size()) {
+                                return 0;
+                            }
+                        }
 
-						return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-							* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
-					});
-				} else if (i == busNumber + numberOfBuses) {
-					// dfip/dvi
-					dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						double sum{};
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                            * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
+                    });
+                } else if (i == busNumber + numberOfBuses) {
+                    // dfip/dvi
+                    dfipdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        double sum{};
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						for (uint8_t j{}; j < numberOfBuses; j++) {
-							uint8_t k{};
-							bool notConnected{ false };
-							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-								k++;
-								if (k == admittanceMatrix.size()) {
-									notConnected = true;
-									break;
-								}
-							}
-							if (notConnected) {
-								continue;
-							}
-							if (j + 1 == busNumber) {
-								sum += 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
-									* std::cos(std::arg(std::get<2>(admittanceMatrix.at(k))));
-							} else {
-								sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
-									* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
-							}
-						}
+                        for (uint8_t j{}; j < numberOfBuses; j++) {
+                            uint8_t k{};
+                            bool notConnected{ false };
+                            while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                                k++;
+                                if (k == admittanceMatrix.size()) {
+                                    notConnected = true;
+                                    break;
+                                }
+                            }
+                            if (notConnected) {
+                                continue;
+                            }
+                            if (j + 1 == busNumber) {
+                                sum += 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
+                                    * std::cos(std::arg(std::get<2>(admittanceMatrix.at(k))));
+                            } else {
+                                sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
+                                    * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
+                            }
+                        }
 
-						return sum;
-					});
-				} else {
-					// dfip/dvj
-					dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return sum;
+                    });
+                } else {
+                    // dfip/dvj
+                    dfipdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						uint8_t k{};
-						while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-							k++;
-							if (k == admittanceMatrix.size()) {
-								return 0;
-							}
-						}
+                        uint8_t k{};
+                        while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                            k++;
+                            if (k == admittanceMatrix.size()) {
+                                return 0;
+                            }
+                        }
 
-						return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
-					});
-				}
-			}
-			for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
-				if (i == busNumber) {
-					// dfiq/dfi
-					dfiqdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						double sum{};
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                            * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
+                    });
+                }
+            }
+            for (uint8_t i{ 1 }; i < 2 * numberOfBuses + 1; i++) {
+                if (i == busNumber) {
+                    // dfiq/dfi
+                    dfiqdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        double sum{};
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						for (uint8_t j{}; j < numberOfBuses; j++) {
-							if (j + 1 == busNumber) {
-								continue;
-							}
+                        for (uint8_t j{}; j < numberOfBuses; j++) {
+                            if (j + 1 == busNumber) {
+                                continue;
+                            }
 
-							uint8_t k{};
-							bool notConnected{ false };
-							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-								k++;
-								if (k == admittanceMatrix.size()) {
-									notConnected = true;
-									break;
-								}
-							}
-							if (notConnected) {
-								continue;
-							}
+                            uint8_t k{};
+                            bool notConnected{ false };
+                            while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                                k++;
+                                if (k == admittanceMatrix.size()) {
+                                    notConnected = true;
+                                    break;
+                                }
+                            }
+                            if (notConnected) {
+                                continue;
+                            }
 
-							sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-								* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
-						}
+                            sum += v.at(j + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                                * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
+                        }
 
-						return v.at(busNumber - 1 + numberOfBuses) * sum;
-					});
-				} else if (i <= numberOfBuses) {
-					// dfiq/dfj
-					dfiqdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return v.at(busNumber - 1 + numberOfBuses) * sum;
+                    });
+                } else if (i <= numberOfBuses) {
+                    // dfiq/dfj
+                    dfiqdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						uint8_t k{};
-						while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-							k++;
-							if (k == admittanceMatrix.size()) {
-								return 0;
-							}
-						}
+                        uint8_t k{};
+                        while (!(std::get<1>(admittanceMatrix.at(k)) == i && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                            k++;
+                            if (k == admittanceMatrix.size()) {
+                                return 0;
+                            }
+                        }
 
-						return -v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-							* std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
-					});
-				} else if (i == busNumber + numberOfBuses) {
-					// dfiq/dvi
-					dfiqdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						double sum{};
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return -v.at(busNumber - 1 + numberOfBuses) * v.at(i - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                            * std::cos(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(i - 1));
+                    });
+                } else if (i == busNumber + numberOfBuses) {
+                    // dfiq/dvi
+                    dfiqdx.push_back([busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        double sum{};
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						for (uint8_t j{}; j < numberOfBuses; j++) {
-							uint8_t k{};
-							bool notConnected{ false };
-							while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-								k++;
-								if (k == admittanceMatrix.size()) {
-									notConnected = true;
-									break;
-								}
-							}
-							if (notConnected) {
-								continue;
-							}
-							if (j + 1 == busNumber) {
-								sum -= 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
-									* std::sin(std::arg(std::get<2>(admittanceMatrix.at(k))));
-							} else {
-								sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
-									* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
-							}
-						}
+                        for (uint8_t j{}; j < numberOfBuses; j++) {
+                            uint8_t k{};
+                            bool notConnected{ false };
+                            while (!(std::get<1>(admittanceMatrix.at(k)) == j + 1 && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                                k++;
+                                if (k == admittanceMatrix.size()) {
+                                    notConnected = true;
+                                    break;
+                                }
+                            }
+                            if (notConnected) {
+                                continue;
+                            }
+                            if (j + 1 == busNumber) {
+                                sum -= 2 * std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(busNumber - 1 + numberOfBuses)
+                                    * std::sin(std::arg(std::get<2>(admittanceMatrix.at(k))));
+                            } else {
+                                sum += std::abs(std::get<2>(admittanceMatrix.at(k))) * v.at(j + numberOfBuses)
+                                    * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(j));
+                            }
+                        }
 
-						return sum;
-					});
-				} else {
-					// dfiq/dvj
-					dfiqdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
-						AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
+                        return sum;
+                    });
+                } else {
+                    // dfiq/dvj
+                    dfiqdx.push_back([i, busNumber, numberOfBuses, this](std::vector<double> v) -> double {
+                        AdmittanceMatrix admittanceMatrix{ this->getAdmittanceMatrix() };
 
-						uint8_t k{};
-						while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
-							k++;
-							if (k == admittanceMatrix.size()) {
-								return 0;
-							}
-						}
+                        uint8_t k{};
+                        while (!(std::get<1>(admittanceMatrix.at(k)) == ((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) && std::get<0>(admittanceMatrix.at(k)) == busNumber)) {
+                            k++;
+                            if (k == admittanceMatrix.size()) {
+                                return 0;
+                            }
+                        }
 
-						return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
-							* std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
-					});
-				}
-			}
-			break;
-	}
+                        return v.at(busNumber - 1 + numberOfBuses) * std::abs(std::get<2>(admittanceMatrix.at(k)))
+                            * std::sin(v.at(busNumber - 1) - std::arg(std::get<2>(admittanceMatrix.at(k))) - v.at(((i <= numberOfBuses) ? (i) : (i - numberOfBuses)) - 1));
+                    });
+                }
+            }
+            break;
+    }
 
-	return { dfipdx, dfiqdx };
+    return { dfipdx, dfiqdx };
 }
 
 
 
 /// <summary>
-/// Recalculates the admittance matrix using current values of branches and capacitorBanks 
+/// Recalculates the admittance matrix using current values of branches and capacitorBanks
 /// </summary>
 void SystemModel::SystemModel::recalculateAdmittanceMatrix() {
-	admittanceMatrix.clear();
+    admittanceMatrix.clear();
 
-	for (const auto& branch : branches) {
-		addBranchToAdmittanceMatrix(std::get<1>(branch), std::get<2>(branch), std::get<3>(branch),
-			std::get<4>(branch), std::get<5>(branch), std::get<6>(branch));
-	}
+    for (const auto& branch : branches) {
+        addBranchToAdmittanceMatrix(std::get<1>(branch), std::get<2>(branch), std::get<3>(branch),
+            std::get<4>(branch), std::get<5>(branch), std::get<6>(branch));
+    }
 
-	for (const auto& capacitorBank : capacitorBanks) {
-		addCapacitorBankToAdmittanceMatrix(std::get<0>(capacitorBank), std::get<1>(capacitorBank), std::get<2>(capacitorBank));
-	}
+    for (const auto& capacitorBank : capacitorBanks) {
+        addCapacitorBankToAdmittanceMatrix(std::get<0>(capacitorBank), std::get<1>(capacitorBank), std::get<2>(capacitorBank));
+    }
 }
 
 
@@ -1023,33 +1023,33 @@ void SystemModel::SystemModel::recalculateAdmittanceMatrix() {
 /// <param name="busNumber1">0rdinal number of the first bus</param>
 /// <param name="busNumber2">0rdinal number of the second bus</param>
 void SystemModel::SystemModel::removeBranch(uint8_t busNumber1, uint8_t busNumber2) {
-	if (busNumber1 > buses.size() || busNumber1 == 0) {
-		throw std::out_of_range("Invalid bus number 1.");
-	}
+    if (busNumber1 > buses.size() || busNumber1 == 0) {
+        throw std::out_of_range("Invalid bus number 1.");
+    }
 
-	if (busNumber2 > buses.size() || busNumber2 == 0) {
-		throw std::out_of_range("Invalid bus number 2.");
-	}
+    if (busNumber2 > buses.size() || busNumber2 == 0) {
+        throw std::out_of_range("Invalid bus number 2.");
+    }
 
-	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
-		throw std::logic_error("Line or transformer not present between nodes.");
-	}
+    if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+        throw std::logic_error("Line or transformer not present between nodes.");
+    }
 
-	for (size_t i{}; i < branches.size(); i++) {
-		if ((std::get<1>(branches.at(i)) == busNumber1 && std::get<2>(branches.at(i)) == busNumber2) ||
-			(std::get<1>(branches.at(i)) == busNumber2 && std::get<2>(branches.at(i)) == busNumber1)) {
-			branches.erase(branches.begin() + i, branches.begin() + i + 1);
-			break;
-		}
-	}
+    for (size_t i{}; i < branches.size(); i++) {
+        if ((std::get<1>(branches.at(i)) == busNumber1 && std::get<2>(branches.at(i)) == busNumber2) ||
+            (std::get<1>(branches.at(i)) == busNumber2 && std::get<2>(branches.at(i)) == busNumber1)) {
+            branches.erase(branches.begin() + i, branches.begin() + i + 1);
+            break;
+        }
+    }
 
-	recalculateAdmittanceMatrix();
+    recalculateAdmittanceMatrix();
 }
 
 
 
 /// <summary>
-///	Changes the parameters of the line between buses
+///    Changes the parameters of the line between buses
 /// </summary>
 /// <param name="busNumber1">Ordinal number of the first bus</param>
 /// <param name="busNumber2">Ordinal number of the second bus</param>
@@ -1057,32 +1057,32 @@ void SystemModel::SystemModel::removeBranch(uint8_t busNumber1, uint8_t busNumbe
 /// <param name="x">Series reactance of the transmission line PI equivalent</param>
 /// <param name="b">Shunt susceptance of the transmission line PI equivalent</param>
 void SystemModel::SystemModel::changeLine(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double b) {
-	if (busNumber1 > buses.size() || busNumber1 == 0) {
-		throw std::out_of_range("Invalid bus number 1.");
-	}
+    if (busNumber1 > buses.size() || busNumber1 == 0) {
+        throw std::out_of_range("Invalid bus number 1.");
+    }
 
-	if (busNumber2 > buses.size() || busNumber2 == 0) {
-		throw std::out_of_range("Invalid bus number 2.");
-	}
+    if (busNumber2 > buses.size() || busNumber2 == 0) {
+        throw std::out_of_range("Invalid bus number 2.");
+    }
 
-	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
-		throw std::logic_error("Line or transformer not present between nodes.");
-	}
+    if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+        throw std::logic_error("Line or transformer not present between nodes.");
+    }
 
-	for (auto& line : branches) {
-		if ((std::get<1>(line) == busNumber1 && std::get<2>(line) == busNumber2) ||
-			(std::get<1>(line) == busNumber2 && std::get<2>(line) == busNumber1)) {
-			if ((std::get<0>(line) == TypeOfBranch::Transformer)) {
-				throw std::logic_error("Not a line but a transformer present between nodes.");
-			}
+    for (auto& line : branches) {
+        if ((std::get<1>(line) == busNumber1 && std::get<2>(line) == busNumber2) ||
+            (std::get<1>(line) == busNumber2 && std::get<2>(line) == busNumber1)) {
+            if ((std::get<0>(line) == TypeOfBranch::Transformer)) {
+                throw std::logic_error("Not a line but a transformer present between nodes.");
+            }
 
-			std::get<3>(line) = r;
-			std::get<4>(line) = x;
-			std::get<6>(line) = b;
-		}
-	}
+            std::get<3>(line) = r;
+            std::get<4>(line) = x;
+            std::get<6>(line) = b;
+        }
+    }
 
-	recalculateAdmittanceMatrix();
+    recalculateAdmittanceMatrix();
 }
 
 
@@ -1097,33 +1097,33 @@ void SystemModel::SystemModel::changeLine(uint8_t busNumber1, uint8_t busNumber2
 /// <param name="g">Shunt conductance of the transformer PI equivalent</param>
 /// <param name="b">Shunt susceptance of the transformer PI equivalent</param>
 void SystemModel::SystemModel::changeTransformer(uint8_t busNumber1, uint8_t busNumber2, double r, double x, double g, double b) {
-	if (busNumber1 > buses.size() || busNumber1 == 0) {
-		throw std::out_of_range("Invalid bus number 1.");
-	}
+    if (busNumber1 > buses.size() || busNumber1 == 0) {
+        throw std::out_of_range("Invalid bus number 1.");
+    }
 
-	if (busNumber2 > buses.size() || busNumber2 == 0) {
-		throw std::out_of_range("Invalid bus number 2.");
-	}
+    if (busNumber2 > buses.size() || busNumber2 == 0) {
+        throw std::out_of_range("Invalid bus number 2.");
+    }
 
-	if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
-		throw std::logic_error("Line or transformer not present between nodes.");
-	}
+    if (!checkForConnectionBetweenToBuses(busNumber1, busNumber2)) {
+        throw std::logic_error("Line or transformer not present between nodes.");
+    }
 
-	for (auto& xfmr : branches) {
-		if ((std::get<1>(xfmr) == busNumber1 && std::get<2>(xfmr) == busNumber2) ||
-			(std::get<1>(xfmr) == busNumber2 && std::get<2>(xfmr) == busNumber1)) {
-			if ((std::get<0>(xfmr) == TypeOfBranch::Line)) {
-				throw std::logic_error("Not a transformer but a line present between nodes.");
-			}
+    for (auto& xfmr : branches) {
+        if ((std::get<1>(xfmr) == busNumber1 && std::get<2>(xfmr) == busNumber2) ||
+            (std::get<1>(xfmr) == busNumber2 && std::get<2>(xfmr) == busNumber1)) {
+            if ((std::get<0>(xfmr) == TypeOfBranch::Line)) {
+                throw std::logic_error("Not a transformer but a line present between nodes.");
+            }
 
-			std::get<3>(xfmr) = r;
-			std::get<4>(xfmr) = x;
-			std::get<5>(xfmr) = g;
-			std::get<6>(xfmr) = -b;
-		}
-	}
+            std::get<3>(xfmr) = r;
+            std::get<4>(xfmr) = x;
+            std::get<5>(xfmr) = g;
+            std::get<6>(xfmr) = -b;
+        }
+    }
 
-	recalculateAdmittanceMatrix();
+    recalculateAdmittanceMatrix();
 }
 
 
@@ -1133,42 +1133,42 @@ void SystemModel::SystemModel::changeTransformer(uint8_t busNumber1, uint8_t bus
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
 void SystemModel::SystemModel::removeBus(uint8_t busNumber) {
-	if (busNumber == 0) {
-		throw std::logic_error("Invalid bus number.");
-	}
+    if (busNumber == 0) {
+        throw std::logic_error("Invalid bus number.");
+    }
 
-	try {
-		buses.at(busNumber - 1);
-	} catch (...) {
-		throw std::logic_error("Invalid bus number.");
-	}
+    try {
+        buses.at(busNumber - 1);
+    } catch (...) {
+        throw std::logic_error("Invalid bus number.");
+    }
 
-	buses.erase(buses.begin() + busNumber, buses.begin() + busNumber + 1);
+    buses.erase(buses.begin() + busNumber, buses.begin() + busNumber + 1);
 
-	for (size_t i{}; i < branches.size(); ) {
-		if (std::get<1>(branches.at(i)) == busNumber || std::get<2>(branches.at(i)) == busNumber) {
-			branches.erase(branches.begin() + i, branches.begin() + i + 1);
-			continue;
-		}
-		i++;
-	}
+    for (size_t i{}; i < branches.size(); ) {
+        if (std::get<1>(branches.at(i)) == busNumber || std::get<2>(branches.at(i)) == busNumber) {
+            branches.erase(branches.begin() + i, branches.begin() + i + 1);
+            continue;
+        }
+        i++;
+    }
 
 
-	for (size_t i{}; i < admittanceMatrix.size(); ) {
-		if (std::get<0>(admittanceMatrix.at(i)) == busNumber || std::get<1>(admittanceMatrix.at(i)) == busNumber) {
-			admittanceMatrix.erase(admittanceMatrix.begin() + i, admittanceMatrix.begin() + i + 1);
-			continue;
-		}
-		i++;
-	}
+    for (size_t i{}; i < admittanceMatrix.size(); ) {
+        if (std::get<0>(admittanceMatrix.at(i)) == busNumber || std::get<1>(admittanceMatrix.at(i)) == busNumber) {
+            admittanceMatrix.erase(admittanceMatrix.begin() + i, admittanceMatrix.begin() + i + 1);
+            continue;
+        }
+        i++;
+    }
 
-	try {
-		removeCapacitorBank(busNumber);
-	} catch (std::logic_error) {
-		recalculateAdmittanceMatrix();
-	}
+    try {
+        removeCapacitorBank(busNumber);
+    } catch (std::logic_error) {
+        recalculateAdmittanceMatrix();
+    }
 
-	numberOfBuses--;
+    numberOfBuses--;
 }
 
 
@@ -1178,20 +1178,20 @@ void SystemModel::SystemModel::removeBus(uint8_t busNumber) {
 /// </summary>
 /// <param name="busNumber">Ordinal number of the desired bus</param>
 void SystemModel::SystemModel::removeCapacitorBank(uint8_t busNumber) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	auto it{ std::find_if(capacitorBanks.begin(), capacitorBanks.end(),
-		[busNumber](const auto& capBank) { return std::get<0>(capBank) == busNumber; }) };
+    auto it{ std::find_if(capacitorBanks.begin(), capacitorBanks.end(),
+        [busNumber](const auto& capBank) { return std::get<0>(capBank) == busNumber; }) };
 
-	if (it == capacitorBanks.end()) {
-		throw std::logic_error("Capacitor bank not connected to bus");
-	}
+    if (it == capacitorBanks.end()) {
+        throw std::logic_error("Capacitor bank not connected to bus");
+    }
 
-	capacitorBanks.erase(it, it + 1);
+    capacitorBanks.erase(it, it + 1);
 
-	recalculateAdmittanceMatrix();
+    recalculateAdmittanceMatrix();
 }
 
 
@@ -1203,18 +1203,18 @@ void SystemModel::SystemModel::removeCapacitorBank(uint8_t busNumber) {
 /// <param name="b">One phase susceptance of the bank</param>
 /// <param name="configurationType">Three phase load configuration type (delta, star, grounded star) of the bank</param>
 void SystemModel::SystemModel::changeCapacitorBank(uint8_t busNumber, double b, ThreePhaseLoadConfigurationsType configurationType) {
-	if (busNumber > buses.size() || busNumber == 0) {
-		throw std::out_of_range("Invalid bus number.");
-	}
+    if (busNumber > buses.size() || busNumber == 0) {
+        throw std::out_of_range("Invalid bus number.");
+    }
 
-	auto it{ std::find_if(capacitorBanks.begin(), capacitorBanks.end(),
-		[busNumber](const auto& capBank) { return std::get<0>(capBank) == busNumber; }) };
-	
-	if (it == capacitorBanks.end()) {
-		throw std::logic_error("Capacitor bank not connected to bus");
-	}
+    auto it{ std::find_if(capacitorBanks.begin(), capacitorBanks.end(),
+        [busNumber](const auto& capBank) { return std::get<0>(capBank) == busNumber; }) };
+    
+    if (it == capacitorBanks.end()) {
+        throw std::logic_error("Capacitor bank not connected to bus");
+    }
 
-	*it = { busNumber, b, configurationType };
+    *it = { busNumber, b, configurationType };
 
-	recalculateAdmittanceMatrix();
+    recalculateAdmittanceMatrix();
 }
